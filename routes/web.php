@@ -29,6 +29,16 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/get-user', function () {
+    return response()->json([
+        'user' => auth()->user()
+    ]);
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Route::get('/get-user')
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -57,7 +67,7 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
 
 /*------------------------------------------
 --------------------------------------------
-All Admin Routes List
+All Manager Routes List
 --------------------------------------------
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:manager'])->group(function () {

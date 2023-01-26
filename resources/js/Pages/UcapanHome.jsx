@@ -1,15 +1,26 @@
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
+import { useState } from "react";
 import { IoRocketSharp } from "react-icons/io5";
 
-export default function UcapanHome({ props }) {
-    if (props.auth.user != null && props.auth.user.type == "user") {
+import "../../css/ucapanHome.css";
+
+export default function UcapanHome() {
+    const [user, setUser] = useState("");
+    fetch("/get-user")
+        .then((response) => {
+            return response.json();
+        })
+        .then((response) => {
+            setUser(response.user);
+        });
+    if (user != null && user.type == "user") {
         return (
             <>
                 <button
                     className="btn bg-blue-500"
                     onClick={(e) => {
                         e.preventDefault();
-                        Inertia.get("/pilihan");
+                        router.get("/pilihan");
                     }}
                 >
                     Gaskeun Booking Lapangan!{" "}
@@ -17,14 +28,14 @@ export default function UcapanHome({ props }) {
                 </button>
             </>
         );
-    } else if (props.auth.user != null && props.auth.user.type == "admin") {
+    } else if (user != null && user.type == "admin") {
         return (
             <>
                 <button
                     className="btn bg-blue-500"
                     onClick={(e) => {
                         e.preventDefault();
-                        Inertia.get(route("tempat-lapangan.index"));
+                        router.get(route("tempat-lapangan.index"));
                     }}
                 >
                     Kelola Tempat Lapangan!
@@ -35,35 +46,32 @@ export default function UcapanHome({ props }) {
     } else {
         return (
             <>
-                <div className="grid gap-x-20 gap-y-5 grid-cols-1">
+                <section className="banner">
+                    <h1>
+                        Ayo Bermain Badminton <br /> Di Lapangan Gor Pratama{" "}
+                        <br /> Desa Situ Daun!
+                    </h1>
+                </section>
+                <div className="button-group">
+                    <p>Belum punya akun?</p>
                     <button
-                        className="btn bg-green-500"
                         onClick={(e) => {
                             e.preventDefault();
 
-                            Inertia.get("/register");
+                            router.get("/register");
                         }}
                     >
                         Register
                     </button>
-                </div>
-                <div className="grid gap-5">
-                    <div className="card my-4 w-full bg-neutral text-neutral-content">
-                        <div className="p-3 card-body items-center text-center">
-                            <p>Sudah punya akun?</p>
-                            <div className="card-actions justify-end">
-                                <button
-                                    className="btn bg-orange-500"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        Inertia.get("/login");
-                                    }}
-                                >
-                                    Login
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <p>Sudah punya akun?</p>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/login");
+                        }}
+                    >
+                        Login
+                    </button>
                 </div>
             </>
         );

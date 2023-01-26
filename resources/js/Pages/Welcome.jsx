@@ -6,7 +6,7 @@ export default function Welcome(props) {
     return (
         <>
             <Head title="Welcome" />
-            <UcapanHome />
+            <UcapanHome props={props} />
         </>
     );
 }
