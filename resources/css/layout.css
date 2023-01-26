@@ -9,6 +9,7 @@
     background: rgb(14, 123, 129);
     background: linear-gradient(to bottom right, #0e7b81, #82c180);
     padding-bottom: 48px;
+    min-height: 100vh;
 }
 
 @media only screen and (min-width: 1024px) {
@@ -19,7 +20,7 @@
 }
 
 nav.navbar {
-    padding: 0;
+    padding-right: 47px;
 }
 
 @media only screen and (min-width: 1024px) {
