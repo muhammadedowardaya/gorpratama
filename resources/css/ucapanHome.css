@@ -4,11 +4,11 @@
     }
 
     section.banner h1 {
-        font-size: 48px;
+        font-size: 32px;
         font-family: "Teko", sans-serif;
         font-weight: 600;
         margin-left: 70px;
-        letter-spacing: 10px;
+        letter-spacing: 8px;
         color: #fff;
     }
 

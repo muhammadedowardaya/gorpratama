@@ -55,7 +55,7 @@ class TempatLapanganController extends Controller
     {
         $waktu = Waktu::all();
         $tempat_lapangan = isset($tempat_lapangan) ? TempatLapangan::all() : null;
-        return Inertia::render('Dashboard/Admin/TempatLapangan/KelolaTempatLapangan', [
+        return Inertia::render('Dashboard/Admin/TempatLapangan/CreateTempatLapangan', [
             'jam' => $waktu,
             'token' => csrf_token(),
             'tempat_lapangan' => $tempat_lapangan,
@@ -137,7 +137,7 @@ class TempatLapanganController extends Controller
      */
     public function edit(TempatLapangan $tempatLapangan)
     {
-        return Inertia::render('Dashboard/Admin/TempatLapangan/KelolaTempatLapangan', [
+        return Inertia::render('Dashboard/Admin/TempatLapangan/EditTempatLapangan', [
             'tempat_lapangan' => $tempatLapangan,
             'jam' => Waktu::all(),
             'token' => csrf_token(),

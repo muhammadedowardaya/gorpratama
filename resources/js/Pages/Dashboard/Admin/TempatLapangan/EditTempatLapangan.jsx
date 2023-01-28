@@ -9,39 +9,9 @@ import Swal from "sweetalert2";
 import MyButton from "@/Components/MyButton";
 import { Head, router, useForm } from "@inertiajs/react";
 
-export default function KelolaTempatLapangan(props) {
-    // const [data, setData] = useState({
-    //     slug: props.tempat_lapangan != null ? props.tempat_lapangan.slug : "",
-    //     nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
-    //     alamat:
-    //         props.tempat_lapangan != null ? props.tempat_lapangan.alamat : "",
-    //     telp: props.tempat_lapangan != null ? props.tempat_lapangan.telp : "",
-    //     email: props.tempat_lapangan != null ? props.tempat_lapangan.email : "",
-    //     deskripsi:
-    //         props.tempat_lapangan != null
-    //             ? props.tempat_lapangan.deskripsi
-    //             : "",
-    //     jam_buka:
-    //         props.tempat_lapangan != null
-    //             ? props.tempat_lapangan.jam_buka
-    //             : "DEFAULT",
-    //     jam_tutup:
-    //         props.tempat_lapangan != null
-    //             ? props.tempat_lapangan.jam_tutup
-    //             : "DEFAULT",
-    //     harga_persewa:
-    //         props.tempat_lapangan != null
-    //             ? props.tempat_lapangan.harga_persewa
-    //             : "",
-    //     logo: props.tempat_lapangan != null ? props.tempat_lapangan.logo : null,
-    //     preview:
-    //         props.tempat_lapangan != null ? props.tempat_lapangan.url_logo : "",
-    //     _token: props.token,
-    //     submit: props.submit,
-    //     jam: props.jam,
-    //     errors: props.errors,
-    // });
+import "../../../../../css/dashboardTempatLapangan.css";
 
+export default function EditTempatLapangan(props) {
     const { data, setData, post, processing, errors } = useForm({
         slug: props.tempat_lapangan != null ? props.tempat_lapangan.slug : "",
         nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
@@ -74,46 +44,6 @@ export default function KelolaTempatLapangan(props) {
         errors: props.errors,
     });
 
-    // store(e) {
-    //     e.preventDefault();
-    //     const data = {
-    //         nama: this.state.nama,
-    //         alamat: this.state.alamat,
-    //         telp: this.state.telp,
-    //         email: this.state.email,
-    //         deskripsi: this.state.deskripsi,
-    //         jam_buka: this.state.jam_buka,
-    //         jam_tutup: this.state.jam_tutup,
-    //         harga_persewa: this.state.harga_persewa,
-    //         logo: this.state.logo,
-    //         _token: this.state._token,
-    //     };
-
-    //     router.post("/dashboard/admin/profile-gor", data, {
-    //         forceFormData: true,
-    //         onError: () => {
-    //             const errors = Object.keys(this.props.errors);
-    //             const nama_error = Object.getOwnPropertyNames(
-    //                 this.props.errors
-    //             );
-    //             const message = [];
-
-    //             for (let i = 0; i < errors.length; i++) {
-    //                 message.push(this.props.errors[nama_error[i]]);
-    //             }
-
-    //             Swal.fire(
-    //                 "Gagal!",
-    //                 `<ul>${message
-    //                     .map((item) => `<li>${item}</li>`)
-    //                     .join(" ")}</ul>`,
-    //                 "error"
-    //             );
-    //         },
-    //     });
-    //     // console.info(JSON.stringify(data.foto));
-    // }
-
     const update = (e) => {
         e.preventDefault();
         // const data_update = {
@@ -130,8 +60,8 @@ export default function KelolaTempatLapangan(props) {
         //     _token: data._token,
         // };
 
-        router.visit(`/dashboard/admin/update-profile-gor/${data.slug}`, {
-            method: "put",
+        router.visit(`/dashboard/update-tempat-lapangan/${data.slug}`, {
+            method: "patch",
             forceFormData: true,
             headers: {
                 "X-CSRF-TOKEN": data._token,
@@ -177,12 +107,12 @@ export default function KelolaTempatLapangan(props) {
     };
 
     return (
-        <div className="container w-full mx-auto pt-20">
+        <div>
             <Head title="Kelola Tempat Lapangan" />
 
             {/* <ValidationErrors errors={props.errors} /> */}
 
-            <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
+            <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-white leading-normal">
                 <h1 className="text-center md:mt-20 mb-8 text-xl font-bold">
                     Kelola Tempat Lapangan
                 </h1>
@@ -419,6 +349,6 @@ export default function KelolaTempatLapangan(props) {
     );
 }
 
-KelolaTempatLapangan.layout = (page) => (
+EditTempatLapangan.layout = (page) => (
     <AdminLayout children={page} title="Welcome" />
 );

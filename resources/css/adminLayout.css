@@ -12,13 +12,6 @@
     min-height: 100vh;
 }
 
-@media only screen and (min-width: 1024px) {
-    .container {
-        background: rgb(14, 123, 129);
-        background: linear-gradient(to bottom right, #0e7b81 35%, #82c180);
-    }
-}
-
 nav.navbar {
     padding-right: 20px;
     /* font-family: "Teko", sans-serif; */
@@ -38,7 +31,19 @@ nav.navbar {
     color: #fff;
 }
 
+footer {
+    color: #fff;
+}
+
+footer a {
+    color: #fff;
+}
+
 @media only screen and (min-width: 1024px) {
+    .container {
+        background: rgb(14, 123, 129);
+        background: linear-gradient(to bottom right, #0e7b81 35%, #82c180);
+    }
     nav a {
         font-weight: 400;
         font-size: 20px;

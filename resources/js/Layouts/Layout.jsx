@@ -80,7 +80,9 @@ export default function Layout({ auth, header, children }) {
                             </div>
                         </div>
                     </div> */}
-                    {/* <span>{user.nama ?? ""}</span> */}
+                    <span className="text-white pr-4">
+                        {user != null ? user.nama : ""}
+                    </span>
                     {user != null ? (
                         <div className="dropdown dropdown-end">
                             <label
@@ -93,19 +95,26 @@ export default function Layout({ auth, header, children }) {
                             </label>
                             <ul
                                 tabIndex={0}
-                                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                                className="menu menu-compact dropdown-content mt-3  shadow bg-base-100  w-52"
                             >
                                 <li>
                                     <a className="justify-between">
                                         Profile
-                                        <span className="badge">New</span>
+                                        {/* <span className="badge">New</span> */}
                                     </a>
                                 </li>
                                 <li>
                                     <a>Settings</a>
                                 </li>
                                 <li>
-                                    <a>Logout</a>
+                                    <a
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            router.post("/logout");
+                                        }}
+                                    >
+                                        Logout
+                                    </a>
                                 </li>
                             </ul>
                         </div>

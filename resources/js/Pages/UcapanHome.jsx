@@ -1,20 +1,11 @@
 import { router } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoRocketSharp } from "react-icons/io5";
-import VanillaTilt from "vanilla-tilt";
+import { MdPersonSearch } from "react-icons/md";
 
 import "../../css/ucapanHome.css";
 
 export default function UcapanHome() {
-    const buttons = document.querySelectorAll(".button-group button");
-
-    VanillaTilt.init(buttons, {
-        glare: true,
-        "max-glare": 0.5,
-        max: 5,
-        reverse: true,
-    });
-
     const [user, setUser] = useState("");
     fetch("/get-user")
         .then((response) => {
@@ -26,16 +17,46 @@ export default function UcapanHome() {
     if (user != null && user.type == "user") {
         return (
             <>
-                <button
-                    className="btn bg-blue-500"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        router.get("/pilihan");
-                    }}
-                >
-                    Gaskeun Booking Lapangan!{" "}
-                    <IoRocketSharp className="ml-4" size="2em" />
-                </button>
+                <section className="banner">
+                    <h1>
+                        Selamat Datang Di Website <br />
+                        Pemesanan Lapangan Badminton <br />
+                        Gor Pratama!
+                    </h1>
+                </section>
+                <div className="button-group">
+                    <p>
+                        Siap Bermain?
+                        <br />
+                        Ayo segera booking sekarang!
+                    </p>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+
+                            router.get("/pilih-lapangan");
+                        }}
+                    >
+                        <IoRocketSharp className="absolute ml-4" size="1.5em" />
+                        Booking
+                    </button>
+                    <p>
+                        Ingin mencari teman atau lawan bermain? <br />
+                        Temukan teman atau lawan anda!
+                    </p>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/find");
+                        }}
+                    >
+                        <MdPersonSearch
+                            size="1.5em"
+                            className="absolute ml-4 z-10"
+                        />
+                        Temukan Teman
+                    </button>
+                </div>
             </>
         );
     } else if (user != null && user.type == "admin") {
@@ -50,7 +71,14 @@ export default function UcapanHome() {
                 </section>
                 <div className="button-group">
                     <p>Ayo mulai kelola tempat lapangan!</p>
-                    <button>Kelola Profil Gor</button>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/dashboard/tempat-lapangan");
+                        }}
+                    >
+                        Kelola Profil Gor
+                    </button>
                     <button>Kelola Profil Lapangan</button>
                     <p>
                         Jangan lupa untuk melihat pesanan sewa lapangan dari

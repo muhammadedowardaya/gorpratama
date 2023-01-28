@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TempatLapanganController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,7 +37,12 @@ Route::get('/get-user', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Route::get('/get-user')
+    Route::get('/find', function () {
+        return Inertia::render('TemukanTeman');
+    });
+    Route::get('/pilih-lapangan', function () {
+        return Inertia::render('Lapangan');
+    });
 });
 
 Route::middleware('auth')->group(function () {
@@ -61,8 +67,11 @@ All Admin Routes List
 --------------------------------------------
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
-
-    Route::get('/admin/home', [HomeController::class, 'adminHome'])->name('admin.home');
+    Route::get('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'index']);
+    Route::get('/dashboard/create-tempat-lapangan', [TempatLapanganController::class, 'create']);
+    Route::post('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'store']);
+    Route::get('/dashboard/edit-tempat-lapangan/{tempat_lapangan:slug}', [TempatLapanganController::class, 'edit']);
+    Route::patch('/dashboard/update-tempat-lapangan/{tempat_lapangan:slug}', [TempatLapanganController::class, 'update']);
 });
 
 /*------------------------------------------

@@ -1,12 +1,10 @@
 import AdminLayout from "@/Layouts/AdminLayout";
-import { Inertia } from "@inertiajs/inertia";
-import { Head } from "@inertiajs/inertia-react";
+import { Head, router } from "@inertiajs/react";
 import React from "react";
 
 const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
-
     return (
-        <div className="container w-full mx-auto pt-20">
+        <div className="w-full mx-auto pt-20">
             <Head title="Register" />
 
             {/* <ValidationErrors errors={props.errors} /> */}
@@ -43,8 +41,8 @@ const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
                                     className="btn btn-primary rounded-full px-8"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        Inertia.get(
-                                            route("tempat-lapangan.create")
+                                        router.get(
+                                            "/dashboard/create-tempat-lapangan"
                                         );
                                     }}
                                 >
