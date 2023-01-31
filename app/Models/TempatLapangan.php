@@ -10,5 +10,5 @@ class TempatLapangan extends Model
     use HasFactory;
 
     protected $table = 'tempat_lapangan';
-    protected $fillable = ['nama','alamat','telp','email','deskripsi','jam_buka','jam_tutup','harga_persewa','foto'];
+    protected $fillable = ['user_id', 'nama', 'slug', 'alamat', 'telp', 'logo', 'url_logo', 'email', 'deskripsi', 'jam_buka', 'jam_tutup', 'harga_persewa'];
 }

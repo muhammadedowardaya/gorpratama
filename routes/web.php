@@ -67,7 +67,7 @@ All Admin Routes List
 --------------------------------------------
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
-    Route::get('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'index']);
+    Route::get('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'index'])->name('tempat-lapangan.index');
     Route::get('/dashboard/create-tempat-lapangan', [TempatLapanganController::class, 'create']);
     Route::post('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'store']);
     Route::get('/dashboard/edit-tempat-lapangan/{tempat_lapangan:slug}', [TempatLapanganController::class, 'edit']);

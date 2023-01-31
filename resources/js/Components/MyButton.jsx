@@ -6,11 +6,24 @@ export default function MyButton({
     onClick,
     className,
 }) {
-    const create = "#3C79F5";
-    const edit = "#21E1E1";
-    const trash = "#F65A83";
-    const update = "#FED049";
-    const defaultColor = "#2B3A55";
+    // const create = "bg-gradient-to-br from-sky-700 via-cyan-600 to-cyan-300";
+    // const edit = "bg-gradient-to-br from-cyan-800 via-teal-600 to-emerald-300";
+    // const trash = "bg-gradient-to-br from-red-800 via-red-600 to-red-300";
+    // const update =
+    //     "bg-gradient-to-br from-orange-800 via-amber-700 to-yellow-400";
+    // const defaultColor =
+    //     "bg-gradient-to-br from-stone-600 via-stone-500 to-stone-400";
+
+    const create =
+        "dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-sky-400 bg-gradient-to-br from-sky-700 via-cyan-600 to-cyan-300";
+    const edit =
+        "dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-green-300 bg-gradient-to-br from-cyan-800 via-teal-600 to-emerald-300";
+    const trash =
+        "dark:bg-gradient-to-b from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-red-400 bg-gradient-to-br from-red-700 via-red-600 to-red-500";
+    const update =
+        "dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-yellow-300 bg-gradient-to-br from-orange-800 via-amber-700 to-yellow-400";
+    const defaultColor =
+        "dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-slate-100 bg-gradient-to-br from-stone-600 via-stone-500 to-stone-400";
 
     function pickColor(value) {
         if (value == "create") {
@@ -28,13 +41,12 @@ export default function MyButton({
     return (
         <button
             style={{
-                backgroundColor: pickColor(button),
                 color: "#fff",
                 backdropFilter: 'blur("20px")',
                 padding: padding,
             }}
             onClick={onClick}
-            className={className}
+            className={`${className} ${pickColor(button)}`}
         >
             {value}
         </button>

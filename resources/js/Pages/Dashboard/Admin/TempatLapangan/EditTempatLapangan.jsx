@@ -10,8 +10,10 @@ import MyButton from "@/Components/MyButton";
 import { Head, router, useForm } from "@inertiajs/react";
 
 import "../../../../../css/dashboardTempatLapangan.css";
+import axios from "axios";
 
 export default function EditTempatLapangan(props) {
+    const [slug, setSlug] = useState(props.tempat_lapangan.slug);
     const { data, setData, post, processing, errors } = useForm({
         slug: props.tempat_lapangan != null ? props.tempat_lapangan.slug : "",
         nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
@@ -39,57 +41,53 @@ export default function EditTempatLapangan(props) {
         preview:
             props.tempat_lapangan != null ? props.tempat_lapangan.url_logo : "",
         _token: props.token,
-        submit: props.submit,
         jam: props.jam,
-        errors: props.errors,
     });
 
     const update = (e) => {
         e.preventDefault();
-        // const data_update = {
-        //     slug: data.slug,
-        //     nama: data.nama,
-        //     alamat: data.alamat,
-        //     telp: data.telp,
-        //     email: data.email,
-        //     deskripsi: data.deskripsi,
-        //     jam_buka: data.jam_buka,
-        //     jam_tutup: data.jam_tutup,
-        //     harga_persewa: data.harga_persewa,
-        //     logo: data.logo,
-        //     _token: data._token,
-        // };
+        console.info(data);
+        axios
+            .patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
+                headers: {
+                    "X-CSRF-TOKEN": data._token,
+                },
+            })
+            .then((response) => {
+                Swal.fire(
+                    "Berhasil!",
+                    `Berhasil memperbarui ${response.data.response.nama}`,
+                    "success"
+                );
+                setTimeout(() => {
+                    router.get("/dashboard/tempat-lapangan");
+                }, 2000);
+            })
+            .then((responseJson) => {
+                console.info(responseJson);
+            })
+            .catch((errors) => {
+                const error_keys = Object.keys(errors.response.data.message);
+                const error_values = Object.getOwnPropertyNames(
+                    errors.response.data.message
+                );
+                let error_messages = [];
+                let error = errors.response.data.message;
 
-        router.visit(`/dashboard/update-tempat-lapangan/${data.slug}`, {
-            method: "patch",
-            forceFormData: true,
-            headers: {
-                "X-CSRF-TOKEN": data._token,
-            },
-            onError: (error) => {
-                console.info("error");
-                // const errors = Object.keys(this.props.errors);
-                // const nama_error = Object.getOwnPropertyNames(
-                //     this.props.errors
-                // );
-                // const message = [];
+                for (let i = 0; i < error_keys.length; i++) {
+                    error_messages.push(error[error_values[i]]);
+                }
 
-                // for (let i = 0; i < errors.length; i++) {
-                //     message.push(this.props.errors[nama_error[i]]);
-                // }
+                Swal.fire(
+                    "Gagal!",
+                    `<ul>${error_messages
+                        .map((item) => `<li>${item}</li>`)
+                        .join(" ")}</ul>`,
+                    "error"
+                );
 
-                // Swal.fire(
-                //     "Gagal!",
-                //     `<ul>${message
-                //         .map((item) => `<li>${item}</li>`)
-                //         .join(" ")}</ul>`,
-                //     "error"
-                // );
-                // console.info(
-                //     message.map((item) => `<li>${item}</li>`).join(" ")
-                // );
-            },
-        });
+                alert(errors);
+            });
     };
 
     const handleUpload = (e) => {
@@ -98,6 +96,7 @@ export default function EditTempatLapangan(props) {
         reader.onloadend = () => {
             if (reader.readyState === 2) {
                 setData({
+                    ...data,
                     preview: reader.result,
                     logo: e.target.files[0],
                 });
@@ -114,7 +113,7 @@ export default function EditTempatLapangan(props) {
 
             <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-white leading-normal">
                 <h1 className="text-center md:mt-20 mb-8 text-xl font-bold">
-                    Kelola Tempat Lapangan
+                    Update Tempat Lapangan
                 </h1>
 
                 <div className="flex justify-center">

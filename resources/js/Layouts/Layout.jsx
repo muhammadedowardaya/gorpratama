@@ -5,6 +5,7 @@ import heroImage from "../../../public/storage/images/background-welcome.jpg";
 import { router } from "@inertiajs/react";
 
 import "../../css/layout.css";
+import SwitchMode from "@/Components/SwitchMode";
 
 export default function Layout({ auth, header, children }) {
     const [user, setUser] = useState("");
@@ -34,7 +35,9 @@ export default function Layout({ auth, header, children }) {
             <nav className="navbar">
                 <div className="flex-1">
                     <a>Gor Pratama</a>
+                    <SwitchMode size="2em" />
                 </div>
+
                 <div className="flex-none">
                     {/* <div className="dropdown dropdown-end">
                         <label
@@ -124,7 +127,7 @@ export default function Layout({ auth, header, children }) {
                 </div>
             </nav>
             {header && (
-                <section className="px-5 pt-5 pb-4 fixed top-14 z-10   w-full flex justify-evenly">
+                <section className="px-5 pt-5 pb-4 fixed top-14 z-10 w-full flex justify-evenly">
                     {header}
                 </section>
             )}
