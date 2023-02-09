@@ -98,9 +98,9 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                                 <React.Fragment>
                                     <img
                                         id="logo"
-                                        className="border border-white"
+                                        className="border border-white text-center text-cyan-100"
                                         src={tempat_lapangan.url_logo}
-                                        alt="avatar"
+                                        alt="Logo Profile Gor"
                                         onClick={openPortal}
                                     />
                                     {portal(

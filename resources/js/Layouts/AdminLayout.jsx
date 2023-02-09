@@ -21,7 +21,7 @@ export default function AdminLayout({ children, header }) {
         <div className="container bg-gradient-to-br from-cyan-700 via-teal-600 to-emerald-400 bg-fixed dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
             <nav className="navbar">
                 <div className="flex-1">
-                    <a>Gor Pratama</a>
+                    <a className="text-white">Gor Pratama</a>
                     <SwitchMode size="2em" />
                 </div>
                 <div className="flex-none">

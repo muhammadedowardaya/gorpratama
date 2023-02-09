@@ -14,6 +14,7 @@ import axios from "axios";
 
 export default function CreateTempatLapangan(props) {
     const { data, setData, errors, post } = useForm({
+        id: props.auth.user.id,
         slug: "",
         nama: "",
         alamat: "",
@@ -25,14 +26,131 @@ export default function CreateTempatLapangan(props) {
         harga_persewa: "",
         logo: "",
         preview: "",
-        _token: props.token,
+        _token: document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content"),
         jam: props.jam,
     });
 
     const store = (e) => {
         e.preventDefault();
+
+        // router.post("/dashboard/tempat-lapangan", data, {
+        //     headers: {
+        //         "X-CSRF-TOKEN": data._token,
+        //     },
+        //     forceFormData: true,
+        //     onProgress: (progress) => {
+        //         console.info(`progress : ${JSON.stringify(progress)}`);
+        //         const radialProgress =
+        //             document.querySelector(".radial-progress");
+        //         if (radialProgress.classList.contains("hidden")) {
+        //             radialProgress.classList.remove("hidden");
+        //         }
+        //         radialProgress.classList.add("fixed");
+        //         radialProgress.innerHTML =
+        //             Math.round(progress.percentage) + "%";
+        //         radialProgress.style.setProperty(
+        //             "--value",
+        //             Math.round(progress.percentage)
+        //         );
+        //         // console.info(progress);
+        //     },
+        //     onSuccess: (page) => {
+        //         console.info(`sucees : ${JSON.stringify(page)}`);
+        //         // console.info(page);
+        //     },
+        //     onError: (errors) => {
+        //         console.info(`errors : ${JSON.stringify(errors.message)}`);
+        //         // console.info(errors);
+        //     },
+        //     onFinish: (visit) => {
+        //         console.info(`visit : ${JSON.stringify(visit)}`);
+        //         const radialProgress =
+        //             document.querySelector(".radial-progress");
+
+        //         radialProgress.style.transition = "1s";
+
+        //         radialProgress.innerHTML =
+        //             "<span className='text-center mx-auto text-sm'>Upload Selesai</span>";
+
+        //         function randomRGB() {
+        //             var x = Math.floor(Math.random() * 256);
+        //             var y = Math.floor(Math.random() * 256);
+        //             var z = Math.floor(Math.random() * 256);
+        //             var RGBColor = "rgb(" + x + "," + y + "," + z + ")";
+        //             return RGBColor;
+        //         }
+
+        //         let no_opacity = 1;
+        //         const opacityInterval = setInterval(() => {
+        //             radialProgress.style.opacity = no_opacity;
+        //             no_opacity -= 0.03;
+        //         }, 100);
+
+        //         setTimeout(() => {
+        //             radialProgress.style.transform = "scale(2)";
+        //         }, 500);
+
+        //         setTimeout(() => {
+        //             radialProgress.style.transform = "scale(0)";
+        //         }, 1500);
+
+        //         setTimeout(() => {
+        //             if (radialProgress.classList.contains("fixed")) {
+        //                 radialProgress.classList.remove("fixed");
+        //                 radialProgress.classList.add("hidden");
+        //                 clearInterval(opacityInterval);
+        //                 radialProgress.style.opacity = 1;
+        //             }
+        //             // simpan foto ke tabel tempat lapangan
+        //             // console.info(data);
+        //             // axios
+        //             //     .post("/api/tempat-lapangan/image", data, {
+        //             //         headers: {
+        //             //             "X-CSRF-TOKEN": data._token,
+        //             //         },
+        //             //     })
+        //             //     .then((response) => {
+        //             //         console.info(response);
+        //             //     })
+        //             //     .catch((errors) => {
+        //             //         console.info(errors);
+        //             //     });
+        //         }, 3000);
+        //         // console.info(visit);
+        //     },
+        // });
+
+        // fetch("/dashboard/tempat-lapangan", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         Accept: "application/json, text-plain, */*",
+        //         "X-Requested-With": "XMLHttpRequest",
+        //         "X-CSRF-TOKEN": data._token,
+        //     },
+        //     credentials: "same-origin",
+        //     body: data,
+        // })
+        //     .then((response) => {
+        //         return response.json();
+        //     })
+        //     .then((responseJson) => {
+        //         console.info(responseJson);
+        //     })
+        //     .catch((errors) => {
+        //         console.info(errors);
+        //     });
+
         axios
-            .post("/dashboard/tempat-lapangan", data)
+            .post("/dashboard/tempat-lapangan", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "X-CSRF-TOKEN": data._token,
+                },
+                credentials: "same-origin",
+            })
             .then((response) => {
                 Swal.fire(
                     "Berhasil!",
@@ -43,34 +161,60 @@ export default function CreateTempatLapangan(props) {
                     router.get("/dashboard/tempat-lapangan");
                 }, 2000);
             })
-            .then((responseJson) => {
-                console.info(responseJson);
-            })
             .catch((errors) => {
-                const error_keys = Object.keys(errors.response.data.message);
-                const error_values = Object.getOwnPropertyNames(
-                    errors.response.data.message
-                );
-                let error_messages = [];
-                let error = errors.response.data.message;
+                if (errors.response.data.message) {
+                    const error_keys = Object.keys(
+                        errors.response.data.message
+                    );
+                    const error_values = Object.getOwnPropertyNames(
+                        errors.response.data.message
+                    );
+                    let error_messages = [];
+                    let error = errors.response.data.message;
 
-                for (let i = 0; i < error_keys.length; i++) {
-                    error_messages.push(error[error_values[i]]);
+                    for (let i = 0; i < error_keys.length; i++) {
+                        error_messages.push(error[error_values[i]]);
+                    }
+
+                    Swal.fire(
+                        "Gagal!",
+                        `<ul>${error_messages
+                            .map((item) => `<li>${item}</li>`)
+                            .join(" ")}</ul>`,
+                        "error"
+                    );
+                } else {
+                    console.info(errors);
                 }
-
-                Swal.fire(
-                    "Gagal!",
-                    `<ul>${error_messages
-                        .map((item) => `<li>${item}</li>`)
-                        .join(" ")}</ul>`,
-                    "error"
-                );
             });
     };
 
     const handleUpload = (e) => {
         e.preventDefault();
         let reader = new FileReader();
+
+        reader.onloadstart = () => {
+            const radialProgress = document.querySelector(".radial-progress");
+            if (radialProgress.classList.contains("hidden")) {
+                radialProgress.classList.remove("hidden");
+                radialProgress.classList.add("fixed");
+            }
+        };
+
+        reader.onprogress = (event) => {
+            const percent = (event.loaded / event.total) * 100;
+            const radialProgress = document.querySelector(".radial-progress");
+            if (radialProgress.classList.contains("hidden")) {
+                radialProgress.classList.remove("hidden");
+            }
+            radialProgress.classList.add("fixed");
+            radialProgress.innerHTML = Math.round(percent) + "%";
+            radialProgress.style.setProperty("--value", Math.round(percent));
+            // _("progressBar").value = Math.round(percent);
+            // _("status").innerHTML =
+            //     Math.round(percent) + "% uploaded... please wait";
+        };
+
         reader.onloadend = () => {
             if (reader.readyState === 2) {
                 setData({
@@ -79,6 +223,58 @@ export default function CreateTempatLapangan(props) {
                     logo: e.target.files[0],
                 });
             }
+
+            const radialProgress = document.querySelector(".radial-progress");
+
+            radialProgress.style.transition = "1s";
+
+            radialProgress.innerHTML =
+                "<span className='text-center mx-auto text-sm'>Berhasil memilih</span>";
+
+            function randomRGB() {
+                var x = Math.floor(Math.random() * 256);
+                var y = Math.floor(Math.random() * 256);
+                var z = Math.floor(Math.random() * 256);
+                var RGBColor = "rgb(" + x + "," + y + "," + z + ")";
+                return RGBColor;
+            }
+
+            let no_opacity = 1;
+            const opacityInterval = setInterval(() => {
+                radialProgress.style.opacity = no_opacity;
+                no_opacity -= 0.03;
+            }, 100);
+
+            setTimeout(() => {
+                radialProgress.style.transform = "scale(2)";
+            }, 500);
+
+            setTimeout(() => {
+                radialProgress.style.transform = "scale(0)";
+            }, 1500);
+
+            setTimeout(() => {
+                if (radialProgress.classList.contains("fixed")) {
+                    radialProgress.classList.remove("fixed");
+                    radialProgress.classList.add("hidden");
+                    clearInterval(opacityInterval);
+                    radialProgress.style.opacity = 1;
+                }
+                // simpan foto ke tabel tempat lapangan
+                // console.info(data);
+                // axios
+                //     .post("/api/tempat-lapangan/image", data, {
+                //         headers: {
+                //             "X-CSRF-TOKEN": data._token,
+                //         },
+                //     })
+                //     .then((response) => {
+                //         console.info(response);
+                //     })
+                //     .catch((errors) => {
+                //         console.info(errors);
+                //     });
+            }, 3000);
         };
         reader.readAsDataURL(e.target.files[0]);
     };
@@ -88,9 +284,17 @@ export default function CreateTempatLapangan(props) {
             <Head title="Kelola Tempat Lapangan" />
 
             {/* <ValidationErrors errors={props.errors} /> */}
+            <div
+                className="radial-progress bg-gradient-to-b from-teal-700 via-teal-600 to-teal-500 text-primary-content border-4 border-teal-400 hidden top-0 left-0 right-0 bottom-0 m-auto text-4xl"
+                style={{
+                    "--value": 0,
+                    "--size": "20rem",
+                    "--thickness": "1.5rem",
+                }}
+            ></div>
 
             <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-white leading-normal">
-                <h1 className="text-center md:mt-20 mb-8 text-xl font-bold">
+                <h1 className="text-center mt-10 md:mt-20 mb-8 text-xl font-bold">
                     Tambahkan informasi tempat Lapangan
                 </h1>
 
@@ -258,7 +462,7 @@ export default function CreateTempatLapangan(props) {
                         </div>
 
                         <div className="mt-4">
-                            <Label forInput="logo" value="Logo" />
+                            <Label forInput="image" value="Logo" />
                             <PortalWithState closeOnOutsideClick closeOnEsc>
                                 {({
                                     openPortal,
@@ -276,7 +480,7 @@ export default function CreateTempatLapangan(props) {
                                         {portal(
                                             <div className="modal-box border border-slate-500 w-11/12 top-0 bottom-0 left-0 right-0 fixed mx-auto my-auto max-w-max max-h-max z-50">
                                                 <div className="grid grid-cols-1">
-                                                    <h2>Logo</h2>
+                                                    <h2>Foto</h2>
                                                     <img
                                                         src={data.preview}
                                                         alt=""
@@ -296,7 +500,7 @@ export default function CreateTempatLapangan(props) {
 
                             <input
                                 type="file"
-                                name="logo"
+                                name="image"
                                 className="w-full text-white rounded-md shadow-sm"
                                 // ref={data.imageRef}
                                 onChange={handleUpload}

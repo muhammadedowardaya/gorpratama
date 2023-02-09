@@ -40,54 +40,85 @@ export default function EditTempatLapangan(props) {
         logo: props.tempat_lapangan != null ? props.tempat_lapangan.logo : null,
         preview:
             props.tempat_lapangan != null ? props.tempat_lapangan.url_logo : "",
-        _token: props.token,
+        _token: document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content"),
         jam: props.jam,
+    });
+
+    useEffect(() => {
+        console.info(props);
     });
 
     const update = (e) => {
         e.preventDefault();
-        console.info(data);
-        axios
-            .patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
-                headers: {
-                    "X-CSRF-TOKEN": data._token,
-                },
-            })
-            .then((response) => {
-                Swal.fire(
-                    "Berhasil!",
-                    `Berhasil memperbarui ${response.data.response.nama}`,
-                    "success"
-                );
-                setTimeout(() => {
-                    router.get("/dashboard/tempat-lapangan");
-                }, 2000);
-            })
-            .then((responseJson) => {
-                console.info(responseJson);
-            })
-            .catch((errors) => {
-                const error_keys = Object.keys(errors.response.data.message);
-                const error_values = Object.getOwnPropertyNames(
-                    errors.response.data.message
-                );
-                let error_messages = [];
-                let error = errors.response.data.message;
+        // console.info(data);
+        router.patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
+            forceFormData: true,
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "X-CSRF-TOKEN": data._token,
+                // Authorization: data._token,
+            },
+            onSuccess: (page) => {
+                console.info(page);
+            },
+            onFinish: (visit) => {
+                console.info(visit.data);
+            },
+            onError: (errors) => {
+                console.info(errors);
+            },
+        });
 
-                for (let i = 0; i < error_keys.length; i++) {
-                    error_messages.push(error[error_values[i]]);
-                }
+        // axios
+        //     .patch(`/dashboard/update-tempat-lapangan/${slug}`, {
+        //         headers: {
+        //             "Content-Type": "multipart/form-data",
+        //             "X-CSRF-TOKEN": data._token,
+        //             // Authorization: data._token,
+        //         },
+        //         // credentials: "same-origin",
+        //         data,
+        //     })
+        //     .then((response) => {
+        //         // Swal.fire(
+        //         //     "Berhasil!",
+        //         //     `Berhasil memperbarui ${response.data.response.nama}`,
+        //         //     "success"
+        //         // );
+        //         // setTimeout(() => {
+        //         //     router.get("/dashboard/tempat-lapangan");
+        //         // }, 2000);
+        //         console.info(response);
+        //     })
+        //     .catch((errors) => {
+        //         console.info(errors);
+        //         // if (errors.response.data.message) {
+        //         //     const error_keys = Object.keys(
+        //         //         errors.response.data.message
+        //         //     );
+        //         //     const error_values = Object.getOwnPropertyNames(
+        //         //         errors.response.data.message
+        //         //     );
+        //         //     let error_messages = [];
+        //         //     let error = errors.response.data.message;
 
-                Swal.fire(
-                    "Gagal!",
-                    `<ul>${error_messages
-                        .map((item) => `<li>${item}</li>`)
-                        .join(" ")}</ul>`,
-                    "error"
-                );
+        //         //     for (let i = 0; i < error_keys.length; i++) {
+        //         //         error_messages.push(error[error_values[i]]);
+        //         //     }
 
-                alert(errors);
-            });
+        //         //     Swal.fire(
+        //         //         "Gagal!",
+        //         //         `<ul>${error_messages
+        //         //             .map((item) => `<li>${item}</li>`)
+        //         //             .join(" ")}</ul>`,
+        //         //         "error"
+        //         //     );
+        //         // } else {
+        //         //     console.info(errors);
+        //         // }
+        //     });
     };
 
     const handleUpload = (e) => {
@@ -101,6 +132,58 @@ export default function EditTempatLapangan(props) {
                     logo: e.target.files[0],
                 });
             }
+
+            const radialProgress = document.querySelector(".radial-progress");
+
+            radialProgress.style.transition = "1s";
+
+            radialProgress.innerHTML =
+                "<span className='text-center mx-auto text-sm'>Berhasil memilih</span>";
+
+            function randomRGB() {
+                var x = Math.floor(Math.random() * 256);
+                var y = Math.floor(Math.random() * 256);
+                var z = Math.floor(Math.random() * 256);
+                var RGBColor = "rgb(" + x + "," + y + "," + z + ")";
+                return RGBColor;
+            }
+
+            let no_opacity = 1;
+            const opacityInterval = setInterval(() => {
+                radialProgress.style.opacity = no_opacity;
+                no_opacity -= 0.03;
+            }, 100);
+
+            setTimeout(() => {
+                radialProgress.style.transform = "scale(2)";
+            }, 500);
+
+            setTimeout(() => {
+                radialProgress.style.transform = "scale(0)";
+            }, 1500);
+
+            setTimeout(() => {
+                if (radialProgress.classList.contains("fixed")) {
+                    radialProgress.classList.remove("fixed");
+                    radialProgress.classList.add("hidden");
+                    clearInterval(opacityInterval);
+                    radialProgress.style.opacity = 1;
+                }
+                // simpan foto ke tabel tempat lapangan
+                // console.info(data);
+                // axios
+                //     .post("/api/tempat-lapangan/image", data, {
+                //         headers: {
+                //             "X-CSRF-TOKEN": data._token,
+                //         },
+                //     })
+                //     .then((response) => {
+                //         console.info(response);
+                //     })
+                //     .catch((errors) => {
+                //         console.info(errors);
+                //     });
+            }, 3000);
         };
         reader.readAsDataURL(e.target.files[0]);
     };
@@ -110,6 +193,14 @@ export default function EditTempatLapangan(props) {
             <Head title="Kelola Tempat Lapangan" />
 
             {/* <ValidationErrors errors={props.errors} /> */}
+            <div
+                className="radial-progress bg-gradient-to-b from-teal-700 via-teal-600 to-teal-500 text-primary-content border-4 border-teal-400 hidden top-0 left-0 right-0 bottom-0 m-auto text-4xl"
+                style={{
+                    "--value": 0,
+                    "--size": "20rem",
+                    "--thickness": "1.5rem",
+                }}
+            ></div>
 
             <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-white leading-normal">
                 <h1 className="text-center md:mt-20 mb-8 text-xl font-bold">
