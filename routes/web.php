@@ -71,7 +71,8 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/dashboard/create-tempat-lapangan', [TempatLapanganController::class, 'create']);
     Route::post('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'store']);
     Route::get('/dashboard/edit-tempat-lapangan/{tempat_lapangan:slug}', [TempatLapanganController::class, 'edit']);
-    Route::patch('/dashboard/update-tempat-lapangan/{tempat_lapangan:slug}', [TempatLapanganController::class, 'update']);
+    // Route::post('/dashboard/update-tempat-lapangan', [TempatLapanganController::class, 'updateTempatLapangan']);
+    Route::patch('/dashboard/update-tempat-lapangan/${tempat_lapangan:slug}', [TempatLapanganController::class, 'update']);
 });
 
 /*------------------------------------------

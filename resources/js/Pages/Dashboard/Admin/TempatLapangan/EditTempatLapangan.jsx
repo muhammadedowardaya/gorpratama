@@ -14,7 +14,7 @@ import axios from "axios";
 
 export default function EditTempatLapangan(props) {
     const [slug, setSlug] = useState(props.tempat_lapangan.slug);
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, patch, processing, errors } = useForm({
         slug: props.tempat_lapangan != null ? props.tempat_lapangan.slug : "",
         nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
         alamat:
@@ -48,91 +48,53 @@ export default function EditTempatLapangan(props) {
 
     const update = (e) => {
         e.preventDefault();
-        console.info(data);
-        // router.patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
-        //     forceFormData: true,
-        //     headers: {
-        //         "Content-Type": "multipart/form-data",
-        //         "X-CSRF-TOKEN": data._token,
-        //         // Authorization: data._token,
-        //     },
-        //     onSuccess: (page) => {
-        //         console.info(page);
-        //     },
-        //     onFinish: (visit) => {
-        //         console.info(visit.data);
-        //     },
-        //     onError: (errors) => {
-        //         console.info(errors);
-        //     },
-        // });
 
-        fetch(`/dashboard/update-tempat-lapangan/${slug}`, {
-            method: "PATCH",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "multipart/form-data",
-                "X-CSRF-TOKEN": data._token,
-            },
-        })
-            .then((response) => {
-                return response.json();
+        axios
+            .patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
+                headers: {
+                    "X-CSRF-TOKEN": data._token,
+                    "Content-Type": "multipart/form-data",
+                },
+                credentials: "same-origin",
             })
-            .then((responseJson) => {
-                console.info(responseJson);
+            .then((response) => {
+                // Swal.fire(
+                //     "Berhasil!",
+                //     `Berhasil memperbarui ${response.data.response.nama}`,
+                //     "success"
+                // );
+                // setTimeout(() => {
+                //     router.get("/dashboard/tempat-lapangan");
+                // }, 2000);
+                console.info(response);
             })
             .catch((errors) => {
                 console.info(errors);
+                // if (errors.response.data.message) {
+                //     const error_keys = Object.keys(
+                //         errors.response.data.message
+                //     );
+                //     const error_values = Object.getOwnPropertyNames(
+                //         errors.response.data.message
+                //     );
+                //     let error_messages = [];
+                //     let error = errors.response.data.message;
+
+                //     for (let i = 0; i < error_keys.length; i++) {
+                //         error_messages.push(error[error_values[i]]);
+                //     }
+
+                //     Swal.fire(
+                //         "Gagal!",
+                //         `<ul>${error_messages
+                //             .map((item) => `<li>${item}</li>`)
+                //             .join(" ")}</ul>`,
+                //         "error"
+                //     );
+                // } else {
+                //     console.info(errors);
+                // }
             });
-
-        // axios
-        //     .patch(`/dashboard/update-tempat-lapangan/${slug}`, {
-        //         headers: {
-        //             "Content-Type": "multipart/form-data",
-        //             "X-CSRF-TOKEN": data._token,
-        //             // Authorization: data._token,
-        //             // credentials: "same-origin",
-        //         },
-        //         data,
-        //     })
-        //     .then((response) => {
-        //         // Swal.fire(
-        //         //     "Berhasil!",
-        //         //     `Berhasil memperbarui ${response.data.response.nama}`,
-        //         //     "success"
-        //         // );
-        //         // setTimeout(() => {
-        //         //     router.get("/dashboard/tempat-lapangan");
-        //         // }, 2000);
-        //         console.info(response);
-        //     })
-        //     .catch((errors) => {
-        //         console.info(errors);
-        //         // if (errors.response.data.message) {
-        //         //     const error_keys = Object.keys(
-        //         //         errors.response.data.message
-        //         //     );
-        //         //     const error_values = Object.getOwnPropertyNames(
-        //         //         errors.response.data.message
-        //         //     );
-        //         //     let error_messages = [];
-        //         //     let error = errors.response.data.message;
-
-        //         //     for (let i = 0; i < error_keys.length; i++) {
-        //         //         error_messages.push(error[error_values[i]]);
-        //         //     }
-
-        //         //     Swal.fire(
-        //         //         "Gagal!",
-        //         //         `<ul>${error_messages
-        //         //             .map((item) => `<li>${item}</li>`)
-        //         //             .join(" ")}</ul>`,
-        //         //         "error"
-        //         //     );
-        //         // } else {
-        //         //     console.info(errors);
-        //         // }
-        //     });
     };
 
     const handleUpload = (e) => {
