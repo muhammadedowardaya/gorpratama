@@ -8,6 +8,7 @@ use App\Models\Lapangan;
 use App\Models\TempatLapangan;
 use App\Models\Waktu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 // use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -170,32 +171,76 @@ class TempatLapanganController extends Controller
      */
     public function update(TempatLapangan $tempatLapangan, Request $request)
     {
+        // $request->validate([
+        //     'nama' => "required|unique:tempat_lapangan,nama,$tempatLapangan->id|min:4|max:255",
+        //     'alamat' => 'required',
+        //     'telp' => 'required',
+        //     'email' => 'required|email',
+        //     'deskripsi' => 'required|min:10',
+        //     'jam_buka' => 'required',
+        //     'jam_tutup' => 'required',
+        //     'harga_persewa' => 'required',
+        //     'logo' => 'nullable|mimes:jpeg,png,jpg,gif'
+        // ]);
+
+        // try {
+
+        //     $tempatLapangan->fill($request->post())->update();
+
+        //     if ($request->hasFile('logo')) {
+
+        //         // remove old image
+        //         if ($tempatLapangan->logo) {
+        //             $exists = Storage::disk('public')->exists("tempat-lapangan/{$tempatLapangan->logo}");
+        //             if ($exists) {
+        //                 Storage::disk('public')->delete("tempat-lapangan/{$tempatLapangan->logo}");
+        //             }
+        //         }
+        //         $logo = request()->file('logo');
+        //         $nama_logo = date('ms') . $request->data['slug'] . "." . $logo->getClientOriginalExtension();
+        //         $logo->storePubliclyAs('tempat-lapangan', $nama_logo, 'public');
+        //         $url_logo = '/api/tempat-lapangan/image/' . $nama_logo;
+        //         $tempatLapangan->logo = $nama_logo;
+        //         $tempatLapangan->url_logo = $url_logo;
+        //         $tempatLapangan->save();
+        //     }
+
+        //     return response()->json([
+        //         'message' => 'Product Updated Successfully!!'
+        //     ]);
+        // } catch (\Exception $e) {
+        //     Log::error($e->getMessage());
+        //     return response()->json([
+        //         'message' => 'Something goes wrong while updating a product!!'
+        //     ], 500);
+        // }
+        // -------------------------------------------------------------------------------
         $this->authorize('update', $tempatLapangan);
-        $rules = [
-            'nama' => "required|unique:tempat_lapangan,nama,$tempatLapangan->id|min:4|max:255",
-            'alamat' => 'required',
-            'telp' => 'required',
-            'email' => 'required|email',
-            'deskripsi' => 'required|min:10',
-            'jam_buka' => 'required',
-            'jam_tutup' => 'required',
-            'harga_persewa' => 'required',
-            'logo' => 'nullable|mimes:jpeg,png,jpg,gif'
+        // $rules = [
+        //     'nama' => "required|unique:tempat_lapangan,nama,$tempatLapangan->id|min:4|max:255",
+        //     'alamat' => 'required',
+        //     'telp' => 'required',
+        //     'email' => 'required|email',
+        //     'deskripsi' => 'required|min:10',
+        //     'jam_buka' => 'required',
+        //     'jam_tutup' => 'required',
+        //     'harga_persewa' => 'required',
+        //     'logo' => 'nullable|mimes:jpeg,png,jpg,gif'
 
-        ];
+        // ];
 
-        // Validation 
-        $validator = Validator::make($request->all(), $rules);
+        // // Validation 
+        // $validator = Validator::make($request->data, $rules);
 
-        // Return the message
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => true,
-                'message' => $validator->errors()
-            ]);
-        }
+        // // Return the message
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'error' => true,
+        //         'message' => $validator->errors()
+        //     ]);
+        // }
 
-        // $tempatLapangan = TempatLapangan::firstWhere('slug', $request->slug);
+        // // $tempatLapangan = TempatLapangan::firstWhere('slug', $request->slug);
 
         // if ($logo = request()->file('logo')) {
         //     $nama_logo = date('ms') . $request->data['slug'] . "." . $logo->getClientOriginalExtension();
@@ -208,7 +253,7 @@ class TempatLapanganController extends Controller
         //     $url_logo = $tempatLapangan->url_logo;
         // }
 
-        // $tempatLapangan->user_id = auth()->user()->id;
+        // // $tempatLapangan->user_id = auth()->user()->id;
         // $tempatLapangan->nama = $request->data['nama'];
         // $tempatLapangan->slug = Str::slug($request->data['nama']);
         // $tempatLapangan->alamat = $request->data['alamat'];
@@ -223,16 +268,16 @@ class TempatLapanganController extends Controller
 
         // $tempatLapangan->save();
 
-        return response()->json([
-            'error' => false,
-            'response' => $tempatLapangan,
-        ], 200);
-
         // return response()->json([
-        //     'nama sebelumnya' => $tempatLapangan->nama,
-        //     'nama terbaru' => $request->all(),
-        //     'logo' => $request->file('logo'),
-        // ]);
+        //     'error' => false,
+        //     'response' => $tempatLapangan,
+        // ], 200);
+
+        return response()->json([
+            'nama sebelumnya' => $tempatLapangan->nama,
+            'nama terbaru' => $request->all(),
+            // 'logo' => $request->file('logo'),
+        ]);
 
         // return Redirect::route('tempat-lapangan.index')->with('success', 'Data tempat lapangan berhasil diupdate');
     }

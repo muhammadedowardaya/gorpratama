@@ -46,30 +46,44 @@ export default function EditTempatLapangan(props) {
         jam: props.jam,
     });
 
-    useEffect(() => {
-        console.info(props);
-    });
-
     const update = (e) => {
         e.preventDefault();
-        // console.info(data);
-        router.patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
-            forceFormData: true,
+        console.info(data);
+        // router.patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
+        //     forceFormData: true,
+        //     headers: {
+        //         "Content-Type": "multipart/form-data",
+        //         "X-CSRF-TOKEN": data._token,
+        //         // Authorization: data._token,
+        //     },
+        //     onSuccess: (page) => {
+        //         console.info(page);
+        //     },
+        //     onFinish: (visit) => {
+        //         console.info(visit.data);
+        //     },
+        //     onError: (errors) => {
+        //         console.info(errors);
+        //     },
+        // });
+
+        fetch(`/dashboard/update-tempat-lapangan/${slug}`, {
+            method: "PATCH",
+            body: JSON.stringify(data),
             headers: {
                 "Content-Type": "multipart/form-data",
                 "X-CSRF-TOKEN": data._token,
-                // Authorization: data._token,
             },
-            onSuccess: (page) => {
-                console.info(page);
-            },
-            onFinish: (visit) => {
-                console.info(visit.data);
-            },
-            onError: (errors) => {
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((responseJson) => {
+                console.info(responseJson);
+            })
+            .catch((errors) => {
                 console.info(errors);
-            },
-        });
+            });
 
         // axios
         //     .patch(`/dashboard/update-tempat-lapangan/${slug}`, {
@@ -77,8 +91,8 @@ export default function EditTempatLapangan(props) {
         //             "Content-Type": "multipart/form-data",
         //             "X-CSRF-TOKEN": data._token,
         //             // Authorization: data._token,
+        //             // credentials: "same-origin",
         //         },
-        //         // credentials: "same-origin",
         //         data,
         //     })
         //     .then((response) => {
@@ -213,6 +227,12 @@ export default function EditTempatLapangan(props) {
                         encType="multipart/form-data"
                         onSubmit={update}
                     >
+                        {/* <input
+                            type="hidden"
+                            name="_token"
+                            value={data._token}
+                        />
+                        <input type="hidden" name="_method" value="PATCH" /> */}
                         <div>
                             <Label forInput="nama" value="Nama" />
 
