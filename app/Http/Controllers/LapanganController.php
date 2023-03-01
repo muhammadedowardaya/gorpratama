@@ -58,28 +58,24 @@ class LapanganController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function saveData(LapanganRequest $request)
+    public function store(Request $request)
     {
-        // $validated = $request->validate([
-        //     'nama' => 'required',
-        //     'status' => 'required',
-        // ]);
+        $rules = [
+            'nama' => 'required|unique:lapangan|min:4|max:255',
+            'status' => 'required',
+            'foto' => 'required|image',
+        ];
 
-        $validated = $request->validate();
-        // $validator = Validator::make($request->all(), [
-        //     'nama' => 'required',
-        //     'status' => 'required',
-        // ]);
+        // Validation 
+        $validator = Validator::make($request->all(), $rules);
 
-        // if ($validator->fails()) {
-        //     return redirect('/dashboard/admin/create-lapangan')
-        //         ->withErrors($validator)
-        //         ->withInput();
-        // }
-
-        // // Retrieve the validated input...
-        // $validated = $validator->validated();
-
+        // Return the message
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ], 400);
+        }
         $lapangan = new Lapangan();
 
         $slug = Str::slug($request->nama);
@@ -102,7 +98,24 @@ class LapanganController extends Controller
         $lapangan->url_foto = $url_foto;
         $lapangan->save();
 
-        return Redirect::route('lapangan.index')->with('success', 'Data Lapangan berhasil ditambahkan!');
+        return response()->json([
+            'error' => false,
+            'response' => $lapangan,
+        ], 200);
+
+
+
+        // $tempat_lapangan = TempatLapangan::firstWhere('user_id', auth()->user()->id);
+        // $lapangan->tempat_lapangan_id = $tempat_lapangan->id;
+        // $lapangan->jadwal_id = $tempat_lapangan->id;
+        // $lapangan->nama = $request->nama;
+        // $lapangan->slug = $slug;
+        // $lapangan->status = $request->status;
+        // $lapangan->foto = $nama_foto;
+        // $lapangan->url_foto = $url_foto;
+        // $lapangan->save();
+
+        // return Redirect::route('lapangan.index')->with('success', 'Data Lapangan berhasil ditambahkan!');
         // return to_route('lapangan.index');
     }
 
@@ -127,9 +140,8 @@ class LapanganController extends Controller
      */
     public function edit(Lapangan $lapangan)
     {
-        return Inertia::render('Dashboard/Admin/Lapangan/KelolaLapangan', [
+        return Inertia::render('Dashboard/Admin/Lapangan/EditLapangan', [
             'lapangan' => $lapangan,
-            'submit' => 'update'
         ]);
     }
 
@@ -154,18 +166,33 @@ class LapanganController extends Controller
     public function destroy(Lapangan $lapangan, Request $request)
     {
         $lapangan->delete();
-        return Redirect::route('lapangan.index')->with('success', 'Data lapangan berhasil dihapus!');
+        // return Redirect::route('lapangan.index')->with('success', 'Data lapangan berhasil dihapus!');
+        return response()->json([
+            'error' => false,
+            'response' => $lapangan,
+        ], 200);
     }
 
     public function updateLapangan(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|unique:lapangan|max:255',
-            'foto' => 'image',
-            'status' => 'required',
-        ]);
-
         $lapangan = Lapangan::firstWhere('slug', $request->slug);
+
+        $rules = [
+            'nama' => "required|unique:lapangan,nama,$lapangan->id|min:4|max:255",
+            'status' => 'required',
+        ];
+
+        // Validation 
+        $validator = Validator::make($request->all(), $rules);
+
+        // Return the message
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ], 400);
+        }
+
 
         if ($foto = request()->file('foto')) {
             $nama_foto = $request->slug . "." . $foto->getClientOriginalExtension();
@@ -178,8 +205,6 @@ class LapanganController extends Controller
             $url_foto = $lapangan->url_foto;
         }
 
-        $tempat_lapangan = TempatLapangan::firstWhere('user_id', auth()->user()->id);
-        $lapangan->tempat_lapangan_id = $tempat_lapangan->id;
         $lapangan->nama = $request->nama;
         $lapangan->slug = Str::slug($request->nama);
         $lapangan->status = $request->status;
@@ -188,6 +213,39 @@ class LapanganController extends Controller
 
         $lapangan->save();
 
-        return Redirect::route('lapangan.index')->with('success', 'Data lapangan berhasil diupdate!');
+        return response()->json([
+            'error' => false,
+            'response' => $lapangan,
+        ], 200);
+        // $request->validate([
+        //     'nama' => 'required|unique:lapangan|max:255',
+        //     'foto' => 'image',
+        //     'status' => 'required',
+        // ]);
+
+        // $lapangan = Lapangan::firstWhere('slug', $request->slug);
+
+        // if ($foto = request()->file('foto')) {
+        //     $nama_foto = $request->slug . "." . $foto->getClientOriginalExtension();
+        //     $foto->storePubliclyAs('lapangan', $nama_foto, 'public');
+        //     $url_foto = '/api/lapangan/image/' . $nama_foto;
+
+        //     Storage::delete(public_path('\storage\lapangan\\' . $lapangan->foto));
+        // } else {
+        //     $nama_foto = $lapangan->foto;
+        //     $url_foto = $lapangan->url_foto;
+        // }
+
+        // $tempat_lapangan = TempatLapangan::firstWhere('user_id', auth()->user()->id);
+        // $lapangan->tempat_lapangan_id = $tempat_lapangan->id;
+        // $lapangan->nama = $request->nama;
+        // $lapangan->slug = Str::slug($request->nama);
+        // $lapangan->status = $request->status;
+        // $lapangan->foto = $nama_foto;
+        // $lapangan->url_foto = $url_foto;
+
+        // $lapangan->save();
+
+        // return Redirect::route('lapangan.index')->with('success', 'Data lapangan berhasil diupdate!');
     }
 }

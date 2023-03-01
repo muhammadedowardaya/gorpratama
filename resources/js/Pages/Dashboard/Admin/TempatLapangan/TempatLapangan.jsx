@@ -1,14 +1,17 @@
 import "../../../../../css/tempatLapangan.css";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { PortalWithState } from "react-portal";
 import Swal from "sweetalert2";
 import { AiFillCloseCircle } from "react-icons/ai";
 import MyButton from "@/Components/MyButton";
-import { Head, router } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
+import Loading from "@/Components/Loading";
 
 const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
+    // const [displayLoading, setDisplayLoading] = useState("");
+
     useEffect(() => {
         if (flash.success) {
             Swal.fire("Berhasil!", `${flash.success}`, "success");
@@ -22,9 +25,10 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
 
     return (
         <>
-            <Head title="Register" />
+            <Head title="Profile Gor" />
 
             {/* <ValidationErrors errors={props.errors} /> */}
+            {/* <Loading display={displayLoading} /> */}
 
             <div className="w-full px-4 md:px-0 md:mt-8 mb-16  leading-normal">
                 <h1 className="text-center lg:mb-8 font-bold text-2xl text-white">
@@ -81,8 +85,9 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                                     <MyButton
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            // setDisplayLoading(true);
                                             router.get(
-                                                `/dashboard/edit-tempat-lapangan/${tempat_lapangan.slug}`
+                                                `/dashboard/tempat-lapangan-edit/${tempat_lapangan.slug}`
                                             );
                                         }}
                                         value="Edit"
@@ -92,7 +97,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                             </tr>
                         </tfoot>
                     </table>
-                    <div className="pl-2">
+                    <div className="pl-2 z-20">
                         <PortalWithState closeOnOutsideClick closeOnEsc>
                             {({ openPortal, closePortal, isOpen, portal }) => (
                                 <React.Fragment>
@@ -104,7 +109,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                                         onClick={openPortal}
                                     />
                                     {portal(
-                                        <div className="fixed top-0 bottom-0 right-0 left-0 bg-gradient-to-br from-cyan-700 via-teal-600 to-emerald-400 h-screen w-screen z-10 grid">
+                                        <div className="fixed top-0 bottom-0 right-0 left-0 bg-gradient-to-br from-cyan-700 via-teal-600 to-emerald-400 h-screen w-screen z-30 grid">
                                             <img
                                                 src={tempat_lapangan.url_logo}
                                                 alt=""

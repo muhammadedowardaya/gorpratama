@@ -5,29 +5,77 @@
     padding: 0;
 }
 
+.container {
+    /* background: rgb(14, 123, 129);
+    background: linear-gradient(to bottom right, #0e7b81, #82c180); */
+    padding: 70px 0;
+    min-height: 100vh;
+}
+
+nav.navbar {
+    padding: 10px 20px;
+    /* font-family: "Teko", sans-serif; */
+    font-family: "Ubuntu", sans-serif;
+}
+
+.navbar .dropdown ul {
+    right: -15px;
+    top: 53px;
+}
+
+.navbar .dropdown ul li {
+    opacity: 0;
+    margin: 2px 0;
+}
+
+.navbar .dropdown ul li a {
+    margin: 0 !important;
+    border: 1px solid #2dd4bf;
+    /* background: #fff; */
+    /* background: linear-gradient(to right, #0e7490, #0d9488, #34d399); */
+    background: linear-gradient(to right, #5eead4, #2dd4bf, #0d9488);
+    color: #fff;
+}
+
+.drawer-side ul li a {
+    margin: 5px 0;
+}
+
+.drawer-side ul li a:active {
+    background: #fff;
+    color: #2dd4bf;
+}
+
+.drawer-side ul li a.active {
+    background-color: #2dd4bf;
+    font-weight: bold;
+}
+
+.drawer-button:hover {
+    background: transparent;
+}
+
+/* membuat drawer ketika aktif */
+/* .drawer-toggle:checked ~ .drawer-side > .drawer-overlay {
+    visibility: hidden;
+} */
+
+footer {
+    color: #fff;
+}
+
+footer a {
+    color: #fff;
+}
+
 @media only screen and (min-width: 1024px) {
-    .container {
-        background: linear-gradient(to bottom right, #0e7490, #0d9488, #34d399);
-        padding-bottom: 48px;
-        min-height: 100vh;
-        /* background: fixed; */
-    }
-    nav a {
+    /* .container {
+        background: rgb(14, 123, 129);
+        background: linear-gradient(to bottom right, #0e7b81 35%, #82c180);
+    } */
+    nav.navbar a {
         font-weight: 400;
         font-size: 20px;
-        color: #fff;
-        margin-top: 20px;
-        margin-left: 20px;
-    }
-    nav.navbar {
-        padding: 10px 20px;
-        /* font-family: "Teko", sans-serif; */
-        font-family: "Ubuntu", sans-serif;
-    }
-    .navbar .dropdown ul li a {
-        margin: 0 !important;
-        border: 1px solid #fff;
-        background: linear-gradient(to bottom right, #0e7490, #0d9488, #34d399);
-        color: #fff;
+        /* color: #14b8a6; */
     }
 }

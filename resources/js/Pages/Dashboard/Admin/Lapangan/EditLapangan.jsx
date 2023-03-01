@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
+// import { Head, Link, useForm } from "@routerjs/router-react";
 import Label from "@/Components/Label";
+// import { router } from "@routerjs/router";
 
 import { FaWindowClose } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
 
 import { PortalWithState } from "react-portal";
-import Swal from "sweetalert2";
-import MyButton from "@/Components/MyButton";
-import { Head, router, useForm, usePage } from "@inertiajs/react";
 import Loading from "@/Components/Loading";
-import PageLoading from "@/Components/PageLoading";
+import { Head, router, useForm } from "@inertiajs/react";
+import MyButton from "@/Components/MyButton";
 import Toast from "@/Components/Toast";
+import Swal from "sweetalert2";
 
-export default function CreateLapangan(props) {
+export default function EditLapangan({ lapangan }) {
     const [displayLoading, setDisplayLoading] = useState("");
     const [_token, set_Token] = useState("");
 
@@ -25,17 +26,18 @@ export default function CreateLapangan(props) {
     };
 
     const { data, setData } = useForm({
-        nama: "",
-        status: "1",
-        foto: null,
-        preview: "",
+        nama: lapangan.nama,
+        slug: lapangan.slug,
+        status: lapangan.status == "dalam pemeliharaan" ? 1 : 0,
+        foto: lapangan.foto,
+        preview: lapangan.url_foto,
     });
 
-    const store = (e) => {
+    const update = (e) => {
         e.preventDefault();
         setDisplayLoading(true);
         axios
-            .post(`/dashboard/lapangan`, data, {
+            .post(`/dashboard/lapangan-update`, data, {
                 headers: {
                     "X-CSRF-TOKEN": _token,
                     "Content-Type": "multipart/form-data",
@@ -62,7 +64,7 @@ export default function CreateLapangan(props) {
                 setDisplayLoading(false);
                 Toast.fire({
                     icon: "success",
-                    title: `Berhasil menambahkan ${response.data.response.nama}`,
+                    title: `Berhasil memperbarui ${response.data.response.nama}`,
                 });
 
                 setTimeout(() => {
@@ -116,6 +118,7 @@ export default function CreateLapangan(props) {
                     Swal.fire({
                         title: "Perhatian!",
                         text: "yang anda upload bukan gambar.",
+                        icon: "warning",
                     });
                 }
             }
@@ -131,18 +134,21 @@ export default function CreateLapangan(props) {
     };
 
     return (
-        <div>
-            <Head title="Tambah Lapangan" />
+        <div className="container w-full mx-auto pt-20">
+            <Head title="Kelola Lapangan" />
 
             <Loading display={displayLoading} />
-            <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-slate-100 leading-normal">
-                <h1 className="text-center text-2xl md:mt-20 mb-5">Lapangan</h1>
+
+            <div className="w-full px-4 md:px-0 md:mt-0 mb-16 text-slate-100 leading-normal">
+                <h1 className="text-center text-2xl md:mt-0 mb-5">
+                    Edit Lapangan
+                </h1>
 
                 <div className="flex justify-center">
                     <form
                         className="w-80"
                         encType="multipart/form-data"
-                        onSubmit={store}
+                        onSubmit={update}
                     >
                         <div>
                             <Label forInput="nama" value="Nama" />
@@ -182,7 +188,7 @@ export default function CreateLapangan(props) {
                                             }}
                                             checked={
                                                 data.status ==
-                                                    "Dalam Pemeliharaan" ||
+                                                    "dalam pemeliharaan" ||
                                                 data.status == 1
                                                     ? true
                                                     : false
@@ -207,7 +213,7 @@ export default function CreateLapangan(props) {
                                                 );
                                             }}
                                             checked={
-                                                data.status == "Siap Pakai" ||
+                                                data.status == "siap pakai" ||
                                                 data.status == 0
                                                     ? true
                                                     : false
@@ -284,9 +290,9 @@ export default function CreateLapangan(props) {
                                 className="mr-1"
                             />
                             <MyButton
-                                value="Submit"
+                                value="Update"
                                 type="submit"
-                                button="create"
+                                button="update"
                             />
                         </div>
                     </form>
@@ -296,6 +302,4 @@ export default function CreateLapangan(props) {
     );
 }
 
-CreateLapangan.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
-);
+EditLapangan.layout = (page) => <AdminLayout children={page} title="Welcome" />;

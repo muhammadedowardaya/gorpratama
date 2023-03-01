@@ -12,8 +12,8 @@ class TempatLapangan extends Model
     protected $table = 'tempat_lapangan';
     protected $fillable = ['user_id', 'nama', 'slug', 'alamat', 'telp',  'email', 'deskripsi', 'jam_buka', 'jam_tutup', 'harga_persewa'];
 
-    public function image()
+    public function lapangan()
     {
-        return $this->hasOne(Image::class);
+        return $this->hasMany(Lapangan::class, 'lapangan');
     }
 }

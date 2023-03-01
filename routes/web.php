@@ -1,8 +1,15 @@
 <?php
 
+use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TempatLapanganController;
+use App\Http\Controllers\TransaksiController;
+use App\Models\Lapangan;
+use App\Models\TempatLapangan;
+use App\Models\Waktu;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,14 +43,21 @@ Route::get('/get-user', function () {
     ]);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/find', function () {
-        return Inertia::render('TemukanTeman');
-    });
-    Route::get('/pilih-lapangan', function () {
-        return Inertia::render('Lapangan');
-    });
+Route::get('/get-profile-gor', function () {
+    $tempat_lapangan = TempatLapangan::where('user_id', auth()->user()->id)->first();
+    return response()->json([
+        'tempat-lapangan' => $tempat_lapangan
+    ]);
 });
+
+// Route::middleware(['auth', 'verified'])->group(function () {
+//     Route::get('/find', function () {
+//         return Inertia::render('TemukanTeman');
+//     });
+//     Route::get('/pilih-lapangan', function () {
+//         return Inertia::render('Lapangan');
+//     });
+// });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -58,7 +72,45 @@ All Normal Users Routes List
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:user'])->group(function () {
 
-    // Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/find', function () {
+        return Inertia::render('TemukanTeman');
+    });
+
+    Route::get('/pilih-lapangan', function () {
+        $lapangan = Lapangan::where('tempat_lapangan_id', 1)->get();
+        return Inertia::render('Lapangan', [
+            'lapangan' => $lapangan
+        ]);
+    });
+
+    Route::get('/pilih-lapangan/{lapangan:slug}', function (Lapangan $lapangan) {
+        $tempat_lapangan = $lapangan->tempatLapangan()->get();
+        return Inertia::render('Booking', [
+            'lapangan' => $lapangan,
+            'tempat_lapangan' => $tempat_lapangan[0],
+            'jam' => Waktu::all()
+        ]);
+        // return response()->json([
+        //     'tempat_lapangan' => $lapangan
+        // ]);
+    });
+
+    Route::post('/booking', [TransaksiController::class, 'store']);
+
+    Route::prefix('tagihan')->group(function () {
+        /**
+         * menampilkan list data tagihan nya
+         */
+        Route::get('/list', [TagihanController::class, 'index'])->name('tagihan.list');
+        /**
+         * menuju halaman create form data tagihan nya
+         */
+        Route::get('/create', [TagihanController::class, 'create'])->name('tagihan.create');
+        /**
+         * store/save data tagihan nya
+         */
+        Route::post('/store', [TagihanController::class, 'store'])->name('tagihan.store');
+    });
 });
 
 /*------------------------------------------
@@ -68,11 +120,18 @@ All Admin Routes List
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'index'])->name('tempat-lapangan.index');
-    Route::get('/dashboard/create-tempat-lapangan', [TempatLapanganController::class, 'create']);
+    Route::get('/dashboard/tempat-lapangan-create', [TempatLapanganController::class, 'create']);
     Route::post('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'store']);
-    Route::get('/dashboard/edit-tempat-lapangan/{tempat_lapangan:slug}', [TempatLapanganController::class, 'edit']);
-    // Route::post('/dashboard/update-tempat-lapangan', [TempatLapanganController::class, 'updateTempatLapangan']);
-    Route::patch('/dashboard/update-tempat-lapangan/${tempat_lapangan:slug}', [TempatLapanganController::class, 'update']);
+    Route::get('/dashboard/tempat-lapangan-edit/{tempat_lapangan:slug}', [TempatLapanganController::class, 'edit']);
+    Route::post('/dashboard/tempat-lapangan-update', [TempatLapanganController::class, 'updateTempatLapangan']);
+    // Route::put('/dashboard/update-tempat-lapangan/{tempat_lapangan:slug}', [TempatLapanganController::class, 'update']);
+
+    Route::get('/dashboard/lapangan', [LapanganController::class, 'index']);
+    Route::get('/dashboard/lapangan-create', [LapanganController::class, 'create']);
+    Route::post('/dashboard/lapangan', [LapanganController::class, 'store']);
+    Route::get('/dashboard/lapangan-edit/{lapangan:slug}', [LapanganController::class, 'edit']);
+    Route::post('/dashboard/lapangan-update', [LapanganController::class, 'updateLapangan']);
+    Route::delete('/dashboard/lapangan-delete/{lapangan:slug}', [LapanganController::class, 'destroy']);
 });
 
 /*------------------------------------------

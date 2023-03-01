@@ -5,10 +5,13 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, router, useForm } from "@inertiajs/react";
 import Layout from "@/Layouts/Layout";
+import axios from "axios";
+import Swal from "sweetalert2";
+import Toast from "@/Components/Toast";
 
-export default function Login({ status, canResetPassword }) {
+export default function Login(props, { status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
@@ -32,8 +35,74 @@ export default function Login({ status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
+        router.post("/login", data, {
+            onError: (errors) => {
+                const error_keys = Object.keys(errors);
+                const error_values = Object.getOwnPropertyNames(errors);
+                let error_messages = [];
+                let error = errors;
+                for (let i = 0; i < error_keys.length; i++) {
+                    error_messages.push(error[error_values[i]]);
+                }
 
-        post(route("login"));
+                Swal.fire(
+                    "Gagal!",
+                    `<ul>${error_messages
+                        .map((item) => `<li>${item}</li>`)
+                        .join(" ")}</ul>`,
+                    "error"
+                );
+            },
+            onFinish: (visit) => {
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Berhasil Login",
+                    icon: "success",
+                });
+                router.get("/");
+            },
+        });
+        // axios
+        //     .post("/login", data)
+        //     .then((response) => {
+        //         Toast.fire({
+        //             icon: "success",
+        //             title: `Berhasil Login!`,
+        //         });
+
+        //         setTimeout(() => {
+        //             router.get("/");
+        //         }, 200);
+        //     })
+        //     .catch((errors) => {
+        //         if (errors.response.status === 400) {
+        //             const error_keys = Object.keys(
+        //                 errors.response.data.message
+        //             );
+        //             const error_values = Object.getOwnPropertyNames(
+        //                 errors.response.data.message
+        //             );
+        //             let error_messages = [];
+        //             let error = errors.response.data.message;
+        //             for (let i = 0; i < error_keys.length; i++) {
+        //                 error_messages.push(error[error_values[i]]);
+        //             }
+
+        //             Swal.fire(
+        //                 "Gagal!",
+        //                 `<ul>${error_messages
+        //                     .map((item) => `<li>${item}</li>`)
+        //                     .join(" ")}</ul>`,
+        //                 "error"
+        //             );
+        //         } else {
+        //             Swal.fire(
+        //                 "Gagal!",
+        //                 `${errors.response.data.message}`,
+        //                 "error"
+        //             );
+        //         }
+        //     });
     };
 
     return (

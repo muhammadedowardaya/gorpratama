@@ -45,12 +45,14 @@ class TransaksiController extends Controller
         $jadwal->tanggal = $request->tanggal;
         $jadwal->bulan = $request->bulan;
         $jadwal->tahun = $request->tahun;
-        $jadwal->dari_jam = $request->dari_jam < 10 ? "0$request->dari_jam : 00" : "$request->dari_jam : 00";
-        $jadwal->sampai_jam = $request->sampai_jam < 10 ? "0$request->sampai_jam : 00" : "$request->sampai_jam : 00";
+        // $jadwal->dari_jam = $request->dari_jam < 10 ? "0$request->dari_jam : 00" : "$request->dari_jam : 00";
+        // $jadwal->sampai_jam = $request->sampai_jam < 10 ? "0$request->sampai_jam : 00" : "$request->sampai_jam : 00";
+        $jadwal->dari_jam = $request->dari_jam;
+        $jadwal->sampai_jam = $request->sampai_jam;
         $jadwal->save();
 
         $transaksi = new Transaksi();
-        $transaksi->tanggal = $request->tanggal_sekarang;
+        $transaksi->tanggal = $request->tanggal;
         $transaksi->lapangan_id = $request->lapangan_id;
         $transaksi->user_id = $request->user_id;
         $transaksi->tempat_lapangan_id = $request->tempat_lapangan_id;
@@ -58,8 +60,10 @@ class TransaksiController extends Controller
         $transaksi->jadwal_id = $request->user_id;
         $transaksi->nama_pelanggan = auth()->user()->nama;
         $transaksi->telp = $request->telp;
-        $transaksi->dari_jam = $request->dari_jam < 10 ? "0$request->dari_jam : 00" : "$request->dari_jam : 00";;
-        $transaksi->sampai_jam = $request->sampai_jam < 10 ? "0$request->sampai_jam : 00" : "$request->sampai_jam : 00";
+        // $transaksi->dari_jam = $request->dari_jam < 10 ? "0$request->dari_jam : 00" : "$request->dari_jam : 00";;
+        // $transaksi->sampai_jam = $request->sampai_jam < 10 ? "0$request->sampai_jam : 00" : "$request->sampai_jam : 00";
+        $transaksi->dari_jam = $request->dari_jam;
+        $transaksi->sampai_jam = $request->sampai_jam;
         $transaksi->harga_persewa = $request->harga_persewa;
         $transaksi->total_harga = $request->total_harga;
         $transaksi->tanggal_main = $request->tanggal_main;

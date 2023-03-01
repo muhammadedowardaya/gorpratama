@@ -11,6 +11,7 @@ class Lapangan extends Model
     use HasFactory;
 
     protected $table = 'lapangan';
+    protected $fillable = ['tempat_lapangan_id', 'jadwal_id', 'transaksi_id', 'nama', 'slug', 'foto', 'url_foto', 'status'];
 
     public function tempatLapangan()
     {

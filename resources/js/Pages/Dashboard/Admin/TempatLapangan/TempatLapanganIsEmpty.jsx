@@ -43,7 +43,7 @@ const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         router.get(
-                                            "/dashboard/create-tempat-lapangan"
+                                            "/dashboard/tempat-lapangan-create"
                                         );
                                     }}
                                 >

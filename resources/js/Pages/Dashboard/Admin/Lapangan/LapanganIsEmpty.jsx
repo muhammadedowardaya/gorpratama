@@ -4,7 +4,7 @@ import React from "react";
 
 const LapanganIsEmpty = ({ tempat_lapangan, auth }) => {
     return (
-        <div className="container w-full mx-auto pt-20">
+        <div>
             <Head title="Lapangan Belum Di Atur" />
 
             {/* <ValidationErrors errors={props.errors} /> */}
@@ -42,7 +42,7 @@ const LapanganIsEmpty = ({ tempat_lapangan, auth }) => {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         router.get(
-                                            "/dashboard/admin/create-lapangan"
+                                            "/dashboard/lapangan-create"
                                         );
                                     }}
                                 >

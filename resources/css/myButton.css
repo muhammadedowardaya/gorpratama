@@ -1,0 +1,21 @@
+button#MyButton.active::after {
+    content: "";
+    display: block;
+    box-shadow: 10px 5px #000;
+    /* border-bottom: 5px solid lime; */
+}
+
+button#MyButton.active {
+    box-shadow: 0px 8px 5px -5px rgba(0, 0, 0, 0.3);
+    transition: 0.5s;
+}
+
+button#MyButton.active:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 30px 10px -20px rgba(0, 0, 0, 0.3);
+}
+
+button#MyButton.active:active {
+    transform: translateY(0px);
+    box-shadow: none;
+}

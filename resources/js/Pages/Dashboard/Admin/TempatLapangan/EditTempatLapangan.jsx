@@ -11,11 +11,23 @@ import { Head, router, useForm } from "@inertiajs/react";
 
 import "../../../../../css/dashboardTempatLapangan.css";
 import axios from "axios";
+import Toast from "@/Components/Toast";
+import Loading from "@/Components/Loading";
 
 export default function EditTempatLapangan(props) {
     const [slug, setSlug] = useState(props.tempat_lapangan.slug);
+    const [displayLoading, setDisplayLoading] = useState(false);
+    const [_token, set_Token] = useState("");
+
+    document.body.onload = function () {
+        const valueToken = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+        set_Token(valueToken);
+    };
+
     const { data, setData, post, patch, processing, errors } = useForm({
-        slug: props.tempat_lapangan != null ? props.tempat_lapangan.slug : "",
+        slug: slug,
         nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
         alamat:
             props.tempat_lapangan != null ? props.tempat_lapangan.alamat : "",
@@ -37,63 +49,77 @@ export default function EditTempatLapangan(props) {
             props.tempat_lapangan != null
                 ? props.tempat_lapangan.harga_persewa
                 : "",
-        logo: props.tempat_lapangan != null ? props.tempat_lapangan.logo : null,
+        logo: null,
         preview:
             props.tempat_lapangan != null ? props.tempat_lapangan.url_logo : "",
-        _token: document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content"),
         jam: props.jam,
     });
 
     const update = (e) => {
         e.preventDefault();
-
+        setDisplayLoading(true);
         axios
-            .patch(`/dashboard/update-tempat-lapangan/${slug}`, data, {
+            .post(`/dashboard/tempat-lapangan-update`, data, {
                 headers: {
-                    "X-CSRF-TOKEN": data._token,
+                    "X-CSRF-TOKEN": _token,
                     "Content-Type": "multipart/form-data",
                 },
                 credentials: "same-origin",
+                onUploadProgress: function (progressEvent) {
+                    const percent =
+                        (progressEvent.loaded / progressEvent.total) * 100;
+
+                    // const radialProgress =
+                    //     document.querySelector(".radial-progress");
+                    // if (radialProgress.classList.contains("hidden")) {
+                    //     radialProgress.classList.remove("hidden");
+                    // }
+                    // radialProgress.classList.add("fixed");
+                    // radialProgress.innerHTML = Math.round(percent) + "%";
+                    // radialProgress.style.setProperty(
+                    //     "--value",
+                    //     Math.round(percent)
+                    // );
+                },
             })
             .then((response) => {
-                // Swal.fire(
-                //     "Berhasil!",
-                //     `Berhasil memperbarui ${response.data.response.nama}`,
-                //     "success"
-                // );
-                // setTimeout(() => {
-                //     router.get("/dashboard/tempat-lapangan");
-                // }, 2000);
-                console.info(response);
+                setDisplayLoading(false);
+                Toast.fire({
+                    icon: "success",
+                    title: `Berhasil memperbarui ${response.data.response.nama}`,
+                });
+
+                router.get("/dashboard/tempat-lapangan");
             })
             .catch((errors) => {
-                console.info(errors);
-                // if (errors.response.data.message) {
-                //     const error_keys = Object.keys(
-                //         errors.response.data.message
-                //     );
-                //     const error_values = Object.getOwnPropertyNames(
-                //         errors.response.data.message
-                //     );
-                //     let error_messages = [];
-                //     let error = errors.response.data.message;
+                setDisplayLoading(false);
+                if (errors.response.status === 400) {
+                    const error_keys = Object.keys(
+                        errors.response.data.message
+                    );
+                    const error_values = Object.getOwnPropertyNames(
+                        errors.response.data.message
+                    );
+                    let error_messages = [];
+                    let error = errors.response.data.message;
+                    for (let i = 0; i < error_keys.length; i++) {
+                        error_messages.push(error[error_values[i]]);
+                    }
 
-                //     for (let i = 0; i < error_keys.length; i++) {
-                //         error_messages.push(error[error_values[i]]);
-                //     }
-
-                //     Swal.fire(
-                //         "Gagal!",
-                //         `<ul>${error_messages
-                //             .map((item) => `<li>${item}</li>`)
-                //             .join(" ")}</ul>`,
-                //         "error"
-                //     );
-                // } else {
-                //     console.info(errors);
-                // }
+                    Swal.fire(
+                        "Gagal!",
+                        `<ul>${error_messages
+                            .map((item) => `<li>${item}</li>`)
+                            .join(" ")}</ul>`,
+                        "error"
+                    );
+                } else {
+                    Swal.fire(
+                        "Gagal!",
+                        `${errors.response.data.message}`,
+                        "error"
+                    );
+                }
             });
     };
 
@@ -102,65 +128,26 @@ export default function EditTempatLapangan(props) {
         let reader = new FileReader();
         reader.onloadend = () => {
             if (reader.readyState === 2) {
-                setData({
-                    ...data,
-                    preview: reader.result,
-                    logo: e.target.files[0],
-                });
-            }
-
-            const radialProgress = document.querySelector(".radial-progress");
-
-            radialProgress.style.transition = "1s";
-
-            radialProgress.innerHTML =
-                "<span className='text-center mx-auto text-sm'>Berhasil memilih</span>";
-
-            function randomRGB() {
-                var x = Math.floor(Math.random() * 256);
-                var y = Math.floor(Math.random() * 256);
-                var z = Math.floor(Math.random() * 256);
-                var RGBColor = "rgb(" + x + "," + y + "," + z + ")";
-                return RGBColor;
-            }
-
-            let no_opacity = 1;
-            const opacityInterval = setInterval(() => {
-                radialProgress.style.opacity = no_opacity;
-                no_opacity -= 0.03;
-            }, 100);
-
-            setTimeout(() => {
-                radialProgress.style.transform = "scale(2)";
-            }, 500);
-
-            setTimeout(() => {
-                radialProgress.style.transform = "scale(0)";
-            }, 1500);
-
-            setTimeout(() => {
-                if (radialProgress.classList.contains("fixed")) {
-                    radialProgress.classList.remove("fixed");
-                    radialProgress.classList.add("hidden");
-                    clearInterval(opacityInterval);
-                    radialProgress.style.opacity = 1;
+                if (reader.result.includes("data:image")) {
+                    setData({
+                        ...data,
+                        preview: reader.result,
+                        logo: e.target.files[0],
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Perhatian!",
+                        text: "yang anda upload bukan gambar.",
+                    });
                 }
-                // simpan foto ke tabel tempat lapangan
-                // console.info(data);
-                // axios
-                //     .post("/api/tempat-lapangan/image", data, {
-                //         headers: {
-                //             "X-CSRF-TOKEN": data._token,
-                //         },
-                //     })
-                //     .then((response) => {
-                //         console.info(response);
-                //     })
-                //     .catch((errors) => {
-                //         console.info(errors);
-                //     });
-            }, 3000);
+            }
+            setDisplayLoading(false);
         };
+
+        reader.onprogress = () => {
+            setDisplayLoading(true);
+        };
+
         reader.readAsDataURL(e.target.files[0]);
     };
 
@@ -168,15 +155,7 @@ export default function EditTempatLapangan(props) {
         <div>
             <Head title="Kelola Tempat Lapangan" />
 
-            {/* <ValidationErrors errors={props.errors} /> */}
-            <div
-                className="radial-progress bg-gradient-to-b from-teal-700 via-teal-600 to-teal-500 text-primary-content border-4 border-teal-400 hidden top-0 left-0 right-0 bottom-0 m-auto text-4xl"
-                style={{
-                    "--value": 0,
-                    "--size": "20rem",
-                    "--thickness": "1.5rem",
-                }}
-            ></div>
+            <Loading display={displayLoading} />
 
             <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-white leading-normal">
                 <h1 className="text-center md:mt-20 mb-8 text-xl font-bold">

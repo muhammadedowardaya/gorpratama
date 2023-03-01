@@ -35,12 +35,14 @@ class TempatLapanganController extends Controller
             if (isset($lapangan[0]) == false) {
                 return Inertia::render('Dashboard/Admin/TempatLapangan/TempatLapangan', [
                     'tempat_lapangan' => $tempat_lapangan,
-                    'info' => session()->flash('info', 'Anda belum mengatur lapangan, silahkan ke menu "Lapangan" untuk mengaturnya')
+                    'info' => session()->flash('info', 'Anda belum mengatur lapangan, silahkan ke menu "Lapangan" untuk mengaturnya'),
+                    'uri' => request()->getUri()
                 ]);
                 // echo 'tidak ada lapangan';
             } else {
                 return Inertia::render('Dashboard/Admin/TempatLapangan/TempatLapangan', [
-                    'tempat_lapangan' => $tempat_lapangan
+                    'tempat_lapangan' => $tempat_lapangan,
+                    'uri' => request()->getUri()
                 ]);
                 // echo 'ada lapangan';
             }
@@ -61,6 +63,7 @@ class TempatLapanganController extends Controller
         return Inertia::render('Dashboard/Admin/TempatLapangan/CreateTempatLapangan', [
             'jam' => $waktu,
             'tempat_lapangan' => $tempat_lapangan,
+            'uri' => request()->getUri()
         ]);
     }
 
@@ -305,83 +308,64 @@ class TempatLapanganController extends Controller
 
     public function updateTempatLapangan(Request $request)
     {
-        $logo = $request->file('logo');
+
         $tempatLapangan = TempatLapangan::firstWhere('slug', $request->slug);
+
+        $rules = [
+            'nama' => "required|unique:tempat_lapangan,nama,$tempatLapangan->id|min:4|max:255",
+            'alamat' => 'required',
+            'telp' => 'required',
+            'email' => 'required|email',
+            'deskripsi' => 'required|min:10',
+            'jam_buka' => 'required',
+            'jam_tutup' => 'required',
+            'harga_persewa' => 'required',
+            'logo' => 'nullable|image'
+
+        ];
+
+        // Validation 
+        $validator = Validator::make($request->all(), $rules);
+
+        // Return the message
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+
+        if ($logo = request()->file('logo')) {
+            $nama_logo = date('ms') . $request->slug . "." . $logo->getClientOriginalExtension();
+            $logo->storePubliclyAs('tempat-lapangan', $nama_logo, 'public');
+            $url_logo = '/api/tempat-lapangan/image/' . $nama_logo;
+
+            Storage::delete(public_path('\storage\tempat-lapangan\\' . $tempatLapangan->logo));
+        } else {
+            $nama_logo = $tempatLapangan->logo;
+            $url_logo = $tempatLapangan->url_logo;
+        }
+
+        // $tempatLapangan->user_id = auth()->user()->id;
+        $tempatLapangan->nama = $request->nama;
+        $tempatLapangan->slug = Str::slug($request->nama);
+        $tempatLapangan->alamat = $request->alamat;
+        $tempatLapangan->telp = $request->telp;
+        $tempatLapangan->email = $request->email;
+        $tempatLapangan->deskripsi = $request->deskripsi;
+        $tempatLapangan->jam_buka = $request->jam_buka;
+        $tempatLapangan->jam_tutup = $request->jam_tutup;
+        $tempatLapangan->harga_persewa = $request->harga_persewa;
+        $tempatLapangan->logo = $nama_logo;
+        $tempatLapangan->url_logo = $url_logo;
+
+        $tempatLapangan->save();
+
         return response()->json([
-            'nama sebelumnya' => $tempatLapangan->nama,
-            'nama terbaru' => $request->nama,
-            'logo' => $request->slug . "." . $logo->getClientOriginalExtension(),
-        ]);
-
-        // $request->validate([
-        //     'nama' => 'required|max:255',
-        //     'alamat' => 'required',
-        //     'telp' => 'required',
-        //     'logo' => 'nullable|max:5000',
-        //     'email' => 'required|email',
-        //     'deskripsi' => 'required|min:10',
-        //     'jam_buka' => 'required',
-        //     'jam_tutup' => 'required',
-        //     'harga_persewa' => 'required',
-        // ]);
-        // $tempatLapangan = TempatLapangan::firstWhere('slug', $request->slug);
-
-        // $rules = [
-        //     'nama' => "required|unique:tempat_lapangan,nama,$tempatLapangan->id|min:4|max:255",
-        //     'alamat' => 'required',
-        //     'telp' => 'required',
-        //     'email' => 'required|email',
-        //     'deskripsi' => 'required|min:10',
-        //     'jam_buka' => 'required',
-        //     'jam_tutup' => 'required',
-        //     'harga_persewa' => 'required',
-        //     'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif'
-
-        // ];
-
-        // // Validation 
-        // $validator = Validator::make($request->all(), $rules);
-
-        // // Return the message
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'error' => true,
-        //         'message' => $validator->errors()
-        //     ]);
-        // }
-
-        // // $tempatLapangan = TempatLapangan::firstWhere('slug', $request->slug);
-
-        // if ($logo = request()->file('logo')) {
-        //     $nama_logo = date('ms') . $request->slug . "." . $logo->getClientOriginalExtension();
-        //     $logo->storePubliclyAs('tempat-lapangan', $nama_logo, 'public');
-        //     $url_logo = '/api/tempat-lapangan/image/' . $nama_logo;
-
-        //     Storage::delete(public_path('\storage\tempat-lapangan\\' . $tempatLapangan->logo));
-        // } else {
-        //     $nama_logo = $tempatLapangan->logo;
-        //     $url_logo = $tempatLapangan->url_logo;
-        // }
-
-        // // $tempatLapangan->user_id = auth()->user()->id;
-        // $tempatLapangan->nama = $request->nama;
-        // $tempatLapangan->slug = Str::slug($request->nama);
-        // $tempatLapangan->alamat = $request->alamat;
-        // $tempatLapangan->telp = $request->telp;
-        // $tempatLapangan->email = $request->email;
-        // $tempatLapangan->deskripsi = $request->deskripsi;
-        // $tempatLapangan->jam_buka = $request->jam_buka;
-        // $tempatLapangan->jam_tutup = $request->jam_tutup;
-        // $tempatLapangan->harga_persewa = $request->harga_persewa;
-        // $tempatLapangan->logo = $nama_logo;
-        // $tempatLapangan->url_logo = $url_logo;
-
-        // $tempatLapangan->save();
-
-        // return response()->json([
-        //     'error' => false,
-        //     'response' => $tempatLapangan,
-        // ], 200);
+            'error' => false,
+            'response' => $tempatLapangan,
+        ], 200);
 
         // $tempatLapangan = TempatLapangan::firstWhere('slug', $tempatLapanganRequest->slug);
 

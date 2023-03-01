@@ -1,31 +1,56 @@
 import React, { useState, useEffect } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
-import { Inertia } from "@inertiajs/inertia";
 import GridLength from "@/Components/GridLength";
 import Swal from "sweetalert2";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
+import MyButton from "@/Components/MyButton";
+import { Head, router } from "@inertiajs/react";
+import axios from "axios";
+import Loading from "@/Components/Loading";
+import Toast from "@/Components/Toast";
+import gsap from "gsap";
 
 const Lapangan = (props) => {
     // Similar to componentDidMount and componentDidUpdate:
+    const [displayLoading, setDisplayLoading] = useState("");
     useEffect(() => {
-        if (props.flash.success) {
-            Swal.fire("Berhasil!", `${props.flash.success}`, "success");
-        }
+        const containerCards = document.querySelectorAll(".container-card");
+        containerCards.forEach((item) => {
+            item.addEventListener("mouseover", () => {
+                gsap.to(item.children[0], {
+                    y: -20,
+                    // duration: 0.2,
+                    // ease: "power1.inOut",
+                    boxShadow: "0px 30px 10px -20px rgba(0, 0, 0, 0.5)",
+                });
+            });
+            item.addEventListener("mouseout", () => {
+                gsap.to(item.children[0], {
+                    y: 0,
+                    // duration: 0.5,
+                    ease: "bounce.out",
+                    boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.3)",
+                });
+            });
+        });
     });
 
     return (
-        <div className="py-20">
-            <button
-                className="btn btn-primary lg:fixed z-0 top-20 left-5 lg:z-10 lg:top-32 ml-7 mt-2 btn-sm lg:btn-md"
+        <div>
+            <Head title="Lapangan" />
+            <Loading display={displayLoading} />
+            <MyButton
+                className="fixed font-bold z-30 bottom-20 right-5 lg:bottom-16 ml-7 mt-2 btn-md lg:btn-md"
                 onClick={(e) => {
                     e.preventDefault();
-                    Inertia.get(route("lapangan.create"));
+                    router.get("/dashboard/lapangan-create");
                 }}
-            >
-                Tambah Lapangan
-            </button>
-            <h1 className="text-center font-bold text-2xl my-5 lg:mt-14">
+                value="Tambah Lapangan"
+                button="create"
+                underline="true"
+            />
+            <h1 className="text-center text-slate-100 font-bold text-2xl my-5 lg:mt-14 xl:mb-10">
                 Lapangan
             </h1>
 
@@ -43,69 +68,58 @@ const Lapangan = (props) => {
                         return (
                             <div
                                 key={item.id}
-                                className="w-full  p-3 flex justify-center"
+                                className="w-full  p-3 flex justify-center container-card"
                             >
-                                <div className="card w-72 md:w-96 bg-base-100 shadow-xl">
+                                <div className="card w-96 2xl:w-1/4 h-56 bg-base-100 hover:bg-none shadow-xl image-full">
                                     <figure>
                                         <img
                                             src={item.url_foto}
                                             alt="Ready icons created by Freepik - Flaticon"
-                                            className="w-full h-80 object-cover object-center"
+                                            className="w-full object-cover object-center"
                                         />
                                     </figure>
-                                    <div className="card-body z-0">
-                                        <div className="overflow-x-auto">
-                                            <table className="table table-compact w-full">
-                                                <tbody>
-                                                    <tr className="hover">
-                                                        <th>Nama</th>
-                                                        <td>{item.nama}</td>
-                                                    </tr>
+                                    <div className="card-body">
+                                        <h2 className="card-title">
+                                            {item.nama}
+                                        </h2>
+                                        <p>
+                                            {item.status}
+                                            {item.status == "siap pakai" ? (
+                                                <BsFillCheckCircleFill
+                                                    size="1.5em"
+                                                    className="inline-block ml-2 fill-green-500 whitespace-pre-wrap"
+                                                />
+                                            ) : (
+                                                <AiFillSetting
+                                                    size="1.5em"
+                                                    className="inline-block ml-2"
+                                                />
+                                            )}
+                                        </p>
 
-                                                    <tr className="hover">
-                                                        <th>Satus</th>
-                                                        <td>
-                                                            <p>
-                                                                {item.status}
-                                                                {item.status ==
-                                                                "siap pakai" ? (
-                                                                    <BsFillCheckCircleFill
-                                                                        size="1.5em"
-                                                                        className="inline-block ml-2 fill-green-500 whitespace-pre-wrap"
-                                                                    />
-                                                                ) : (
-                                                                    <AiFillSetting
-                                                                        size="1.5em"
-                                                                        className="inline-block ml-2"
-                                                                    />
-                                                                )}
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div className="card-actions justify-end mt-4">
-                                            <button
-                                                className="btn bg-green-500"
+                                        <div className="card-actions justify-end">
+                                            <MyButton
+                                                value="Edit"
+                                                button="edit"
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    Inertia.get(
-                                                        `/dashboard/admin/edit-lapangan/${item.slug}`
+                                                    router.get(
+                                                        `/dashboard/lapangan-edit/${item.slug}`
                                                     );
                                                 }}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                className="btn bg-red-500"
+                                            />
+                                            <MyButton
+                                                value="Hapus"
+                                                button="delete"
                                                 onClick={(e) => {
                                                     e.preventDefault();
 
                                                     Swal.fire({
-                                                        title: "Yakin ingin menghapus data lapangan ini?",
-                                                        text: "data lapangan yang dihapus tidak dapa dikembalikan",
+                                                        title:
+                                                            "Yakin ingin menghapus " +
+                                                            item.nama +
+                                                            "?",
+                                                        text: "data lapangan yang dihapus tidak dapat dikembalikan!",
                                                         icon: "warning",
                                                         showCancelButton: true,
                                                         confirmButtonColor:
@@ -118,15 +132,117 @@ const Lapangan = (props) => {
                                                         if (
                                                             result.isConfirmed
                                                         ) {
-                                                            Inertia.delete(
-                                                                `/dashboard/admin/delete-lapangan/${item.slug}`
+                                                            setDisplayLoading(
+                                                                true
                                                             );
+                                                            axios
+                                                                .delete(
+                                                                    `/dashboard/lapangan-delete/${item.slug}`
+                                                                )
+                                                                .then(
+                                                                    (
+                                                                        response
+                                                                    ) => {
+                                                                        setDisplayLoading(
+                                                                            false
+                                                                        );
+                                                                        Toast.fire(
+                                                                            {
+                                                                                icon: "success",
+                                                                                title: `Berhasil memperbarui ${response.data.response.nama}`,
+                                                                            }
+                                                                        );
+
+                                                                        setTimeout(
+                                                                            () => {
+                                                                                router.get(
+                                                                                    "/dashboard/lapangan"
+                                                                                );
+                                                                            },
+                                                                            200
+                                                                        );
+                                                                    }
+                                                                )
+                                                                .catch(
+                                                                    (
+                                                                        errors
+                                                                    ) => {
+                                                                        setDisplayLoading(
+                                                                            false
+                                                                        );
+
+                                                                        if (
+                                                                            errors
+                                                                                .response
+                                                                                .status ===
+                                                                            400
+                                                                        ) {
+                                                                            const error_keys =
+                                                                                Object.keys(
+                                                                                    errors
+                                                                                        .response
+                                                                                        .data
+                                                                                        .message
+                                                                                );
+                                                                            const error_values =
+                                                                                Object.getOwnPropertyNames(
+                                                                                    errors
+                                                                                        .response
+                                                                                        .data
+                                                                                        .message
+                                                                                );
+                                                                            let error_messages =
+                                                                                [];
+                                                                            let error =
+                                                                                errors
+                                                                                    .response
+                                                                                    .data
+                                                                                    .message;
+                                                                            for (
+                                                                                let i = 0;
+                                                                                i <
+                                                                                error_keys.length;
+                                                                                i++
+                                                                            ) {
+                                                                                error_messages.push(
+                                                                                    error[
+                                                                                        error_values[
+                                                                                            i
+                                                                                        ]
+                                                                                    ]
+                                                                                );
+                                                                            }
+
+                                                                            Swal.fire(
+                                                                                "Gagal!",
+                                                                                `<ul>${error_messages
+                                                                                    .map(
+                                                                                        (
+                                                                                            item
+                                                                                        ) =>
+                                                                                            `<li>${item}</li>`
+                                                                                    )
+                                                                                    .join(
+                                                                                        " "
+                                                                                    )}</ul>`,
+                                                                                "error"
+                                                                            );
+                                                                        } else {
+                                                                            Swal.fire(
+                                                                                "Gagal!",
+                                                                                `${errors.response.data.message}`,
+                                                                                "error"
+                                                                            );
+                                                                        }
+                                                                    }
+                                                                );
                                                         }
                                                     });
                                                 }}
                                             >
                                                 Delete
-                                            </button>
+                                            </MyButton>
+                                            <MyButton value="Lihat Jadwal" />
                                         </div>
                                     </div>
                                 </div>
@@ -177,6 +293,4 @@ const Lapangan = (props) => {
 
 export default Lapangan;
 
-Lapangan.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
-);
+Lapangan.layout = (page) => <AdminLayout children={page} title="Welcome" />;

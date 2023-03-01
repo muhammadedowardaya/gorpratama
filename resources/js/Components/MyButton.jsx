@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import "../../css/myButton.css";
+
 export default function MyButton({
     value,
     type = "button",
@@ -5,6 +8,7 @@ export default function MyButton({
     padding = "8px 20px",
     onClick,
     className,
+    underline = false,
 }) {
     // const create = "bg-gradient-to-br from-sky-700 via-cyan-600 to-cyan-300";
     // const edit = "bg-gradient-to-br from-cyan-800 via-teal-600 to-emerald-300";
@@ -19,7 +23,7 @@ export default function MyButton({
     const edit =
         "dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-green-300 bg-gradient-to-br from-cyan-800 via-teal-600 to-emerald-300";
     const trash =
-        "dark:bg-gradient-to-b from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-red-400 bg-gradient-to-br from-red-700 via-red-600 to-red-500";
+        "dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-red-400 bg-gradient-to-br from-red-500 via-red-700 to-red-500";
     const update =
         "dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500 dark:shadow-md rounded dark:shadow-yellow-300 bg-gradient-to-br from-orange-800 via-amber-700 to-yellow-400";
     const defaultColor =
@@ -40,13 +44,16 @@ export default function MyButton({
     }
     return (
         <button
+            id="MyButton"
             style={{
                 color: "#fff",
                 backdropFilter: 'blur("20px")',
                 padding: padding,
             }}
             onClick={onClick}
-            className={`${className} ${pickColor(button)}`}
+            className={`cursor-pointer ${className} ${pickColor(button)} ${
+                underline ? "active" : ""
+            }`}
         >
             {value}
         </button>
