@@ -65,7 +65,11 @@ const Lapangan = (props) => {
                             >
                                 <div className="card w-96 h-56 bg-base-100 shadow-xl image-full">
                                     <figure>
-                                        <BsEmojiNeutral size="2em" />
+                                        <img
+                                            src={item.url_foto}
+                                            alt="foto lapangan"
+                                            className="object-cover object-center w-full"
+                                        />
                                     </figure>
                                     <div className="card-body">
                                         <h2 className="card-title">

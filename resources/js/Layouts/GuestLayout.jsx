@@ -3,15 +3,8 @@ import { Link } from "@inertiajs/react";
 
 export default function Guest({ children }) {
     return (
-        <div
-            className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0"
-            style={{
-                background: "rgb(14, 123, 129)",
-                background:
-                    "linear-gradient(to bottom right, #0e7b81, #82c180)",
-            }}
-        >
-            <div>
+        <div className="min-h-screen flex flex-col sm:justify-center items-center pb-20 sm:pt-0 bg-gradient-to-br from-teal-300 via-teal-500 to-teal-700 bg-fixed dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
+            <div className="pt-10">
                 <Link href="/">
                     <ApplicationLogo className="w-20 h-20 fill-current text-white" />
                 </Link>

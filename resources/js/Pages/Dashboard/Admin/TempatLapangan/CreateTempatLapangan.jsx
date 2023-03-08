@@ -15,14 +15,6 @@ import Loading from "@/Components/Loading";
 
 export default function CreateTempatLapangan(props) {
     const [displayLoading, setDisplayLoading] = useState("");
-    const [_token, set_Token] = useState("");
-
-    document.body.onload = function () {
-        const valueToken = document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content");
-        set_Token(valueToken);
-    };
 
     const { data, setData, post, patch, processing, errors } = useForm({
         nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
@@ -58,7 +50,6 @@ export default function CreateTempatLapangan(props) {
         axios
             .post(`/dashboard/tempat-lapangan`, data, {
                 headers: {
-                    "X-CSRF-TOKEN": _token,
                     "Content-Type": "multipart/form-data",
                 },
                 credentials: "same-origin",
@@ -86,7 +77,9 @@ export default function CreateTempatLapangan(props) {
                     title: `Berhasil menambahkan ${response.data.response.nama}`,
                 });
 
-                router.get("/dashboard/tempat-lapangan");
+                setTimeout(() => {
+                    router.get("/dashboard/tempat-lapangan");
+                }, 100);
             })
             .catch((errors) => {
                 setDisplayLoading(false);
@@ -161,11 +154,11 @@ export default function CreateTempatLapangan(props) {
                 </h1>
 
                 <form
-                    className="p-4 gap-6 flex md:flex-row flex-col justify-center"
+                    className="p-4 gap-6 flex md:flex-row flex-col justify-center border-4 md:mx-40"
                     encType="multipart/form-data"
                     onSubmit={store}
                 >
-                    <div className="basis-1/3">
+                    <div className="md:basis-1/3">
                         <div>
                             <Label forInput="nama" value="Nama" />
 
@@ -173,7 +166,7 @@ export default function CreateTempatLapangan(props) {
                                 type="text"
                                 name="nama"
                                 value={data.nama}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 autoFocus
                                 onChange={(e) => {
                                     e.preventDefault();
@@ -203,7 +196,7 @@ export default function CreateTempatLapangan(props) {
                                 type="text"
                                 name="telp"
                                 value={data.telp}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 md:w-40 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 onChange={(e) => {
                                     e.preventDefault();
                                     setData("telp", e.target.value);
@@ -218,7 +211,7 @@ export default function CreateTempatLapangan(props) {
                                 type="email"
                                 name="email"
                                 value={data.email}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 onChange={(e) => {
                                     e.preventDefault();
                                     setData("email", e.target.value);
@@ -239,11 +232,11 @@ export default function CreateTempatLapangan(props) {
                             ></textarea>
                         </div>
                     </div>
-                    <div className="basis-1/3">
+                    <div className="md:basis-1/3">
                         <div className="mt-4">
                             <Label forInput="jam" value="Jam Operasional" />
 
-                            <div className="flex mt-5">
+                            <div className="flex justify-evenly mt-5 px-6 py-2 md:mt-3 border-slate-100 border-2 rounded-md">
                                 <div>
                                     <p>Jam Buka</p>
                                     <select
@@ -315,7 +308,7 @@ export default function CreateTempatLapangan(props) {
                                 type="number"
                                 name="harga_persewa"
                                 value={data.harga_persewa}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 md:w-32 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 autoComplete="harga_persewa"
                                 onChange={(e) => {
                                     e.preventDefault();
@@ -341,19 +334,25 @@ export default function CreateTempatLapangan(props) {
                                             onClick={openPortal}
                                         />
                                         {portal(
-                                            <div className="modal-box border border-slate-500 w-11/12 top-0 bottom-0 left-0 right-0 fixed mx-auto my-auto max-w-max max-h-max z-50">
-                                                <div className="grid grid-cols-1">
-                                                    <h2>Foto</h2>
-                                                    <img
-                                                        src={data.preview}
-                                                        alt=""
-                                                        className="sm:w-96 my-auto"
-                                                    />
-                                                    <FaWindowClose
-                                                        size="2em"
-                                                        className="top-2 right-2 fixed cursor-pointer"
-                                                        onClick={closePortal}
-                                                    />
+                                            <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
+                                                <div className="flex justify-center">
+                                                    <div className="border-8 relative bg-slate-100 border-slate-100">
+                                                        <h2 className="ml-3 mb-2 mt-1 text-2xl font-bold">
+                                                            Foto
+                                                        </h2>
+                                                        <img
+                                                            src={data.preview}
+                                                            alt=""
+                                                            className="object-cover w-full md:h-96"
+                                                        />
+                                                        <FaWindowClose
+                                                            size="2em"
+                                                            className="top-1 right-2 absolute cursor-pointer"
+                                                            onClick={
+                                                                closePortal
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}

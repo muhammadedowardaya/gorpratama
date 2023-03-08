@@ -17,14 +17,6 @@ import Loading from "@/Components/Loading";
 export default function EditTempatLapangan(props) {
     const [slug, setSlug] = useState(props.tempat_lapangan.slug);
     const [displayLoading, setDisplayLoading] = useState(false);
-    const [_token, set_Token] = useState("");
-
-    document.body.onload = function () {
-        const valueToken = document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content");
-        set_Token(valueToken);
-    };
 
     const { data, setData, post, patch, processing, errors } = useForm({
         slug: slug,
@@ -61,7 +53,6 @@ export default function EditTempatLapangan(props) {
         axios
             .post(`/dashboard/tempat-lapangan-update`, data, {
                 headers: {
-                    "X-CSRF-TOKEN": _token,
                     "Content-Type": "multipart/form-data",
                 },
                 credentials: "same-origin",
@@ -87,9 +78,12 @@ export default function EditTempatLapangan(props) {
                 Toast.fire({
                     icon: "success",
                     title: `Berhasil memperbarui ${response.data.response.nama}`,
+                    timer: 3000,
                 });
 
-                router.get("/dashboard/tempat-lapangan");
+                setTimeout(() => {
+                    router.get("/dashboard/tempat-lapangan");
+                }, 100);
             })
             .catch((errors) => {
                 setDisplayLoading(false);
@@ -157,23 +151,17 @@ export default function EditTempatLapangan(props) {
 
             <Loading display={displayLoading} />
 
-            <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-white leading-normal">
-                <h1 className="text-center md:mt-20 mb-8 text-xl font-bold">
+            <div className="px-8 md:px-0 md:mt-8 mb-16 text-white leading-normal">
+                <h1 className="text-center mt-10 md:mt-20 mb-8 text-xl font-bold uppercase">
                     Update Tempat Lapangan
                 </h1>
 
-                <div className="flex justify-center">
-                    <form
-                        className="w-80"
-                        encType="multipart/form-data"
-                        onSubmit={update}
-                    >
-                        {/* <input
-                            type="hidden"
-                            name="_token"
-                            value={data._token}
-                        />
-                        <input type="hidden" name="_method" value="PATCH" /> */}
+                <form
+                    className="p-4 gap-6 flex md:flex-row flex-col justify-center border-4 md:mx-40"
+                    encType="multipart/form-data"
+                    onSubmit={update}
+                >
+                    <div className="md:basis-1/3">
                         <div>
                             <Label forInput="nama" value="Nama" />
 
@@ -181,7 +169,7 @@ export default function EditTempatLapangan(props) {
                                 type="text"
                                 name="nama"
                                 value={data.nama}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 autoFocus
                                 onChange={(e) => {
                                     e.preventDefault();
@@ -211,7 +199,7 @@ export default function EditTempatLapangan(props) {
                                 type="text"
                                 name="telp"
                                 value={data.telp}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 md:w-40 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 onChange={(e) => {
                                     e.preventDefault();
                                     setData("telp", e.target.value);
@@ -226,7 +214,7 @@ export default function EditTempatLapangan(props) {
                                 type="email"
                                 name="email"
                                 value={data.email}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 onChange={(e) => {
                                     e.preventDefault();
                                     setData("email", e.target.value);
@@ -246,15 +234,16 @@ export default function EditTempatLapangan(props) {
                                 value={data.deskripsi}
                             ></textarea>
                         </div>
-
+                    </div>
+                    <div className="md:basis-1/3">
                         <div className="mt-4">
                             <Label forInput="jam" value="Jam Operasional" />
 
-                            <div className="flex mt-5">
+                            <div className="flex justify-evenly mt-5 px-6 py-2 md:mt-3 border-slate-100 border-2 rounded-md">
                                 <div>
                                     <p>Jam Buka</p>
                                     <select
-                                        defaultValue={data.jam_buka}
+                                        value={data.jam_buka}
                                         className="select block w-max max-w-xs mt-1 mr-4 border-gray-300 focus:!border-indigo-300 focus:ring focus:!ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                         onChange={(e) => {
                                             e.preventDefault();
@@ -282,7 +271,7 @@ export default function EditTempatLapangan(props) {
                                 <div>
                                     <p>Jam Tutup</p>
                                     <select
-                                        defaultValue={data.jam_tutup}
+                                        value={data.jam_tutup}
                                         className="select block w-max max-w-xs mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                         onChange={(e) => {
                                             e.preventDefault();
@@ -322,7 +311,7 @@ export default function EditTempatLapangan(props) {
                                 type="number"
                                 name="harga_persewa"
                                 value={data.harga_persewa}
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                className="w-full mt-1 md:w-32 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 autoComplete="harga_persewa"
                                 onChange={(e) => {
                                     e.preventDefault();
@@ -332,7 +321,7 @@ export default function EditTempatLapangan(props) {
                         </div>
 
                         <div className="mt-4">
-                            <Label forInput="logo" value="Logo" />
+                            <Label forInput="image" value="Logo" />
                             <PortalWithState closeOnOutsideClick closeOnEsc>
                                 {({
                                     openPortal,
@@ -348,19 +337,25 @@ export default function EditTempatLapangan(props) {
                                             onClick={openPortal}
                                         />
                                         {portal(
-                                            <div className="modal-box border border-slate-500 w-11/12 top-0 bottom-0 left-0 right-0 fixed mx-auto my-auto max-w-max max-h-max z-50">
-                                                <div className="grid grid-cols-1">
-                                                    <h2>Logo</h2>
-                                                    <img
-                                                        src={data.preview}
-                                                        alt=""
-                                                        className="sm:w-96 my-auto"
-                                                    />
-                                                    <FaWindowClose
-                                                        size="2em"
-                                                        className="top-2 right-2 fixed cursor-pointer"
-                                                        onClick={closePortal}
-                                                    />
+                                            <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
+                                                <div className="flex justify-center">
+                                                    <div className="md:w-1/2 w-10/12  border-8 relative bg-slate-100 border-slate-100">
+                                                        <h2 className="ml-3 mb-2 mt-1 text-2xl font-bold">
+                                                            Foto
+                                                        </h2>
+                                                        <img
+                                                            src={data.preview}
+                                                            alt=""
+                                                            className="object-cover w-full"
+                                                        />
+                                                        <FaWindowClose
+                                                            size="2em"
+                                                            className="top-1 right-2 absolute cursor-pointer"
+                                                            onClick={
+                                                                closePortal
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
@@ -370,8 +365,8 @@ export default function EditTempatLapangan(props) {
 
                             <input
                                 type="file"
-                                name="logo"
-                                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                name="image"
+                                className="w-full text-white rounded-md shadow-sm"
                                 // ref={data.imageRef}
                                 onChange={handleUpload}
                             />
@@ -388,13 +383,13 @@ export default function EditTempatLapangan(props) {
                             />
 
                             <MyButton
-                                value="Update"
-                                button="update"
+                                value="Submit"
+                                button="create"
                                 type="submit"
                             />
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     );

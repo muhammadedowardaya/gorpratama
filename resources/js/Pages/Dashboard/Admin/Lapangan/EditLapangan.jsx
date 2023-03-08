@@ -235,7 +235,7 @@ export default function EditLapangan({ lapangan }) {
                                 }) => (
                                     <React.Fragment>
                                         <img
-                                            className="my-3 w-52 h-52 mx-auto border border-black overflow-hidden object-cover"
+                                            className="object-cover object-center w-[90vw] h-[85vh] md:w-[60vw] md:max-h-[70vh]"
                                             src={data.preview}
                                             alt="Foto Lapangan"
                                             onClick={openPortal}

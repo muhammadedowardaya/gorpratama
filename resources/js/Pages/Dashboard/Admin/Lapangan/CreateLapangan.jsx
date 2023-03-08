@@ -229,35 +229,31 @@ export default function CreateLapangan(props) {
                                 }) => (
                                     <React.Fragment>
                                         <img
-                                            className="my-3 w-52 h-52 mx-auto border border-black overflow-hidden object-cover"
+                                            className="my-3 w-32 h-32 rounded-full mx-auto border border-black overflow-hidden"
                                             src={data.preview}
-                                            alt="Foto Lapangan"
+                                            alt="avatar"
                                             onClick={openPortal}
                                         />
                                         {portal(
-                                            // <p>
-                                            //     This is more advanced Portal. It handles
-                                            //     its own state.{" "}
-                                            //     <button onClick={closePortal}>
-                                            //         Close me!
-                                            //     </button>
-                                            //     , hit ESC or click outside of me.
-                                            // </p>
-
-                                            <div className="fixed top-0 bottom-0 right-0 left-0 bg-gradient-to-br from-cyan-700 via-teal-600 to-emerald-400 h-screen w-screen z-30 grid">
-                                                <img
-                                                    src={data.preview}
-                                                    alt=""
-                                                    className="sm:w-96 max-h-screen my-auto mx-auto md:max-w-max"
-                                                />
-                                                <div
-                                                    className="px-2 z-10 bottom-20 fixed justify-self-center animate-bounce"
-                                                    onClick={closePortal}
-                                                >
-                                                    <AiFillCloseCircle
-                                                        size="3em"
-                                                        className="cursor-pointer fill-red-500 object-cover bg-white rounded-full"
-                                                    />
+                                            <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
+                                                <div className="flex justify-center">
+                                                    <div className="border-8 relative bg-slate-100 border-slate-100">
+                                                        <h2 className="ml-3 mb-2 mt-1 text-2xl font-bold">
+                                                            Foto
+                                                        </h2>
+                                                        <img
+                                                            src={data.preview}
+                                                            alt=""
+                                                            className="object-cover object-center w-[90vw] h-[85vh] md:w-[60vw] md:max-h-[70vh]"
+                                                        />
+                                                        <FaWindowClose
+                                                            size="2em"
+                                                            className="top-1 right-2 absolute cursor-pointer"
+                                                            onClick={
+                                                                closePortal
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}

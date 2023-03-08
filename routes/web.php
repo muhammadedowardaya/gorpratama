@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagihanController;
@@ -33,6 +34,7 @@ Route::get('/', function () {
     ]);
 });
 
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -61,7 +63,8 @@ Route::get('/get-profile-gor', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile-update', [ProfileController::class, 'updateProfile']);
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -95,7 +98,7 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
         // ]);
     });
 
-    Route::post('/booking', [TransaksiController::class, 'store']);
+    Route::post('/booking', [TagihanController::class, 'store']);
 
     Route::prefix('tagihan')->group(function () {
         /**

@@ -50,8 +50,61 @@ class TagihanController extends Controller
             'Authorization' => $secret_key
         ])->post('https://api.xendit.co/v2/invoices', [
             'external_id' => $external_id,
-            'amount' => request('amount')
+            'amount' => request('amount'),
+            'description' => 'Invoice Demo #123',
+            // 'invoice_duration' => 86400,
+            'customer' => [
+                'given_names' => $request->nama,
+                // 'surname' => 'Doe',
+                'email' => $request->email,
+                'mobile_number' => $request->telp,
+                'addresses' => $request->alamat
+            ],
+            'customer_notification_preference' => [
+                'invoice_created' => [
+                    'whatsapp',
+                    'sms',
+                    'email'
+                ],
+                'invoice_reminder' => [
+                    'whatsapp',
+                    'sms',
+                    'email'
+                ],
+                'invoice_paid' => [
+                    'whatsapp',
+                    'sms',
+                    'email'
+                ],
+                'invoice_expired' => [
+                    'whatsapp',
+                    'sms',
+                    'email'
+                ]
+            ],
+            // 'success_redirect_url' => 'https=>//www.google.com',
+            // 'failure_redirect_url' => 'https=>//www.google.com',
+            'currency' => 'IDR',
+            // 'items' => [
+            //     [
+            //         'name' => 'Air Conditioner',
+            //         'quantity' => 1,
+            //         'price' => 100000,
+            //         'category' => 'Electronic',
+            //         'url' => 'https=>//yourcompany.com/example_item'
+            //     ]
+            // ],
+            // 'fees' => [
+            //     [
+            //         'type' => 'ADMIN',
+            //         'value' => 5000
+            //     ]
+            // ]
         ]);
+
+        // $createInvoice = \Xendit\Invoice::create($params);
+
+        // ]);
         $response = $data_request->object();
         // Tagihan::create([
         //     'external_id' => $external_id,

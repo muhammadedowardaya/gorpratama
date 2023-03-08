@@ -5,7 +5,7 @@ import FormatRupiah from "@/Components/FormatRupiah";
 import { PortalWithState } from "react-portal";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Layout from "@/Layouts/Layout";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import axios from "axios";
 
 export default function Booking(props) {
@@ -131,7 +131,7 @@ export default function Booking(props) {
                         lama_bermain: lama_bermain,
                         total_harga: FormatRupiah(total.toString(), "Rp. "),
                     });
-                }, 100);
+                }, 50);
 
                 // const data = {
                 //     lapangan_id: data.lapangan_id,
@@ -170,10 +170,44 @@ export default function Booking(props) {
                         confirmButtonText: "Konfirmasi",
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            router.post("/booking", data);
+                            router.post("/booking", data, {
+                                onError: (errors) => {
+                                    const error_keys = Object.keys(errors);
+                                    const error_values =
+                                        Object.getOwnPropertyNames(errors);
+                                    let error_messages = [];
+                                    let error = errors;
+                                    for (
+                                        let i = 0;
+                                        i < error_keys.length;
+                                        i++
+                                    ) {
+                                        error_messages.push(
+                                            error[error_values[i]]
+                                        );
+                                    }
+
+                                    Swal.fire(
+                                        "Gagal!",
+                                        `<ul>${error_messages
+                                            .map((item) => `<li>${item}</li>`)
+                                            .join(" ")}</ul>`,
+                                        "error"
+                                    );
+                                },
+                                onSuccess: (response) => {
+                                    // Swal.fire({
+                                    //     title: "Berhasil!",
+                                    //     text: "Registrasi Berhasil",
+                                    //     icon: "success",
+                                    // });
+                                    // router.get("/");
+                                    console.info(response);
+                                },
+                            });
                         }
                     });
-                }, 200);
+                }, 100);
             }
         } else {
             Swal.fire(

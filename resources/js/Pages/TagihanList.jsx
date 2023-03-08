@@ -3,16 +3,16 @@ export default function TagihanList({ data }) {
         <>
             <fieldset>
                 <legend>LIST DATA TAGIHAN</legend>
-                <div class="row">
-                    <div class="col-md-12">
+                <div className="row">
+                    <div className="col-md-12">
                         <a
                             href="{{ route('tagihan.create') }}"
-                            class="btn btn-primary"
+                            className="btn btn-primary"
                         >
                             TAMBAH DATA
                         </a>
                         <hr />
-                        <table class="table">
+                        <table className="table">
                             <thead>
                                 <tr>
                                     <th>NO</th>

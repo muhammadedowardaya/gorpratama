@@ -21,14 +21,3 @@ table tbody tr td {
 table tbody th {
     padding-right: 20px;
 }
-
-@media (min-width: 1024px) {
-    #content-table {
-        display: grid;
-        grid-template-columns: auto auto;
-        justify-content: center;
-    }
-    #content-table img#logo {
-        width: 200px;
-    }
-}

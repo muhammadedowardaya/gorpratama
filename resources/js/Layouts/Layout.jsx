@@ -55,7 +55,12 @@ export default function Layout({ auth, header, children }) {
         <div className="container  bg-gradient-to-br from-teal-300 via-teal-500 to-teal-700 bg-fixed dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
             <nav className="navbar fixed z-30 top-0 bg-gradient-to-b from-teal-700 via-teal-600 to-teal-300  dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
                 <div className="flex-1">
-                    <a className="text-white m-0 mr-2">Gor Pratama</a>
+                    <a
+                        className="text-white m-0 mr-2 cursor-pointer"
+                        onClick={(e) => router.get("/")}
+                    >
+                        Gor Pratama
+                    </a>
                     <div
                         className="tooltip hover:tooltip-open tooltip-right"
                         data-tip="Klik untuk mengganti mode"
@@ -65,9 +70,14 @@ export default function Layout({ auth, header, children }) {
                 </div>
                 {user != null ? (
                     <div className="flex-none">
-                        <span className="text-white pr-4">{user.nama}</span>
-                        <div className="w-10 h-10 rounded-full border">
-                            <img src={user.url_logo} />
+                        <span className="text-white pr-4 hidden md:inline-block">
+                            {user.nama}
+                        </span>
+                        <div>
+                            <img
+                                src={user.url_foto}
+                                className="w-10 h-10 rounded-full"
+                            />
                         </div>
                         <div className="dropdown dropdown-end ml-3">
                             {changeDropdownIcon == false ? (
@@ -117,7 +127,10 @@ export default function Layout({ auth, header, children }) {
                             )}
                             <ul className="menu menu-compact mt-3 w-52 z-20 list-pengaturan-user absolute">
                                 <li>
-                                    <a className="justify-between">
+                                    <a
+                                        className="justify-between"
+                                        onClick={(e) => router.get("/profile")}
+                                    >
                                         Profile
                                         {/* <span className="badge">New</span> */}
                                     </a>

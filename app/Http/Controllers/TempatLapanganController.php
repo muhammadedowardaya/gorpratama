@@ -35,7 +35,7 @@ class TempatLapanganController extends Controller
             if (isset($lapangan[0]) == false) {
                 return Inertia::render('Dashboard/Admin/TempatLapangan/TempatLapangan', [
                     'tempat_lapangan' => $tempat_lapangan,
-                    'info' => session()->flash('info', 'Anda belum mengatur lapangan, silahkan ke menu "Lapangan" untuk mengaturnya'),
+                    'info' => session()->flash('info', 'Anda belum mengatur lapangan, anda ingin mengaturnya sekarang?'),
                     'uri' => request()->getUri()
                 ]);
                 // echo 'tidak ada lapangan';
@@ -58,13 +58,20 @@ class TempatLapanganController extends Controller
      */
     public function create()
     {
-        $waktu = Waktu::all();
-        $tempat_lapangan = isset($tempat_lapangan) ? TempatLapangan::all() : null;
-        return Inertia::render('Dashboard/Admin/TempatLapangan/CreateTempatLapangan', [
-            'jam' => $waktu,
-            'tempat_lapangan' => $tempat_lapangan,
-            'uri' => request()->getUri()
-        ]);
+        $tempat_lapangan = TempatLapangan::where('user_id', auth()->user()->id)->first();
+
+        $data = isset($tempat_lapangan) ? $tempat_lapangan : null;
+        if ($data == null) {
+            $waktu = Waktu::all();
+            $tempat_lapangan = isset($tempat_lapangan) ? TempatLapangan::all() : null;
+            return Inertia::render('Dashboard/Admin/TempatLapangan/CreateTempatLapangan', [
+                'jam' => $waktu,
+                'tempat_lapangan' => $tempat_lapangan,
+                'uri' => request()->getUri()
+            ]);
+        } else {
+            return Redirect()->to('/dashboard/tempat-lapangan');
+        }
     }
 
     /**
@@ -95,7 +102,7 @@ class TempatLapanganController extends Controller
             return response()->json([
                 'error' => true,
                 'message' => $validator->errors()
-            ], 401);
+            ], 400);
         }
         $tempat_lapangan = new TempatLapangan();
 
@@ -312,10 +319,10 @@ class TempatLapanganController extends Controller
         $tempatLapangan = TempatLapangan::firstWhere('slug', $request->slug);
 
         $rules = [
-            'nama' => "required|unique:tempat_lapangan,nama,$tempatLapangan->id|min:4|max:255",
+            'nama' => "required|min:4|max:255",
             'alamat' => 'required',
             'telp' => 'required',
-            'email' => 'required|email',
+            'email' => "required|email|unique:tempat_lapangan,email,$tempatLapangan->id|min:4|max:255",
             'deskripsi' => 'required|min:10',
             'jam_buka' => 'required',
             'jam_tutup' => 'required',

@@ -48,18 +48,22 @@ export default function Login(props, { status, canResetPassword }) {
                 Swal.fire(
                     "Gagal!",
                     `<ul>${error_messages
-                        .map((item) => `<li>${item}</li>`)
+                        .map((item) => {
+                            `<li>${item}</li>`;
+                        })
                         .join(" ")}</ul>`,
                     "error"
                 );
             },
-            onFinish: (visit) => {
+            onSuccess: () => {
                 Swal.fire({
                     title: "Berhasil!",
                     text: "Berhasil Login",
                     icon: "success",
                 });
-                router.get("/");
+                setTimeout(() => {
+                    router.get("/");
+                }, 100);
             },
         });
         // axios
@@ -121,7 +125,11 @@ export default function Login(props, { status, canResetPassword }) {
                     className="w-full sm:max-w-md mt-6 px-6 py-4 border border-solid border-white shadow-md overflow-hidden sm:rounded-lg"
                 >
                     <div>
-                        <InputLabel forInput="email" value="Email" />
+                        <InputLabel
+                            forInput="email"
+                            value="Email"
+                            className="!text-slate-100"
+                        />
 
                         <TextInput
                             id="email"
@@ -138,7 +146,11 @@ export default function Login(props, { status, canResetPassword }) {
                     </div>
 
                     <div className="mt-4">
-                        <InputLabel forInput="password" value="Password" />
+                        <InputLabel
+                            forInput="password"
+                            value="Password"
+                            className="!text-slate-100"
+                        />
 
                         <TextInput
                             id="password"

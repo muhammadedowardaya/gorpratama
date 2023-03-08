@@ -37,6 +37,13 @@ nav.navbar {
     color: #fff;
 }
 
+.navbar .dropdown ul li:hover a {
+    transform: scale(1.1);
+    background: #fff;
+    border: 1px solid #2dd4bf;
+    color: #2dd4bf;
+}
+
 .drawer-side ul li a {
     margin: 5px 0;
 }

@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('nama');
             $table->string('slug')->nullable();
             $table->boolean('find_match')->default(false);
-            $table->string('telp')->unique();
-            $table->string('email')->unique();
-            $table->string('alamat');
+            $table->string('telp')->unique()->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('alamat')->nullable();
             $table->string('foto')->nullable();
             $table->string('url_foto')->nullable();
             $table->timestamp('email_verified_at')->nullable();

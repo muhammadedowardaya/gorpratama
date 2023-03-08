@@ -7,6 +7,8 @@ import { BsFillArrowRightCircleFill, BsMenuButtonWide } from "react-icons/bs";
 import { AiFillCloseCircle, AiOutlineClose } from "react-icons/ai";
 import gsap from "gsap";
 
+import "../modules/csrf.js";
+
 export default function AdminLayout({ children, header }) {
     const [user, setUser] = useState("");
     const [gor, setGor] = useState("");
@@ -177,7 +179,10 @@ export default function AdminLayout({ children, header }) {
                             )}
                             <ul className="menu menu-compact mt-3 w-52 z-20 list-pengaturan-user absolute">
                                 <li>
-                                    <a className="justify-between">
+                                    <a
+                                        className="justify-between"
+                                        onClick={(e) => router.get("/profile")}
+                                    >
                                         Profile
                                         {/* <span className="badge">New</span> */}
                                     </a>

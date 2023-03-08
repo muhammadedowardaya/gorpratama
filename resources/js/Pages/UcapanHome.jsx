@@ -17,20 +17,21 @@ export default function UcapanHome() {
     if (user != null && user.type == "user") {
         return (
             <>
-                <section className="banner">
-                    <h1>
+                <section className="banner my-20">
+                    <h1 className="text-xl leading-7 tracking-widest md:text-2xl md:leading-9 ml-10 md:ml-20">
                         Selamat Datang Di Website <br />
                         Pemesanan Lapangan Badminton <br />
                         Gor Pratama!
                     </h1>
                 </section>
                 <div className="button-group">
-                    <p>
+                    <p className="leading-5">
                         Siap Bermain?
                         <br />
                         Ayo segera booking sekarang!
                     </p>
                     <button
+                        className="border border-slate-50 w-52 md:w-64 md:py-2 py-1 my-2"
                         onClick={(e) => {
                             e.preventDefault();
 
@@ -40,11 +41,12 @@ export default function UcapanHome() {
                         <IoRocketSharp className="absolute ml-4" size="1.5em" />
                         Booking
                     </button>
-                    <p>
+                    <p className="mt-6 leading-5">
                         Ingin mencari teman atau lawan bermain? <br />
                         Temukan teman atau lawan anda!
                     </p>
                     <button
+                        className="border border-slate-50 w-52 md:w-64 md:py-2 py-1 my-2"
                         onClick={(e) => {
                             e.preventDefault();
                             router.get("/find");
@@ -62,8 +64,8 @@ export default function UcapanHome() {
     } else if (user != null && user.type == "admin") {
         return (
             <>
-                <section className="banner">
-                    <h1>
+                <section className="banner my-20">
+                    <h1 className="text-xl leading-7 tracking-widest md:text-2xl md:leading-9 ml-10 md:ml-20">
                         Selamat Datang
                         <br /> Admin Pengelola Lapangan <br /> Badminton Gor
                         Pratama!
@@ -72,6 +74,7 @@ export default function UcapanHome() {
                 <div className="button-group">
                     <p>Ayo mulai kelola tempat lapangan!</p>
                     <button
+                        className="border border-slate-50 w-52 py-1 my-2"
                         onClick={(e) => {
                             e.preventDefault();
                             router.get("/dashboard/tempat-lapangan");
@@ -79,20 +82,24 @@ export default function UcapanHome() {
                     >
                         Kelola Profil Gor
                     </button>
-                    <button>Kelola Profil Lapangan</button>
+                    <button className="border border-slate-50 w-52 py-1 my-2">
+                        Kelola Profil Lapangan
+                    </button>
                     <p>
                         Jangan lupa untuk melihat pesanan sewa lapangan dari
                         pelanggan!
                     </p>
-                    <button>Pesanan</button>
+                    <button className="border border-slate-50 w-52 py-1 my-2">
+                        Pesanan
+                    </button>
                 </div>
             </>
         );
     } else {
         return (
             <>
-                <section className="banner">
-                    <h1>
+                <section className="banner my-20">
+                    <h1 className="text-xl leading-7 tracking-widest md:text-2xl md:leading-9 ml-10 md:ml-20">
                         Ayo Bermain Badminton <br /> Di Lapangan Gor Pratama{" "}
                         <br /> Desa Situ Daun!
                     </h1>
@@ -100,6 +107,7 @@ export default function UcapanHome() {
                 <div className="button-group">
                     <p>Belum punya akun?</p>
                     <button
+                        className="border border-slate-50 w-52 py-1 my-2"
                         onClick={(e) => {
                             e.preventDefault();
 
@@ -110,6 +118,7 @@ export default function UcapanHome() {
                     </button>
                     <p>Sudah punya akun?</p>
                     <button
+                        className="border border-slate-50 w-52 py-1 my-2"
                         onClick={(e) => {
                             e.preventDefault();
                             router.get("/login");
