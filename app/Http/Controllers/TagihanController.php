@@ -51,14 +51,19 @@ class TagihanController extends Controller
         ])->post('https://api.xendit.co/v2/invoices', [
             'external_id' => $external_id,
             'amount' => request('amount'),
-            'description' => 'Invoice Demo #123',
+            'description' => "Booking Lapangan Badminton",
             // 'invoice_duration' => 86400,
             'customer' => [
                 'given_names' => $request->nama,
                 // 'surname' => 'Doe',
                 'email' => $request->email,
                 'mobile_number' => $request->telp,
-                'addresses' => $request->alamat
+                'addresses' => [
+                    [
+                        'country' => 'Indonesia',
+                        'street_line1' => $request->alamat,
+                    ]
+                ]
             ],
             'customer_notification_preference' => [
                 'invoice_created' => [
@@ -107,6 +112,8 @@ class TagihanController extends Controller
         // ]);
         $response = $data_request->object();
         // Tagihan::create([
+        //     'user_id' => auth()->user()->id,
+        //     'lapangan_id' => request('lapangan_id'),
         //     'external_id' => $external_id,
         //     'amount' => request('amount'),
         //     'description' => request('description'),

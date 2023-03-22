@@ -91,7 +91,7 @@ export default function UpdateProfileInformation({
                         "Gagal!",
                         `<ul>${error_messages
                             .map((item) => {
-                                if (item.includes("CSRF token mismatch")) {
+                                if (item.includes("CSRF token mismatch.")) {
                                     router.reload();
                                 } else {
                                     `<li>${item}</li>`;
@@ -101,11 +101,17 @@ export default function UpdateProfileInformation({
                         "error"
                     );
                 } else {
-                    Swal.fire(
-                        "Gagal!",
-                        `${errors.response.data.message}`,
-                        "error"
-                    );
+                    if (
+                        errors.response.data.message == "CSRF token mismatch."
+                    ) {
+                        location.reload();
+                    } else {
+                        Swal.fire(
+                            "Gagal!",
+                            `${errors.response.data.message}`,
+                            "error"
+                        );
+                    }
                 }
             });
     };
@@ -215,11 +221,12 @@ export default function UpdateProfileInformation({
 
                     <TextInput
                         id="telp"
-                        type="number"
+                        type="tel"
                         className="mt-1 block w-full"
                         value={data.telp}
                         handleChange={(e) => setData("telp", e.target.value)}
                         required
+                        pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}"
                         autoComplete="telp"
                         placeholder="Nomor Telepon"
                     />

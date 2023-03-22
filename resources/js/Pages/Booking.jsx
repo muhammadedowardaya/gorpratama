@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Label from "@/Components/Label";
 import Swal from "sweetalert2";
 import FormatRupiah from "@/Components/FormatRupiah";
@@ -6,7 +6,11 @@ import { PortalWithState } from "react-portal";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
-import axios from "axios";
+
+import { Input, TimePicker } from "antd";
+import moment from "moment";
+
+const { RangePicker } = TimePicker;
 
 export default function Booking(props) {
     // const [dari_jam, set_dari_jam] = useState("Default");
@@ -26,6 +30,9 @@ export default function Booking(props) {
         dari_jam: "Default",
         sampai_jam: "Default",
 
+        jam_mulai: "",
+        jam_selesai: "",
+
         lama_bermain: "",
         user: props.auth.user,
         nama: props.auth.user.nama,
@@ -34,11 +41,9 @@ export default function Booking(props) {
         nama_lapangan: props.lapangan.nama,
         nama_tempat_lapangan: props.tempat_lapangan.nama,
         jam: props.jam,
-        hari: "",
         tanggal: "",
-        bulan: "",
-        tahun: "",
         total_harga: "",
+        amount: "",
     });
 
     async function getJadwal() {
@@ -52,6 +57,86 @@ export default function Booking(props) {
             setData(jadwal, response.jadwal);
         }
     });
+
+    function durasiDanHarga() {
+        return new Promise((resolve, reject) => {
+            const dari_jam_satuan = data.dari_jam;
+            const sampai_jam_satuan = data.sampai_jam;
+
+            let dari_jam;
+            let sampai_jam;
+
+            if (dari_jam_satuan[0] == "0") {
+                dari_jam = dari_jam_satuan[1];
+            } else {
+                dari_jam = `${dari_jam_satuan[0]}${dari_jam_satuan[1]}`;
+            }
+
+            if (sampai_jam_satuan[0] == "0") {
+                sampai_jam = sampai_jam_satuan[1];
+            } else {
+                sampai_jam = `${
+                    sampai_jam_satuan[0].toString() +
+                    sampai_jam_satuan[1].toString()
+                }`;
+            }
+
+            const total =
+                (parseInt(sampai_jam) - parseInt(dari_jam)) *
+                data.harga_persewa;
+
+            const lama_bermain = parseInt(sampai_jam) - parseInt(dari_jam);
+
+            setData({
+                ...data,
+                lama_bermain: lama_bermain,
+                total_harga: FormatRupiah(total.toString(), "Rp. "),
+                amount: total,
+            });
+
+            setTimeout(() => {
+                resolve(data);
+            }, 1000);
+        });
+    }
+
+    const updateDurasiDanHarga = async () => {
+        const data_terbaru = await durasiDanHarga();
+        return data_terbaru;
+    };
+    // const update_data = async () => {
+    //     const dari_jam_satuan = data.dari_jam;
+    //     const sampai_jam_satuan = data.sampai_jam;
+
+    //     let dari_jam;
+    //     let sampai_jam;
+
+    //     if (dari_jam_satuan[0] == "0") {
+    //         dari_jam = dari_jam_satuan[1];
+    //     } else {
+    //         dari_jam = `${dari_jam_satuan[0]}${dari_jam_satuan[1]}`;
+    //     }
+
+    //     if (sampai_jam_satuan[0] == "0") {
+    //         sampai_jam = sampai_jam_satuan[1];
+    //     } else {
+    //         sampai_jam = `${
+    //             sampai_jam_satuan[0].toString() +
+    //             sampai_jam_satuan[1].toString()
+    //         }`;
+    //     }
+
+    //     const total =
+    //         (parseInt(sampai_jam) - parseInt(dari_jam)) * data.harga_persewa;
+
+    //     const lama_bermain = parseInt(sampai_jam) - parseInt(dari_jam);
+
+    //     await setDataPromise({
+    //         ...data,
+    //         lama_bermain: lama_bermain,
+    //         total_harga: FormatRupiah(total.toString(), "Rp. "),
+    //     });
+    // };
 
     const submit = (e) => {
         e.preventDefault();
@@ -98,116 +183,67 @@ export default function Booking(props) {
             ) {
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
             } else {
-                const dari_jam_satuan = data.dari_jam;
-                const sampai_jam_satuan = data.sampai_jam;
-
-                let dari_jam;
-                let sampai_jam;
-
-                if (dari_jam_satuan[0] == "0") {
-                    dari_jam = dari_jam_satuan[1];
-                } else {
-                    dari_jam = `${dari_jam_satuan[0]}${dari_jam_satuan[1]}`;
-                }
-
-                if (sampai_jam_satuan[0] == "0") {
-                    sampai_jam = sampai_jam_satuan[1];
-                } else {
-                    sampai_jam = `${
-                        sampai_jam_satuan[0].toString() +
-                        sampai_jam_satuan[1].toString()
-                    }`;
-                }
-
-                const total =
-                    (parseInt(sampai_jam) - parseInt(dari_jam)) *
-                    data.harga_persewa;
-
-                const lama_bermain = parseInt(sampai_jam) - parseInt(dari_jam);
-
-                setTimeout(() => {
-                    setData({
-                        ...data,
-                        lama_bermain: lama_bermain,
-                        total_harga: FormatRupiah(total.toString(), "Rp. "),
-                    });
-                }, 50);
-
-                // const data = {
-                //     lapangan_id: data.lapangan_id,
-                //     tempat_lapangan_id: data.tempat_lapangan_id,
-                //     admin_lapangan_id: data.admin_lapangan_id,
-                //     telp: data.telp,
-                //     dari_jam: dari_jam,
-                //     sampai_jam: sampai_jam,
-                //     harga_persewa: data.harga_persewa,
-                //     total_harga: total,
-                //     tanggal_sekarang: tanggalSekarang,
-                //     tanggal_main: data.tanggal_main,
-                //     hari: data.hari,
-                //     tanggal: data.tanggal,
-                //     bulan: data.bulan,
-                //     tahun: data.tahun,
-
-                //     user_id: data.user_id,
-                //     lama_bermain: lama_bermain,
-                // };
-
-                setTimeout(() => {
-                    Swal.fire({
-                        title: "Konfirmasi Pesanan Mu",
-                        text: `Anda memesan lapangan untuk hari ${
-                            data.hari
-                        }, tanggal ${data.tanggal_main.split("-")[2]} ${
-                            data.bulan
-                        } selama ${data.lama_bermain} jam seharga ${
-                            data.total_harga
-                        }`,
-                        icon: "info",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Konfirmasi",
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            router.post("/booking", data, {
-                                onError: (errors) => {
-                                    const error_keys = Object.keys(errors);
-                                    const error_values =
-                                        Object.getOwnPropertyNames(errors);
-                                    let error_messages = [];
-                                    let error = errors;
-                                    for (
-                                        let i = 0;
-                                        i < error_keys.length;
-                                        i++
-                                    ) {
-                                        error_messages.push(
-                                            error[error_values[i]]
-                                        );
-                                    }
-
-                                    Swal.fire(
-                                        "Gagal!",
-                                        `<ul>${error_messages
-                                            .map((item) => `<li>${item}</li>`)
-                                            .join(" ")}</ul>`,
-                                        "error"
-                                    );
-                                },
-                                onSuccess: (response) => {
-                                    // Swal.fire({
-                                    //     title: "Berhasil!",
-                                    //     text: "Registrasi Berhasil",
-                                    //     icon: "success",
-                                    // });
-                                    // router.get("/");
-                                    console.info(response);
-                                },
-                            });
-                        }
-                    });
-                }, 100);
+                updateDurasiDanHarga().then((response) => {
+                    if (response.total_harga != "") {
+                        Swal.fire({
+                            title: "Konfirmasi Pesanan Mu",
+                            text: `Anda memesan lapangan untuk hari ${
+                                data.hari
+                            }, tanggal ${data.tanggal_main.split("-")[2]} ${
+                                data.bulan
+                            } selama ${data.lama_bermain} jam seharga ${
+                                data.total_harga
+                            }`,
+                            icon: "info",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Konfirmasi",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                router.post("/booking", data, {
+                                    onError: (errors) => {
+                                        // const error_keys = Object.keys(errors);
+                                        // const error_values =
+                                        //     Object.getOwnPropertyNames(errors);
+                                        // let error_messages = [];
+                                        // let error = errors;
+                                        // for (
+                                        //     let i = 0;
+                                        //     i < error_keys.length;
+                                        //     i++
+                                        // ) {
+                                        //     error_messages.push(
+                                        //         error[error_values[i]]
+                                        //     );
+                                        // }
+                                        // Swal.fire(
+                                        //     "Gagal!",
+                                        //     `<ul>${error_messages
+                                        //         .map(
+                                        //             (item) => `<li>${item}</li>`
+                                        //         )
+                                        //         .join(" ")}</ul>`,
+                                        //     "error"
+                                        // );
+                                        // console.info(errors);
+                                    },
+                                    onSuccess: (response) => {
+                                        // Swal.fire({
+                                        //     title: "Berhasil!",
+                                        //     text: "Registrasi Berhasil",
+                                        //     icon: "success",
+                                        // });
+                                        // router.get("/");
+                                        console.info(response);
+                                    },
+                                });
+                            }
+                        });
+                    } else {
+                        document.getElementById("btnSubmit").click();
+                    }
+                });
             }
         } else {
             Swal.fire(
@@ -220,14 +256,16 @@ export default function Booking(props) {
 
     return (
         <>
-            <h1 className="text-center text-white text-2xl font-bold mt-8">
-                Booking
-            </h1>
-            <div className="w-full p-10 ">
-                <form onSubmit={submit} className="bg-white p-4">
+            <div className="w-full p-10">
+                <form onSubmit={submit} className="bg-white p-4 rounded">
+                    <h1 className="text-center text-slate-700 text-2xl font-bold pb-4">
+                        Booking
+                    </h1>
+
+                    <hr className="border border-slate-300" />
                     <div className="flex gap-0 md:gap-14 md:flex-row flex-col">
-                        <div className="md:basis-1/2 ">
-                            <div>
+                        <div className="md:basis-1/2">
+                            <div className="mt-4">
                                 <Label forInput="nama" value="Nama" />
 
                                 <input
@@ -371,7 +409,7 @@ export default function Booking(props) {
                             <div className="mt-4">
                                 <Label forInput="jam" value="Jam" />
 
-                                <div className="flex">
+                                {/* <div className="flex">
                                     <select
                                         defaultValue={data.dari_jam}
                                         className="select  w-max max-w-xs mt-1 mr-4 border-gray-300 focus:!border-indigo-300 focus:ring focus:!ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
@@ -434,7 +472,20 @@ export default function Booking(props) {
                                                 );
                                             })}
                                     </select>
-                                </div>
+                                </div> */}
+
+                                <RangePicker
+                                    format="HH:mm"
+                                    onChange={handleTimeChange}
+                                    value={[
+                                        jamMulai
+                                            ? moment(jamMulai, "HH:mm")
+                                            : null,
+                                        jamSelesai
+                                            ? moment(jamSelesai, "HH:mm")
+                                            : null,
+                                    ]}
+                                />
                             </div>
                         </div>
                     </div>
@@ -528,7 +579,11 @@ export default function Booking(props) {
                                 </React.Fragment>
                             )}
                         </PortalWithState>
-                        <button className="btn bg-green-500" type="submit">
+                        <button
+                            className="btn bg-green-500"
+                            type="submit"
+                            id="btnSubmit"
+                        >
                             Pesan Sekarang
                         </button>
                     </div>

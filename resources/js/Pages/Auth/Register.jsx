@@ -141,6 +141,7 @@ export default function Register() {
                         className="mt-1 block w-full"
                         autoComplete="telp"
                         isFocused={true}
+                        pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}"
                         handleChange={onHandleChange}
                         required
                     />
@@ -284,7 +285,7 @@ export default function Register() {
 
                 <div className="flex items-center justify-end mt-4">
                     <Link
-                        href={route("login")}
+                        href={"login"}
                         className="underline text-sm text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Already registered?

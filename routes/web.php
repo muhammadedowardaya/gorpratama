@@ -8,6 +8,7 @@ use App\Http\Controllers\TempatLapanganController;
 use App\Http\Controllers\TransaksiController;
 use App\Models\Lapangan;
 use App\Models\TempatLapangan;
+use App\Models\User;
 use App\Models\Waktu;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -36,7 +37,13 @@ Route::get('/', function () {
 
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    if (auth()->user()->type == 'admin') {
+        return Inertia::render('Dashboard/Admin/Home');
+    } else if (auth()->user()->type == 'manager') {
+        return redirect()->route('manager.home');
+    } else {
+        return Inertia::render('Dashboard/User/Home');
+    }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/get-user', function () {
@@ -46,7 +53,8 @@ Route::get('/get-user', function () {
 });
 
 Route::get('/get-profile-gor', function () {
-    $tempat_lapangan = TempatLapangan::where('user_id', auth()->user()->id)->first();
+    $user = User::where('type', 1)->first();
+    $tempat_lapangan = TempatLapangan::where('user_id', $user['id'])->first();
     return response()->json([
         'tempat-lapangan' => $tempat_lapangan
     ]);

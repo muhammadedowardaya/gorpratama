@@ -12,6 +12,7 @@ export default forwardRef(function TextInput(
         isFocused,
         handleChange,
         placeholder,
+        pattern,
     },
     ref
 ) {
@@ -39,6 +40,7 @@ export default forwardRef(function TextInput(
                 required={required}
                 onChange={(e) => handleChange(e)}
                 placeholder={placeholder}
+                pattern={pattern}
             />
         </div>
     );

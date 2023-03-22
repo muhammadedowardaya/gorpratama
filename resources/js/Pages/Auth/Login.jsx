@@ -35,23 +35,15 @@ export default function Login(props, { status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
+
         router.post("/login", data, {
             onError: (errors) => {
-                const error_keys = Object.keys(errors);
-                const error_values = Object.getOwnPropertyNames(errors);
-                let error_messages = [];
-                let error = errors;
-                for (let i = 0; i < error_keys.length; i++) {
-                    error_messages.push(error[error_values[i]]);
+                if (errors.email != null && errors.password != null) {
+                    Swal.fire("Gagal", errors, "error");
                 }
-
                 Swal.fire(
                     "Gagal!",
-                    `<ul>${error_messages
-                        .map((item) => {
-                            `<li>${item}</li>`;
-                        })
-                        .join(" ")}</ul>`,
+                    `${errors.email ?? ""}</br>${errors.password ?? ""}`,
                     "error"
                 );
             },
@@ -61,9 +53,6 @@ export default function Login(props, { status, canResetPassword }) {
                     text: "Berhasil Login",
                     icon: "success",
                 });
-                setTimeout(() => {
-                    router.get("/");
-                }, 100);
             },
         });
         // axios
@@ -119,10 +108,13 @@ export default function Login(props, { status, canResetPassword }) {
                 </div>
             )}
 
-            <div className="flex flex-col sm:justify-center items-center sm:pt-0  min-h-screen">
+            <div className="flex flex-col sm:justify-center items-center min-h-screen pt-10 md:p-0 px-5">
+                <h1 className="text-slate-50 font-bold text-2xl mb-5 p-0">
+                    Login
+                </h1>
                 <form
                     onSubmit={submit}
-                    className="w-full sm:max-w-md mt-6 px-6 py-4 border border-solid border-white shadow-md overflow-hidden sm:rounded-lg"
+                    className="w-full sm:max-w-md  px-6 py-4 border border-solid border-white shadow-md overflow-hidden sm:rounded-lg"
                 >
                     <div>
                         <InputLabel
@@ -182,15 +174,20 @@ export default function Login(props, { status, canResetPassword }) {
                     </div>
 
                     <div className="flex items-center justify-end mt-4">
-                        {canResetPassword && (
+                        {/* {canResetPassword && (
                             <Link
-                                href={route("password.request")}
+                                href="forgot-password"
                                 className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Forgot your password?
                             </Link>
-                        )}
-
+                        )} */}
+                        <Link
+                            href="forgot-password"
+                            className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Forgot your password?
+                        </Link>
                         <PrimaryButton className="ml-4" processing={processing}>
                             Log in
                         </PrimaryButton>

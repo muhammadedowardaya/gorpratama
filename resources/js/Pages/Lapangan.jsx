@@ -13,25 +13,25 @@ import {
 
 const Lapangan = (props) => {
     useEffect(() => {
-        const containerCards = document.querySelectorAll(".container-card");
-        containerCards.forEach((item) => {
-            item.addEventListener("mouseover", () => {
-                gsap.to(item.children[0], {
-                    y: -20,
-                    // duration: 0.2,
-                    // ease: "power1.inOut",
-                    boxShadow: "0px 30px 10px -20px rgba(0, 0, 0, 0.5)",
-                });
-            });
-            item.addEventListener("mouseout", () => {
-                gsap.to(item.children[0], {
-                    y: 0,
-                    // duration: 0.5,
-                    ease: "bounce.out",
-                    boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.3)",
-                });
-            });
-        });
+        // const containerCards = document.querySelectorAll(".container-card");
+        // containerCards.forEach((item) => {
+        //     item.addEventListener("mouseover", () => {
+        //         gsap.to(item.children[0], {
+        //             y: -20,
+        //             // duration: 0.2,
+        //             // ease: "power1.inOut",
+        //             boxShadow: "0px 30px 10px -20px rgba(0, 0, 0, 0.5)",
+        //         });
+        //     });
+        //     item.addEventListener("mouseout", () => {
+        //         gsap.to(item.children[0], {
+        //             y: 0,
+        //             // duration: 0.5,
+        //             ease: "bounce.out",
+        //             boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.3)",
+        //         });
+        //     });
+        // });
     });
 
     return (
@@ -63,19 +63,19 @@ const Lapangan = (props) => {
                                     router.get(`/pilih-lapangan/${item.slug}`);
                                 }}
                             >
-                                <div className="card w-96 h-56 bg-base-100 shadow-xl image-full">
-                                    <figure>
-                                        <img
-                                            src={item.url_foto}
-                                            alt="foto lapangan"
-                                            className="object-cover object-center w-full"
-                                        />
-                                    </figure>
-                                    <div className="card-body">
-                                        <h2 className="card-title">
+                                <div
+                                    className="w-96 h-56 bg-base-100 shadow-xl border-2 border-slate-50 relative"
+                                    style={{
+                                        backgroundImage: `url(${item.url_foto})`,
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                    }}
+                                >
+                                    <div className="text-center bg-slate-50 absolute bottom-0 left-0 right-0 p-2">
+                                        <h2 className="text-slate-700 font-bold">
                                             {item.nama}
                                         </h2>
-                                        <p>
+                                        <p className="text-slate-700">
                                             {item.status}
                                             {item.status == "siap pakai" ? (
                                                 <BsFillCheckCircleFill

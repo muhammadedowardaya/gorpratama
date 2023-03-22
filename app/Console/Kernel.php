@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('cache:prune-stale-tags')->hourly();
+        $schedule->call('App\Http\Controllers\JadwalController@hapusJadwalSewaLewatWaktu')
+            ->daily();
     }
 
     /**

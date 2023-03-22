@@ -14,63 +14,58 @@
     {{-- style inertia progress --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
 
-    {{-- style container_loading --}}
+    {{-- style loader --}}
     <style>
-        #container_loading {
-            background: rgba(255, 255, 255, 0.25);
-            /* background: #2dd4bf; */
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
+        .container-loader {
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0ea5e9;
         }
 
-        #circle_loading img {
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
+        .loader {
+            position: relative;
         }
 
-        #circle_loading span {
-            background: #2dd4bf;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
-            border-bottom-left-radius: 6px;
-            border-bottom-right-radius: 6px;
-            border: 1px solid #fff;
-            padding: 0 10px;
-            display: block;
+        .loader span {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            font-size: 10vw;
+            letter-spacing: 5px;
+            left: 50%;
+            width: max-content;
         }
 
-        /* #circle_loading svg {
-            width: 150px;
-            height: 150px;
-            transform: rotate(270deg);
-            transition: 5s;
-        } */
-
-        /* #circle_loading svg circle {
-            width: 100%;
-            height: 100%;
-            fill: transparent;
-            stroke-width: 8;
-            stroke: #282828;
-            transform: translate(24px, 24px);
-            filter: drop-shadow(0 0 5px #04fc43);
+        .loader span:nth-child(1) {
+            color: transparent;
+            -webkit-text-stroke: 1px #fff;
         }
 
-        #circle_loading svg circle:nth-child(2) {
-            stroke-dasharray: 355;
-            stroke-dashoffset: 150;
-            stroke: #04fc43;
-        } */
+        .loader span:nth-child(2) {
+            /* color: rgb(128, 198, 255); */
+            color: #cffafe;
+            /* -webkit-text-stroke: 1px rgb(128, 198, 255); */
+            -webkit-text-stroke: 1px #fff;
+            animation: uiverse723 3s ease-in-out infinite;
+        }
+
+        @keyframes uiverse723 {
+
+            0%,
+            100% {
+                clip-path: polygon(0% 45%, 15% 44%, 32% 50%,
+                        54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+            }
+
+            50% {
+                clip-path: polygon(0% 60%, 16% 65%, 34% 66%,
+                        51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
+            }
+        }
     </style>
 
     <!-- Scripts -->
@@ -81,21 +76,15 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div id="container_loading"
-        class="hidden top-0 right-0 bottom-0 left-0 bg-[#2f363e] justify-center items-center z-50">
-        <div id="circle_loading" class="hidden text-center cursor-wait">
-            {{-- <svg class="animate-spin">
-                <circle cx="50" cy="50" r="50"></circle>
-                <circle cx="50" cy="50" r="50"></circle>
-            </svg>  --}}
-            <img src="/api/image/spongebob.gif" alt="" width="200">
-            <span class="text-white animate-pulse font-bold mt-2 text-xl ">
-                Dagoan heula ...
-            </span>
-        </div>
-    </div>
     @inertia
 
 </body>
+
+<div class="container-loader fixed z-50">
+    <div class="loader">
+        <span>Tunggu dulu</span>
+        <span>Tunggu dulu</span>
+    </div>
+</div>
 
 </html>

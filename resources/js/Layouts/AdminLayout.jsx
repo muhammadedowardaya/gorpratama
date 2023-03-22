@@ -33,23 +33,8 @@ export default function AdminLayout({ children, header }) {
     }
 
     getProfileGor().then((gor) => {
-        setGor(gor.nama);
+        setGor(gor["tempat-lapangan"].nama);
     });
-
-    // window.document.body.querySelectorAll("img").forEach((item) => {
-    //     item.addEventListener("loadstart", () => {
-    //         console.info(item.getAttribute("src") + " load dimulai");
-    //         if (!item.classList.contains("animate-pulse")) {
-    //             item.classList.add("animate-pulse");
-    //         }
-    //     });
-    //     item.addEventListener("load", () => {
-    //         console.info(item.getAttribute("src") + " load selesai");
-    //         if (item.classList.contains("animate-pulse")) {
-    //             item.classList.remove("animate-pulse");
-    //         }
-    //     });
-    // });
 
     function requestIs(path) {
         const pattern = new RegExp(path.toString(), "gi");
@@ -60,64 +45,35 @@ export default function AdminLayout({ children, header }) {
     }
 
     useEffect(() => {
-        // const drawerToggle = document.querySelector(".drawer-toggle");
-        // const drawerButton = document.querySelector(".drawer-button");
-        // const drawer = document.querySelector(".drawer");
-        // const form = document.querySelector("form");
-        // const contentTable = document.querySelector("#content-table table");
-        // // const myButton = document.querySelectorAll("MyButton");
-        // // const card = document.querySelectorAll(".card");
-        // if (drawerToggle.checked) {
-        //     setChangeDrawerButtonIcon(true);
-        //     // drawerButton.classList.remove("bg-teal-400");
-        //     // drawerButton.classList.remove("animate-pulse");
-        //     // drawerButton.classList.add("animate-spin");
-        //     // drawerButton.classList.add("bg-transparent");
-        //     if (drawer.classList.contains("z-20")) {
-        //         drawer.classList.remove("z-20");
-        //         drawer.classList.add("z-50");
-        //     }
-        //     if (form != null) {
-        //         form.classList.remove("z-20");
-        //     }
-        //     if (contentTable != null) {
-        //         contentTable.classList.remove("z-20");
-        //     }
-        //     // if (card != null) {
-        //     //     card.forEach((item) => {
-        //     //         item.classList.remove("z-10");
-        //     //     });
-        //     // }
-        // } else {
-        //     setChangeDrawerButtonIcon(false);
-        //     // drawerButton.classList.remove("bg-transparent");
-        //     // drawerButton.classList.add("bg-teal-400");
-        //     // drawerButton.classList.remove("animate-spin");
-        //     // drawerButton.classList.add("animate-pulse");
-        //     if (drawer.classList.contains("z-50")) {
-        //         drawer.classList.remove("z-50");
-        //         drawer.classList.add("z-20");
-        //     }
-        //     if (form != null) {
-        //         form.classList.add("z-20");
-        //     }
-        //     if (contentTable != null) {
-        //         contentTable.classList.add("z-20");
-        //     }
-        //     // if (card != null) {
-        //     //     card.forEach((item) => {
-        //     //         item.classList.add("z-10");
-        //     //     });
-        //     // }
-        // }
+        router.on("start", () => {
+            window.document.body.children[0].classList.add("fixed");
+            window.document.body.children[0].classList.add("flex");
+            window.document.body.children[0].classList.remove("hidden");
+            window.document.body.children[0].children[0].classList.remove(
+                "hidden"
+            );
+        });
+        router.on("finish", () => {
+            window.document.body.children[0].classList.remove("fixed");
+            window.document.body.children[0].classList.remove("flex");
+            window.document.body.children[0].classList.add("hidden");
+            window.document.body.children[0].children[0].classList.add(
+                "hidden"
+            );
+        });
     });
 
     return (
-        <div className="container  bg-gradient-to-br from-teal-300 via-teal-500 to-teal-700 bg-fixed dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
+        <div className="min-h-screen bg-gradient-to-br from-teal-300 via-teal-500 to-teal-700 bg-fixed dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
             {/* <Loading display={displayLoading} /> */}
             <nav className="navbar fixed z-30 top-0 bg-gradient-to-b from-teal-700 via-teal-600 to-teal-300  dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
                 <div className="flex-1">
-                    <a className="text-white m-0 mr-2">{gor ?? "Gor"}</a>
+                    <a
+                        className="text-white m-0 mr-2"
+                        onClick={() => router.get("/")}
+                    >
+                        {gor ?? "Gor"}
+                    </a>
                     <div
                         className="tooltip hover:tooltip-open tooltip-right"
                         data-tip="Klik untuk mengganti mode"

@@ -16,8 +16,6 @@ return new class extends Migration
             $table->date('tanggal')->date_format('d/m/Y');
             $table->foreignId('lapangan_id')->nullable();
             $table->foreignId('user_id')->nullable();
-            $table->foreignId('tempat_lapangan_id')->nullable();
-            $table->foreignId('admin_lapangan_id')->nullable();
             $table->foreignId('jadwal_id')->nullable();
             $table->string('nama_pelanggan')->nullable();
             $table->string('telp')->nullable();

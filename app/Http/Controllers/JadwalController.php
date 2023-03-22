@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jadwal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class JadwalController extends Controller
 {
@@ -35,7 +36,6 @@ class JadwalController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -48,7 +48,7 @@ class JadwalController extends Controller
     {
         date_default_timezone_set("Asia/Jakarta");
         $bulan_ini = \Carbon\Carbon::now()->locale('id');;
-        $jadwal = Jadwal::with('user')->where('lapangan_id',$lapangan_id)->where('bulan', $bulan_ini->monthName)->get();
+        $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->where('bulan', $bulan_ini->monthName)->get();
         return response()->json([
             'jadwal' => $jadwal
         ]);
@@ -86,5 +86,12 @@ class JadwalController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function hapusJadwalSewaLewatWaktu()
+    {
+        DB::table('jadwal')
+            ->where('waktu_selesai', '<', now())
+            ->delete();
     }
 }

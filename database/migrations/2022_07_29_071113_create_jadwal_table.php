@@ -17,13 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('lapangan_id');
-            $table->string('hari');
-            $table->integer('tanggal');
-            $table->string('bulan');
-            $table->integer('tahun');
-            $table->string('dari_jam')->nullable();
-            $table->string('sampai_jam')->nullable();
+            $table->date('tanggal_sewa');
+            $table->date('waktu_mulai');
+            $table->date('waktu_selesai');
             $table->timestamps();
+            // user_id, lapangan_id, tanggal_sewa, waktu_mulai, dan waktu_selesai
         });
     }
 
