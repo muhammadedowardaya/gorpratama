@@ -206,7 +206,7 @@ export default function Layout({ auth, header, children }) {
                             <div className="dropdown dropdown-end ml-3">
                                 {changeDropdownIcon == false ? (
                                     <BsMenuButtonWide
-                                        size="2rem"
+                                        size="35px"
                                         className="fill-white cursor-pointer"
                                         onClick={(e) => {
                                             e.preventDefault();
@@ -228,7 +228,7 @@ export default function Layout({ auth, header, children }) {
                                     />
                                 ) : (
                                     <AiOutlineClose
-                                        size="2rem"
+                                        size="35px"
                                         className="cursor-pointer fill-white drop-shadow rounded-full"
                                         onClick={(e) => {
                                             e.preventDefault();
