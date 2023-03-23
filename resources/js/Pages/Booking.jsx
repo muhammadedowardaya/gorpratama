@@ -7,7 +7,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
 
-import { Input, TimePicker } from "antd";
+import { Input, TimePicker, DatePicker } from "antd";
 import moment from "moment";
 
 const { RangePicker } = TimePicker;
@@ -158,6 +158,14 @@ export default function Booking(props) {
         }
 
         const tanggalSekarang = new Date().toJSON().slice(0, 10);
+        var today = new Date();
+        var day = String(today.getDate()).padStart(2, "0");
+        var month = String(today.getMonth() + 1).padStart(2, "0");
+        var year = today.getFullYear();
+        var formattedDate = day + "-" + month + "-" + year;
+
+        // console.log(formattedDate); // Contoh output: "23-03-2023"
+        console.info(data.tanggal_main + " | " + formattedDate);
 
         if (ada_jadwal == false) {
             if (
@@ -366,7 +374,20 @@ export default function Booking(props) {
                             <div className="mt-4">
                                 <Label forInput="date" value="Tanggal" />
 
-                                <input
+                                <DatePicker
+                                    defaultValue={moment(
+                                        "01-01-2023",
+                                        "DD-MM-YYYY"
+                                    )}
+                                    format="DD-MM-YYYY"
+                                    size="large"
+                                    onChange={(e, value) => {
+                                        setData("tanggal_main", value);
+                                    }}
+                                    className="mt-2"
+                                />
+
+                                {/* <input
                                     type="date"
                                     name="date"
                                     value={data.tanggal_main}
@@ -397,95 +418,47 @@ export default function Booking(props) {
                                         setData({
                                             ...data,
                                             tanggal_main: e.target.value,
-                                            hari: hari,
-                                            tanggal: tanggal,
-                                            bulan: namaBulan,
-                                            tahun: tahun,
                                         });
                                     }}
-                                />
+                                /> */}
                             </div>
 
                             <div className="mt-4">
-                                <Label forInput="jam" value="Jam" />
-
-                                {/* <div className="flex">
-                                    <select
-                                        defaultValue={data.dari_jam}
-                                        className="select  w-max max-w-xs mt-1 mr-4 border-gray-300 focus:!border-indigo-300 focus:ring focus:!ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                                        onChange={(e) => {
-                                            e.preventDefault();
-                                            setData("dari_jam", e.target.value);
+                                <div className="grid grid-cols-2">
+                                    <Label forInput="jam" value="Jam mulai" />
+                                    <Label forInput="jam" value="Jam selesai" />
+                                    <RangePicker
+                                        format="HH"
+                                        onChange={(value, dateString) => {
+                                            setData({
+                                                ...data,
+                                                jam_mulai: dateString[0],
+                                                jam_selesai: dateString[1],
+                                            });
                                         }}
-                                        name="dari_jam"
+                                        value={[
+                                            data.jam_mulai
+                                                ? moment(
+                                                      data.jam_mulai,
+                                                      "HH:mm"
+                                                  )
+                                                : null,
+                                            data.jam_selesai
+                                                ? moment(
+                                                      data.jam_selesai,
+                                                      "HH:mm"
+                                                  )
+                                                : null,
+                                        ]}
                                         disabled={
                                             data.tanggal_main == ""
                                                 ? true
                                                 : false
                                         }
-                                    >
-                                        <option disabled value="Default">
-                                            Dari Jam
-                                        </option>
-                                        {data.jam &&
-                                            data.jam.map((waktu, index) => {
-                                                return (
-                                                    <option
-                                                        key={index}
-                                                        value={waktu.jam}
-                                                    >
-                                                        {waktu.jam}
-                                                    </option>
-                                                );
-                                            })}
-                                    </select>
-
-                                    <select
-                                        defaultValue={data.sampai_jam}
-                                        className="select  w-max max-w-xs mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                                        onChange={(e) => {
-                                            e.preventDefault();
-                                            setData(
-                                                "sampai_jam",
-                                                e.target.value
-                                            );
-                                        }}
-                                        name="sampai_jam"
-                                        disabled={
-                                            data.tanggal_main == ""
-                                                ? true
-                                                : false
-                                        }
-                                    >
-                                        <option disabled value="Default">
-                                            Sampai Jam
-                                        </option>
-                                        {data.jam &&
-                                            data.jam.map((waktu, index) => {
-                                                return (
-                                                    <option
-                                                        key={index}
-                                                        value={waktu.jam}
-                                                    >
-                                                        {waktu.jam}
-                                                    </option>
-                                                );
-                                            })}
-                                    </select>
-                                </div> */}
-
-                                <RangePicker
-                                    format="HH:mm"
-                                    onChange={handleTimeChange}
-                                    value={[
-                                        jamMulai
-                                            ? moment(jamMulai, "HH:mm")
-                                            : null,
-                                        jamSelesai
-                                            ? moment(jamSelesai, "HH:mm")
-                                            : null,
-                                    ]}
-                                />
+                                        size="large"
+                                        className="mt-2 col-span-2 text-slate-700"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

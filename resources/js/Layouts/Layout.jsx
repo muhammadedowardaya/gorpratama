@@ -175,7 +175,7 @@ export default function Layout({ auth, header, children }) {
         //     <main>{children}</main>
         // </div>
         <>
-            <div className="min-h-screen bg-fixed bg-sky-600">
+            <div className="min-h-screen pt-16 bg-fixed bg-sky-600">
                 {/* --------------------------------- */}
                 <nav className="navbar h-16 px-10 fixed z-40 top-0 bg-gradient-to-br from-sky-500 to-sky-600  dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
                     <div className="flex-1">
@@ -288,9 +288,7 @@ export default function Layout({ auth, header, children }) {
                     </section>
                 )}
 
-                <main className="z-30 min-w-full  mt-14 relative">
-                    {children}
-                </main>
+                <main className="z-30 relative">{children}</main>
                 {/* --------------------------------- */}
                 {/* <div className="hero__title">Squares Animation</div> */}
                 <div className="cube"></div>

@@ -108,7 +108,7 @@ export default function Login(props, { status, canResetPassword }) {
                 </div>
             )}
 
-            <div className="flex flex-col sm:justify-center items-center min-h-screen pt-10 md:p-0 px-5">
+            <div className="flex flex-col justify-center items-center px-5 mt-5">
                 <h1 className="text-slate-50 font-bold text-2xl mb-5 p-0">
                     Login
                 </h1>

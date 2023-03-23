@@ -77,7 +77,6 @@
 
 <body class="font-sans antialiased">
     @inertia
-
 </body>
 
 <div class="container-loader fixed z-50">
