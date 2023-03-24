@@ -7,10 +7,8 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
 
-// datepicker
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// date range
+import DateRangePicker from "flowbite-datepicker";
 
 export default function Booking(props) {
     // const [dari_jam, set_dari_jam] = useState("Default");
@@ -359,12 +357,6 @@ export default function Booking(props) {
                             <div className="mt-4">
                                 <Label forInput="date" value="Tanggal" />
 
-                                <LocalizationProvider
-                                    dateAdapter={AdapterDayjs}
-                                >
-                                    <DatePicker />
-                                </LocalizationProvider>
-
                                 {/* <DatePicker
                                     defaultValue={moment(
                                         "01-01-2023",
@@ -418,6 +410,26 @@ export default function Booking(props) {
                                 <div className="grid grid-cols-2">
                                     <Label forInput="jam" value="Jam mulai" />
                                     <Label forInput="jam" value="Jam selesai" />
+
+                                    <DateRangePicker
+                                        startDate={data.jam_mulai}
+                                        endDate={data.jam_selesai}
+                                        onChange={({
+                                            jam_mulai,
+                                            jam_selesai,
+                                        }) => {
+                                            setData({
+                                                ...data,
+                                                jam_mulai: jam_mulai,
+                                                jam_selesai: jam_selesai,
+                                            });
+                                        }}
+                                        timePickerProps={{
+                                            showMinute: false,
+                                            use12Hours: true,
+                                        }}
+                                    />
+
                                     {/* <RangePicker
                                         format="HH"
                                         onChange={(value, dateString) => {
