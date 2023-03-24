@@ -7,16 +7,14 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
 
-// import { TimePicker } from "antd";
-// import moment from "moment";
-
-// const { RangePicker } = TimePicker;
+// datepicker
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function Booking(props) {
     // const [dari_jam, set_dari_jam] = useState("Default");
     // const [sampai_jam, set_sampai_jam] = useState("Default");
-
-    // document.querySelector("a.ant-picker-today-btn").click();
 
     const { data, setData } = useForm({
         lapangan_id: props.lapangan.id,
@@ -48,17 +46,17 @@ export default function Booking(props) {
         amount: "",
     });
 
-    // async function getJadwal() {
-    //     const response = await fetch(`/api/jadwal/${props.lapangan.id}`);
-    //     const jadwal = await response.json();
-    //     return jadwal;
-    // }
+    async function getJadwal() {
+        const response = await fetch(`/api/jadwal/${props.lapangan.id}`);
+        const jadwal = await response.json();
+        return jadwal;
+    }
 
-    // getJadwal().then((response) => {
-    //     if (response.jadwal != "") {
-    //         setData(jadwal, response.jadwal);
-    //     }
-    // });
+    getJadwal().then((response) => {
+        if (response.jadwal != "") {
+            setData(jadwal, response.jadwal);
+        }
+    });
 
     function durasiDanHarga() {
         return new Promise((resolve, reject) => {
@@ -188,12 +186,7 @@ export default function Booking(props) {
                     if (response.total_harga != "") {
                         Swal.fire({
                             title: "Konfirmasi Pesanan Mu",
-                            text: `Anda memesan lapangan untuk tanggal ${
-                                data.tanggal_main
-                            } selama ${
-                                parseInt(data.jam_selesai) -
-                                parseInt(data.jam_mulai)
-                            } jam seharga ${data.total_harga}`,
+                            text: `Anda memesan lapangan untuk tanggal ${data.tanggal_main} selama ${data.lama_bermain} jam seharga ${data.total_harga}`,
                             icon: "info",
                             showCancelButton: true,
                             confirmButtonColor: "#3085d6",
@@ -366,24 +359,26 @@ export default function Booking(props) {
                             <div className="mt-4">
                                 <Label forInput="date" value="Tanggal" />
 
+                                <LocalizationProvider
+                                    dateAdapter={AdapterDayjs}
+                                >
+                                    <DatePicker />
+                                </LocalizationProvider>
+
                                 {/* <DatePicker
                                     defaultValue={moment(
                                         "01-01-2023",
                                         "DD-MM-YYYY"
                                     )}
-                                    // defaultValue={moment(
-                                    //     "01-01-2023",
-                                    //     "DD-MM-YYYY"
-                                    // )}
                                     format="DD-MM-YYYY"
-                                    size="large"
+                                    size="middle"
                                     onChange={(value) => {
                                         setData("tanggal_main", value);
                                     }}
                                     className="mt-2"
                                 /> */}
 
-                                <input
+                                {/* <input
                                     type="date"
                                     name="date"
                                     value={data.tanggal_main}
@@ -393,14 +388,30 @@ export default function Booking(props) {
                                     onChange={(e) => {
                                         e.preventDefault();
 
-                                        const selectedDate = e.target.value;
-                                        const formattedDate = selectedDate
-                                            .split("-")
-                                            .reverse()
-                                            .join("-"); // Format tanggal menjadi DD-MM-YYYY
-                                        setData("tanggal_main", formattedDate);
+                                        const date = new Date(e.target.value)
+                                            .toJSON()
+                                            .slice(0, 10);
+                                        const options = { weekday: "long" };
+                                        const hari = new Intl.DateTimeFormat(
+                                            "id-ID",
+                                            options
+                                        ).format(e.target.valueAsDate);
+                                        const tanggal = date.split("-")[2];
+                                        const bulan = new Date(date);
+                                        const namaBulan = bulan.toLocaleString(
+                                            "id-ID",
+                                            {
+                                                month: "long",
+                                            }
+                                        );
+                                        const tahun = date.split("-")[0];
+
+                                        setData({
+                                            ...data,
+                                            tanggal_main: e.target.value,
+                                        });
                                     }}
-                                />
+                                /> */}
                             </div>
 
                             <div className="mt-4">
@@ -409,8 +420,7 @@ export default function Booking(props) {
                                     <Label forInput="jam" value="Jam selesai" />
                                     {/* <RangePicker
                                         format="HH"
-                                        onChange={(e, value, dateString) => {
-                                            e.preventDefault();
+                                        onChange={(value, dateString) => {
                                             setData({
                                                 ...data,
                                                 jam_mulai: dateString[0],
