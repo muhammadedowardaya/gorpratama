@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('lapangan_id');
-            $table->date('tanggal_sewa');
-            $table->date('waktu_mulai');
-            $table->date('waktu_selesai');
+            $table->date('tanggal');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
             $table->timestamps();
             // user_id, lapangan_id, tanggal_sewa, waktu_mulai, dan waktu_selesai
         });

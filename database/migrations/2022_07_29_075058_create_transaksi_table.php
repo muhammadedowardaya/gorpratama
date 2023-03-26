@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable();
             $table->foreignId('lapangan_id')->nullable();
-            $table->string('status');
-            $table->string('description');
-            $table->string('invoice_url');
             $table->integer('amount');
+            $table->string('description');
+            $table->string('status');
+            $table->string('invoice_url');
             $table->date('created');
             $table->date('updated');
         });

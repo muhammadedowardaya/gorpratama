@@ -122,25 +122,24 @@ class TransaksiController extends Controller
         // Transaksi::create([
         //     'user_id' => auth()->user()->id,
         //     'lapangan_id' => request('lapangan_id'),
-        //     'jadwal_id' => request('lapangan_id'),
         //     'external_id' => $external_id,
         //     'amount' => request('amount'),
         //     'description' => request('description'),
-        //     'payment_status' => $response->status,
-        //     'payment_link' => $response->invoice_url
+        //     'status' => $response->status,
+        //     'invoice_url' => $response->invoice_url
         // ]);
-        // return redirect()->route('tagihan.list');
+        // return url($response->invoice_url);
 
         dd($response);
 
         // buat jadwal baru
-        $jadwal = new Jadwal;
-        $jadwal->user_id = $request->user_id;
-        $jadwal->lapangan_id = $request->lapangan_id;
-        $jadwal->tanggal = $request->tanggal_sewa;
-        $jadwal->waktu_mulai = $request->waktu_mulai;
-        $jadwal->waktu_selesai = $request->waktu_selesai;
-        $jadwal->save();
+        // $jadwal = new Jadwal;
+        // $jadwal->user_id = $request->user_id;
+        // $jadwal->lapangan_id = $request->lapangan_id;
+        // $jadwal->tanggal = $request->tanggal_sewa;
+        // $jadwal->jam_mulai = $request->jam_mulai;
+        // $jadwal->jam_selesai = $request->jam_selesai;
+        // $jadwal->save();
     }
 
     /**

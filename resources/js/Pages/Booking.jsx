@@ -7,13 +7,11 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
 
-// date range
-import DateRangePicker from "flowbite-datepicker";
+// date picker dan time picker
+import { DatePicker } from "antd";
+import { TimePicker } from "antd";
 
 export default function Booking(props) {
-    // const [dari_jam, set_dari_jam] = useState("Default");
-    // const [sampai_jam, set_sampai_jam] = useState("Default");
-
     const { data, setData } = useForm({
         lapangan_id: props.lapangan.id,
         tempat_lapangan_id: props.tempat_lapangan.id,
@@ -44,46 +42,26 @@ export default function Booking(props) {
         amount: "",
     });
 
-    async function getJadwal() {
-        const response = await fetch(`/api/jadwal/${props.lapangan.id}`);
-        const jadwal = await response.json();
-        return jadwal;
-    }
+    // async function getJadwal() {
+    //     const response = await fetch(`/api/jadwal/${props.lapangan.id}`);
+    //     const jadwal = await response.json();
+    //     return jadwal;
+    // }
 
-    getJadwal().then((response) => {
-        if (response.jadwal != "") {
-            setData(jadwal, response.jadwal);
-        }
-    });
+    // getJadwal().then((response) => {
+    //     if (response.jadwal != "") {
+    //         setData(jadwal, response.jadwal);
+    //     }
+    // });
 
     function durasiDanHarga() {
         return new Promise((resolve, reject) => {
-            const dari_jam_satuan = data.dari_jam;
-            const sampai_jam_satuan = data.sampai_jam;
-
-            let dari_jam;
-            let sampai_jam;
-
-            if (dari_jam_satuan[0] == "0") {
-                dari_jam = dari_jam_satuan[1];
-            } else {
-                dari_jam = `${dari_jam_satuan[0]}${dari_jam_satuan[1]}`;
-            }
-
-            if (sampai_jam_satuan[0] == "0") {
-                sampai_jam = sampai_jam_satuan[1];
-            } else {
-                sampai_jam = `${
-                    sampai_jam_satuan[0].toString() +
-                    sampai_jam_satuan[1].toString()
-                }`;
-            }
-
             const total =
-                (parseInt(sampai_jam) - parseInt(dari_jam)) *
+                (parseInt(data.jam_selesai) - parseInt(data.jam_mulai)) *
                 data.harga_persewa;
 
-            const lama_bermain = parseInt(sampai_jam) - parseInt(dari_jam);
+            const lama_bermain =
+                parseInt(data.jam_selesai) - parseInt(data.jam_mulai);
 
             setData({
                 ...data,
@@ -102,39 +80,6 @@ export default function Booking(props) {
         const data_terbaru = await durasiDanHarga();
         return data_terbaru;
     };
-    // const update_data = async () => {
-    //     const dari_jam_satuan = data.dari_jam;
-    //     const sampai_jam_satuan = data.sampai_jam;
-
-    //     let dari_jam;
-    //     let sampai_jam;
-
-    //     if (dari_jam_satuan[0] == "0") {
-    //         dari_jam = dari_jam_satuan[1];
-    //     } else {
-    //         dari_jam = `${dari_jam_satuan[0]}${dari_jam_satuan[1]}`;
-    //     }
-
-    //     if (sampai_jam_satuan[0] == "0") {
-    //         sampai_jam = sampai_jam_satuan[1];
-    //     } else {
-    //         sampai_jam = `${
-    //             sampai_jam_satuan[0].toString() +
-    //             sampai_jam_satuan[1].toString()
-    //         }`;
-    //     }
-
-    //     const total =
-    //         (parseInt(sampai_jam) - parseInt(dari_jam)) * data.harga_persewa;
-
-    //     const lama_bermain = parseInt(sampai_jam) - parseInt(dari_jam);
-
-    //     await setDataPromise({
-    //         ...data,
-    //         lama_bermain: lama_bermain,
-    //         total_harga: FormatRupiah(total.toString(), "Rp. "),
-    //     });
-    // };
 
     const submit = (e) => {
         e.preventDefault();
@@ -156,11 +101,11 @@ export default function Booking(props) {
         }
 
         // const tanggalSekarang = new Date().toJSON().slice(0, 10);
-        var today = new Date();
-        var day = String(today.getDate()).padStart(2, "0");
-        var month = String(today.getMonth() + 1).padStart(2, "0");
-        var year = today.getFullYear();
-        var formattedDate = day + "-" + month + "-" + year;
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const year = today.getFullYear();
+        const formattedDate = day + "-" + month + "-" + year;
 
         // console.log(formattedDate); // Contoh output: "23-03-2023"
         // console.info(data.tanggal_main < formattedDate);
@@ -356,6 +301,23 @@ export default function Booking(props) {
 
                             <div className="mt-4">
                                 <Label forInput="date" value="Tanggal" />
+                                {/* date range */}
+
+                                {/* <DatePicker
+                                    options={options}
+                                    onChange={handleChange}
+                                    show={show}
+                                    setShow={handleClose}
+                                /> */}
+
+                                <DatePicker
+                                    format="DD-MM-YYYY"
+                                    className="mt-2"
+                                    onChange={(day, date) => {
+                                        setData("tanggal_main", date);
+                                    }}
+                                    size="large"
+                                />
 
                                 {/* <DatePicker
                                     defaultValue={moment(
@@ -411,7 +373,7 @@ export default function Booking(props) {
                                     <Label forInput="jam" value="Jam mulai" />
                                     <Label forInput="jam" value="Jam selesai" />
 
-                                    <DateRangePicker
+                                    {/* <DateRangePicker
                                         startDate={data.jam_mulai}
                                         endDate={data.jam_selesai}
                                         onChange={({
@@ -428,9 +390,9 @@ export default function Booking(props) {
                                             showMinute: false,
                                             use12Hours: true,
                                         }}
-                                    />
+                                    /> */}
 
-                                    {/* <RangePicker
+                                    <TimePicker.RangePicker
                                         format="HH"
                                         onChange={(value, dateString) => {
                                             setData({
@@ -439,20 +401,20 @@ export default function Booking(props) {
                                                 jam_selesai: dateString[1],
                                             });
                                         }}
-                                        value={[
-                                            data.jam_mulai
-                                                ? moment(
-                                                      data.jam_mulai,
-                                                      "HH:mm"
-                                                  )
-                                                : null,
-                                            data.jam_selesai
-                                                ? moment(
-                                                      data.jam_selesai,
-                                                      "HH:mm"
-                                                  )
-                                                : null,
-                                        ]}
+                                        // value={[
+                                        //     data.jam_mulai
+                                        //         ? moment(
+                                        //               data.jam_mulai,
+                                        //               "HH:mm"
+                                        //           )
+                                        //         : null,
+                                        //     data.jam_selesai
+                                        //         ? moment(
+                                        //               data.jam_selesai,
+                                        //               "HH:mm"
+                                        //           )
+                                        //         : null,
+                                        // ]}
                                         disabled={
                                             data.tanggal_main == ""
                                                 ? true
@@ -460,7 +422,7 @@ export default function Booking(props) {
                                         }
                                         size="large"
                                         className="mt-2 col-span-2 text-slate-700"
-                                    /> */}
+                                    />
                                 </div>
                             </div>
                         </div>

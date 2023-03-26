@@ -86,7 +86,7 @@ export default function UcapanHome() {
                         Jangan lupa untuk melihat pesanan sewa lapangan dari
                         pelanggan!
                     </p>
-                    <button className="border border-slate-50 w-52 py-1 my-2">
+                    <button className="border border-slate-50 w-52 py-1 my-2 primary">
                         Pesanan
                     </button>
                 </div>
@@ -115,7 +115,7 @@ export default function UcapanHome() {
                     </button>
                     <p className="mt-6">Sudah punya akun?</p>
                     <button
-                        className="border border-slate-50 w-52 py-1 my-2"
+                        className="border border-slate-50 w-52 py-1 my-2 primary"
                         onClick={(e) => {
                             e.preventDefault();
                             router.get("/login");

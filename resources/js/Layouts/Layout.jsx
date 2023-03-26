@@ -262,7 +262,13 @@ export default function Layout({ auth, header, children }) {
                                         </a>
                                     </li>
                                     <li>
-                                        <a>Settings</a>
+                                        <a
+                                            onClick={(e) =>
+                                                router.get("/dashboard/pesanan")
+                                            }
+                                        >
+                                            Pesanan Saya
+                                        </a>
                                     </li>
                                     <li>
                                         <a

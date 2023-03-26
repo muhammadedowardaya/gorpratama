@@ -108,6 +108,18 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
 
     Route::post('/booking', [TagihanController::class, 'store']);
 
+    Route::get('/dashboard/pesanan', function () {
+        return Inertia::render('Dashboard/User/Pesanan');
+    });
+
+    Route::get('/dashboard/jadwal', function () {
+        return Inertia::render('Dashboard/User/Jadwal');
+    });
+
+    Route::get('/dashboard/pengaturan', function () {
+        return Inertia::render('Dashboard/User/Pengaturan');
+    });
+
     Route::prefix('tagihan')->group(function () {
         /**
          * menampilkan list data tagihan nya

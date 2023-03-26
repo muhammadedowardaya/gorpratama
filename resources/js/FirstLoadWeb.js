@@ -7,8 +7,8 @@ document.onreadystatechange = function () {
     if (document.readyState !== "complete") {
         window.document.style.visibility = "hidden";
         // window.document.children[1].style.visibility = "visible";
-        // window.document.children[1].classList.add("flex");
-        window.document.children[1].classList.add("fixed");
+        window.document.children[1].classList.add("flex");
+        // window.document.children[1].classList.add("fixed");
         window.document.children[1].classList.remove("hidden");
         // window.document.body.children[0].children[0].classList.remove("hidden");
         // const main = document.querySelector("main");
@@ -20,8 +20,8 @@ document.onreadystatechange = function () {
         //     });
         // }
     } else {
-        window.document.body.children[1].classList.remove("fixed");
-        // window.document.body.children[1].classList.remove("flex");
+        // window.document.body.children[1].classList.remove("fixed");
+        window.document.body.children[1].classList.remove("flex");
         window.document.body.children[1].classList.add("hidden");
         // window.document.body.children[0].children[0].classList.add("hidden");
         // window.document.children[1].style.visibility = "hidden";

@@ -11,7 +11,7 @@ class Jadwal extends Model
 
     protected $table = 'jadwal';
 
-    protected $fillable = ['user_id', 'lapangan_id', 'hari', 'tanggal', 'bulan', 'tahun', 'dari_jam', 'sampai_jam'];
+    protected $fillable = ['user_id', 'lapangan_id', 'judul', 'tanggal', 'jam_mulai', 'jam_selesai'];
 
     public function lapangans()
     {

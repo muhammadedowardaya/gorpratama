@@ -21,7 +21,8 @@
             bottom: 0;
             right: 0;
             left: 0;
-            display: flex;
+            display: none;
+            position: fixed;
             justify-content: center;
             align-items: center;
             background-color: #0ea5e9;
@@ -79,7 +80,7 @@
     @inertia
 </body>
 
-<div class="container-loader fixed z-50">
+<div class="container-loader z-50">
     <div class="loader">
         <span>Tunggu dulu</span>
         <span>Tunggu dulu</span>

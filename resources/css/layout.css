@@ -3,12 +3,21 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+#container {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: 90vh;
+    overflow-y: hidden;
 }
 
 nav.navbar {
     /* padding: 10px 20px; */
     /* font-family: "Teko", sans-serif; */
     font-family: "Ubuntu", sans-serif;
+    box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.5);
 }
 
 .navbar .dropdown ul {
@@ -26,7 +35,8 @@ nav.navbar {
     border: 1px solid #fff;
     /* background: #fff; */
     /* background: linear-gradient(to right, #0e7490, #0d9488, #34d399); */
-    background: linear-gradient(to right, #0891b2, #0e7490);
+    background: linear-gradient(to right, #0284c7, #38bdf8);
+    /* background-color: #38bdf8; */
     color: #fff;
 }
 
@@ -60,12 +70,8 @@ nav.navbar {
     visibility: hidden;
 } */
 
-footer {
-    color: #fff;
-}
-
 footer a {
-    color: #fff;
+    color: #334155;
 }
 
 button.primary:hover {
@@ -77,9 +83,10 @@ button.primary:hover {
     color: #0ea5e9;
 }
 
-/* .ant-btn {
+.ant-btn-primary {
     color: #000;
-} */
+    border: 1px solid #0ea5e9;
+}
 
 /* @import url("https://fonts.googleapis.com/css?family=Montserrat:700");
 .my_hero {
@@ -107,16 +114,16 @@ button.primary:hover {
     width: 10px;
     height: 10px;
     /* border: solid 1px #003298; */
-    border: solid 1px #0ea5e9;
+    border: solid 1px #e0f2fe;
     transform-origin: top left;
     transform: scale(0) rotate(0deg) translate(-50%, -50%);
     -webkit-animation: cube 12s ease-in forwards infinite;
-    animation: cube 12s ease-in forwards infinite;
+    animation: cube 50s ease-in forwards infinite;
     pointer-events: none;
 }
 .cube:nth-child(2n) {
     /* border-color: #0051f4; */
-    border-color: #38bdf8;
+    border-color: #7dd3fc;
 }
 .cube:nth-child(2) {
     -webkit-animation-delay: 2s;

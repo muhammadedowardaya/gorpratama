@@ -8,6 +8,7 @@ import { AiFillCloseCircle, AiOutlineClose } from "react-icons/ai";
 import gsap from "gsap";
 
 import "../modules/csrf.js";
+import Sidebar from "@/Components/Sidebar";
 
 export default function UserLayout({ children, header, title }) {
     const [user, setUser] = useState("");
@@ -64,14 +65,13 @@ export default function UserLayout({ children, header, title }) {
     });
 
     return (
-        <div className="min-h-screen  bg-gradient-to-br from-teal-300 via-teal-500 to-teal-700 bg-fixed dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
-            {/* <Loading display={displayLoading} /> */}
-            <Head title={title} />
-            <nav className="navbar fixed z-30 bg-gradient-to-b from-teal-700 via-teal-600 to-teal-300  dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
+        <div className="min-h-screen pt-16 bg-fixed bg-gradient-to-l from-slate-50 to-white">
+            {/* --------------------------------- */}
+            <nav className="navbar h-16 px-10 fixed z-40 top-0 left-0 right-0 bg-gradient-to-br from-sky-500 to-sky-600  dark:bg-gradient-to-b dark:from-stone-800 dark:via-stone-700 dark:to-stone-500">
                 <div className="flex-1">
                     <a
-                        className="text-white m-0 mr-2"
-                        onClick={() => router.get("/")}
+                        className="text-white m-0 mr-2 cursor-pointer font-bold md:text-xl"
+                        onClick={(e) => router.get("/")}
                     >
                         {gor ?? "Gor"}
                     </a>
@@ -82,16 +82,21 @@ export default function UserLayout({ children, header, title }) {
                         <SwitchMode size="2em" />
                     </div>
                 </div>
-                {user != null && user != "" ? (
+                {user != null ? (
                     <div className="flex-none">
-                        <span className="text-white pr-4">{user.nama}</span>
-                        <div className="w-10 h-10 rounded-full border">
-                            <img src={user.url_logo} />
+                        <span className="text-white pr-4 hidden md:inline-block">
+                            {user.nama}
+                        </span>
+                        <div>
+                            <img
+                                src={user.url_foto}
+                                className="w-10 h-10 rounded-full"
+                            />
                         </div>
-                        <div className="dropdown dropdown-end ml-3">
+                        {/* <div className="dropdown dropdown-end ml-3">
                             {changeDropdownIcon == false ? (
                                 <BsMenuButtonWide
-                                    size="2rem"
+                                    size="35px"
                                     className="fill-white cursor-pointer"
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -113,7 +118,7 @@ export default function UserLayout({ children, header, title }) {
                                 />
                             ) : (
                                 <AiOutlineClose
-                                    size="2rem"
+                                    size="35px"
                                     className="cursor-pointer fill-white drop-shadow rounded-full"
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -134,18 +139,24 @@ export default function UserLayout({ children, header, title }) {
                                     }}
                                 />
                             )}
-                            <ul className="menu menu-compact mt-3 w-52 z-20 list-pengaturan-user absolute">
+                             <ul className="menu menu-compact mt-3 w-52 z-20 list-pengaturan-user absolute">
                                 <li>
                                     <a
                                         className="justify-between"
                                         onClick={(e) => router.get("/profile")}
                                     >
                                         Profile
-                                        {/* <span className="badge">New</span> */}
+                                        <span className="badge">New</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a>Settings</a>
+                                    <a
+                                        onClick={(e) =>
+                                            router.get("/dashboard/pesanan")
+                                        }
+                                    >
+                                        Pesanan Saya
+                                    </a>
                                 </li>
                                 <li>
                                     <a
@@ -158,198 +169,84 @@ export default function UserLayout({ children, header, title }) {
                                     </a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> */}
                     </div>
                 ) : (
                     ""
                 )}
             </nav>
-            <div className="drawer-side fixed z-30 -left-80">
-                <ul className="menu p-4 w-80 bg-base-100 text-base-content relative min-h-screen">
-                    {/* <!-- Sidebar content here --> */}
-                    <li>
-                        <a
-                            className={`${requestIs(
-                                "dashboard/tempat-lapangan*"
-                            )}`}
-                            onClick={() => {
-                                router.get("/dashboard/tempat-lapangan");
-                            }}
-                        >
-                            Tempat Lapangan / Profile Gor
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            className={`${requestIs("dashboard/lapangan*")}`}
-                            onClick={() => {
-                                router.get("/dashboard/lapangan");
-                            }}
-                        >
-                            Lapangan
-                        </a>
-                    </li>
-                    {changeDrawerButtonIcon == false ? (
-                        <BsFillArrowRightCircleFill
-                            size="2.5em"
-                            className="fill-white bg-teal-400 rounded-full absolute -right-12 top-2 cursor-pointer"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setChangeDrawerButtonIcon(true);
-                                gsap.to(".drawer-side", {
-                                    x: "20rem",
-                                    ease: "back.out(1.7)",
-                                    duration: 0.7,
-                                });
-                            }}
-                        />
-                    ) : (
-                        <AiFillCloseCircle
-                            size="2.5em"
-                            className="fill-red-500 rounded-full bg-white absolute -right-12 top-2 cursor-pointer"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setChangeDrawerButtonIcon(false);
-                                gsap.to(".drawer-side", {
-                                    x: "0rem",
-                                    ease: "back.in(1.7)",
-                                    duration: 0.6,
-                                });
-                            }}
-                        />
-                    )}
-                </ul>
-            </div>
-            {/* <div className="drawer fixed z-20 bg-transparent">
-                <input
-                    id="my-drawer"
-                    type="checkbox"
-                    className="drawer-toggle"
-                />
 
-                <div className="drawer-side">
-                    <label
-                        htmlFor="my-drawer"
-                        className="drawer-overlay"
-                    ></label>
-                    <ul className="menu p-4 w-80 bg-base-100 text-base-content">
-                        <!-- Sidebar content here --> *
-                        <li>
-                            <a
-                                className={`${requestIs(
-                                    "dashboard/tempat-lapangan*"
-                                )}`}
-                                onClick={() => {
-                                    router.get("/dashboard/tempat-lapangan");
-                                }}
-                            >
-                                Tempat Lapangan / Profile Gor
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                className={`${requestIs(
-                                    "dashboard/lapangan*"
-                                )}`}
-                                onClick={() => {
-                                    router.get("/dashboard/lapangan");
-                                }}
-                            >
-                                Lapangan
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                // className={`${requestIs("dashboard/lapangan")}`}
-                                onClick={() => {
-                                    router.get("/dashboard/lapangan");
-                                }}
-                            >
-                                Pesanan
-                            </a>
-                        </li>
-                        <div className="drawer-content absolute -right-14 top-4">
-                            <!-- Page content here --> 
-                            <label
-                                htmlFor="my-drawer"
-                                className="drawer-button animate-pulse border-none cursor-pointer"
-                            >
-                                {changeDrawerButtonIcon === true ? (
-                                    <AiFillCloseCircle
-                                        size="2.5em"
-                                        className="fill-red-500 rounded-full bg-white"
-                                    />
-                                ) : (
-                                    <div
-                                        className="tooltip hover:tooltip-open tooltip-right normal-case"
-                                        data-tip="Klik untuk membuka sidebar"
-                                    >
-                                        <BsFillArrowRightCircleFill
-                                            size="2.5em"
-                                            className="fill-white bg-teal-400 rounded-full"
-                                        />
-                                    </div>
-                                )}
-                            </label>
-                        </div>
-                    </ul>
-                </div>
-            </div> */}
             {header && (
-                <section className="px-5 pt-5 pb-4 fixed top-14 w-full flex justify-evenly">
-                    {/* {header} */}
+                <section className="px-5 pt-5 pb-4 fixed top-14 z-10 w-full flex justify-evenly">
+                    {header}
                 </section>
             )}
-            <main>{children}</main>
-            <footer>
-                <div className="max-w-md mx-auto flex py-8">
-                    <div className="w-full mx-auto flex flex-wrap">
-                        <div className="flex w-full md:w-1/2">
-                            <div className="px-8">
-                                <h3 className="font-bold ">About</h3>
-                                <p className="py-4  text-sm">
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit. Maecenas vel mi ut felis
-                                    tempus commodo nec id erat. Suspendisse
-                                    consectetur dapibus velit ut lacinia.
-                                </p>
-                            </div>
-                        </div>
+            <div id="container">
+                <Sidebar className="z-50" />
+                <section id="content" className="z-30 overflow-y-scroll">
+                    <main className="p-8">{children}</main>
+                    <footer>
+                        <div className="max-w-md mx-auto flex py-8">
+                            <div className="w-full mx-auto flex flex-wrap">
+                                <div className="flex w-full md:w-1/2">
+                                    <div className="px-8">
+                                        <h3 className="font-bold ">About</h3>
+                                        <p className="py-4  text-sm">
+                                            Lorem ipsum dolor sit amet,
+                                            consectetur adipiscing elit.
+                                            Maecenas vel mi ut felis tempus
+                                            commodo nec id erat. Suspendisse
+                                            consectetur dapibus velit ut
+                                            lacinia.
+                                        </p>
+                                    </div>
+                                </div>
 
-                        <div className="flex w-full md:w-1/2">
-                            <div className="px-8">
-                                <h3 className="font-bold ">Social</h3>
-                                <ul className="list-reset items-center text-sm pt-3">
-                                    <li>
-                                        <a
-                                            className="inline-block  no-underline hover:underline py-1"
-                                            href="#"
-                                        >
-                                            Add social link
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            className="inline-block  no-underline hover:underline py-1"
-                                            href="#"
-                                        >
-                                            Add social link
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            className="inline-block  no-underline hover:underline py-1"
-                                            href="#"
-                                        >
-                                            Add social link
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div className="flex w-full md:w-1/2">
+                                    <div className="px-8">
+                                        <h3 className="font-bold ">Social</h3>
+                                        <ul className="list-reset items-center text-sm pt-3">
+                                            <li>
+                                                <a
+                                                    className="inline-block  no-underline hover:underline py-1"
+                                                    href="#"
+                                                >
+                                                    Add social link
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    className="inline-block  no-underline hover:underline py-1"
+                                                    href="#"
+                                                >
+                                                    Add social link
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    className="inline-block  no-underline hover:underline py-1"
+                                                    href="#"
+                                                >
+                                                    Add social link
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </footer>
+                    </footer>
+                </section>
+            </div>
+
+            {/* --------------------------------- */}
+            {/* <div className="hero__title">Squares Animation</div> */}
+            <div className="cube"></div>
+            <div className="cube"></div>
+            <div className="cube"></div>
+            <div className="cube"></div>
+            <div className="cube"></div>
+            <div className="cube"></div>
         </div>
     );
 }
