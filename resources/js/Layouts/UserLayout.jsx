@@ -9,6 +9,7 @@ import gsap from "gsap";
 
 import "../modules/csrf.js";
 import Sidebar from "@/Components/Sidebar";
+import axios from "axios";
 
 export default function UserLayout({ children, header, title }) {
     const [user, setUser] = useState("");
@@ -183,8 +184,17 @@ export default function UserLayout({ children, header, title }) {
             )}
             <div id="container">
                 <Sidebar className="z-50" />
-                <section id="content" className="z-30 overflow-y-scroll">
+                <section id="content" className="z-50 overflow-y-scroll">
                     <main className="p-8">{children}</main>
+                    <a
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/dashboard/jadwal");
+                        }}
+                        className="p-20 z-50 cursor-pointer"
+                    >
+                        Pencet OYYY
+                    </a>
                     <footer>
                         <div className="max-w-md mx-auto flex py-8">
                             <div className="w-full mx-auto flex flex-wrap">
