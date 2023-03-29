@@ -14,8 +14,8 @@ import { TimePicker } from "antd";
 export default function Booking(props) {
     const { data, setData } = useForm({
         lapangan_id: props.lapangan.id,
-        tempat_lapangan_id: props.tempat_lapangan.id,
-        admin_lapangan_id: props.tempat_lapangan.user_id,
+        // tempat_lapangan_id: props.tempat_lapangan.id,
+        // admin_lapangan_id: props.tempat_lapangan.user_id,
         telp: props.auth.user.telp,
         harga_persewa: props.tempat_lapangan.harga_persewa,
         tanggal_main: "",

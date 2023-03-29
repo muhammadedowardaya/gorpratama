@@ -10,6 +10,8 @@ import Layout from "@/Layouts/Layout";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Toast from "@/Components/Toast";
+import Loading from "@/Components/Loading";
+import "../../../css/formStyle.css";
 
 export default function Login(props, { status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -35,6 +37,8 @@ export default function Login(props, { status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
+
+        console.info(data);
 
         router.post("/login", data, {
             onError: (errors) => {
@@ -99,101 +103,178 @@ export default function Login(props, { status, canResetPassword }) {
     };
 
     return (
-        <Layout>
-            <Head title="Log in" />
+        // <Layout>
+        //     <Head title="Log in" />
 
-            {status && (
-                <div className="font-medium text-sm text-green-600">
-                    {status}
-                </div>
-            )}
+        //     {status && (
+        //         <div className="font-medium text-sm text-green-600">
+        //             {status}
+        //         </div>
+        //     )}
 
-            <div className="flex flex-col justify-center items-center px-5 mt-5">
-                <h1 className="text-slate-50 font-bold text-2xl mb-5 p-0">
-                    Login
-                </h1>
-                <form
-                    onSubmit={submit}
-                    className="w-full sm:max-w-md  px-6 py-4 border border-solid border-white shadow-md overflow-hidden sm:rounded-lg"
-                >
-                    <div>
-                        <InputLabel
-                            forInput="email"
-                            value="Email"
-                            className="!text-slate-100"
-                        />
+        //     <div className="flex flex-col justify-center items-center px-5 mt-5">
+        //         <h1 className="text-slate-50 font-bold text-2xl mb-5 p-0">
+        //             Login
+        //         </h1>
+        //         <form
+        //             onSubmit={submit}
+        //             className="w-full sm:max-w-md  px-6 py-4 border border-solid border-white shadow-md overflow-hidden sm:rounded-lg"
+        //         >
+        //             <div>
+        //                 <InputLabel
+        //                     forInput="email"
+        //                     value="Email"
+        //                     className="!text-slate-100"
+        //                 />
 
-                        <TextInput
-                            id="email"
-                            type="email"
-                            name="email"
-                            value={data.email}
-                            className="mt-1 block w-full"
-                            autoComplete="username"
-                            isFocused={true}
-                            handleChange={onHandleChange}
-                        />
+        //                 <TextInput
+        //                     id="email"
+        //                     type="email"
+        //                     name="email"
+        //                     value={data.email}
+        //                     className="mt-1 block w-full"
+        //                     autoComplete="username"
+        //                     isFocused={true}
+        //                     handleChange={onHandleChange}
+        //                 />
 
-                        <InputError message={errors.email} className="mt-2" />
-                    </div>
+        //                 <InputError message={errors.email} className="mt-2" />
+        //             </div>
 
-                    <div className="mt-4">
-                        <InputLabel
-                            forInput="password"
-                            value="Password"
-                            className="!text-slate-100"
-                        />
+        //             <div className="mt-4">
+        //                 <InputLabel
+        //                     forInput="password"
+        //                     value="Password"
+        //                     className="!text-slate-100"
+        //                 />
 
-                        <TextInput
-                            id="password"
-                            type="password"
-                            name="password"
-                            value={data.password}
-                            className="mt-1 block w-full"
-                            autoComplete="current-password"
-                            handleChange={onHandleChange}
-                        />
+        //                 <TextInput
+        //                     id="password"
+        //                     type="password"
+        //                     name="password"
+        //                     value={data.password}
+        //                     className="mt-1 block w-full"
+        //                     autoComplete="current-password"
+        //                     handleChange={onHandleChange}
+        //                 />
 
-                        <InputError
-                            message={errors.password}
-                            className="mt-2"
-                        />
-                    </div>
+        //                 <InputError
+        //                     message={errors.password}
+        //                     className="mt-2"
+        //                 />
+        //             </div>
 
-                    <div className="block mt-4">
-                        <label className="flex items-center">
+        //             <div className="block mt-4">
+        //                 <label className="flex items-center">
+        //                     <Checkbox
+        //                         name="remember"
+        //                         value={data.remember}
+        //                         handleChange={onHandleChange}
+        //                     />
+        //                     <span className="ml-2 text-sm text-white">
+        //                         Remember me
+        //                     </span>
+        //                 </label>
+        //             </div>
+
+        //             <div className="flex items-center justify-end mt-4">
+        //                 {/* {canResetPassword && (
+        //                     <Link
+        //                         href="forgot-password"
+        //                         className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        //                     >
+        //                         Forgot your password?
+        //                     </Link>
+        //                 )} */}
+        //                 <Link
+        //                     href="forgot-password"
+        //                     className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        //                 >
+        //                     Forgot your password?
+        //                 </Link>
+        //                 <PrimaryButton className="ml-4" processing={processing}>
+        //                     Log in
+        //                 </PrimaryButton>
+        //             </div>
+        //         </form>
+        //     </div>
+        // </Layout>
+        <GuestLayout>
+            <Head title="Register" />
+            <h1 className="text-2xl font-bold my-8 text-white">Login</h1>
+            <div>
+                <div className="login-box w-96">
+                    <form
+                        className="grid grid-cols-1 md:gap-4"
+                        onSubmit={submit}
+                    >
+                        <div>
+                            <div className="user-box">
+                                <input
+                                    value={data.email}
+                                    type="email"
+                                    name="email"
+                                    onChange={onHandleChange}
+                                    className={`${
+                                        data.email != "" ? "aktif" : ""
+                                    }`}
+                                />
+                                <label>Email</label>
+
+                                <InputError
+                                    message={errors.password}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div className="user-box">
+                                <input
+                                    type="password"
+                                    name="password"
+                                    className={`${
+                                        data.password != "" ? "aktif" : ""
+                                    }`}
+                                    autoComplete="current-password"
+                                    onChange={onHandleChange}
+                                />
+                                <label>Password</label>
+                            </div>
+                        </div>
+                        <div>
                             <Checkbox
                                 name="remember"
                                 value={data.remember}
                                 handleChange={onHandleChange}
                             />
-                            <span className="ml-2 text-sm text-white">
+                            <label className="text-white ml-2 !text-sm">
                                 Remember me
-                            </span>
-                        </label>
-                    </div>
-
-                    <div className="flex items-center justify-end mt-4">
-                        {/* {canResetPassword && (
+                            </label>
+                        </div>
+                        <div>
                             <Link
                                 href="forgot-password"
-                                className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                className="underline block text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Forgot your password?
                             </Link>
-                        )} */}
-                        <Link
-                            href="forgot-password"
-                            className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Forgot your password?
-                        </Link>
-                        <PrimaryButton className="ml-4" processing={processing}>
-                            Log in
-                        </PrimaryButton>
-                    </div>
-                </form>
+
+                            <Link
+                                href="register"
+                                className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                Belum punya akun?
+                            </Link>
+                        </div>
+
+                        <center>
+                            <a href="#" className="w-full">
+                                SUBMIT
+                                <span></span>
+                            </a>
+                        </center>
+                    </form>
+                </div>
             </div>
-        </Layout>
+        </GuestLayout>
     );
 }

@@ -34,42 +34,39 @@ export default function Sidebar({ className }) {
                         <span className="title">Home</span>
                     </a>
                 </li>
-                <li
-                    className={`${requestIs("dashboard/pesanan*")}`}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        router.get("/dashboard/pesanan");
-                    }}
-                >
-                    <a>
+                <li className={`${requestIs("dashboard/pesanan*")}`}>
+                    <a
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/dashboard/pesanan");
+                        }}
+                    >
                         <span className="icon">
                             <IoDocumentTextSharp className="mt-4" />
                         </span>
                         <span className="title">Pesanan Saya</span>
                     </a>
                 </li>
-                <li
-                    className={`${requestIs("dashboard/jadwal*")}`}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        axios.get("/dashboard/jadwal");
-                    }}
-                >
-                    <a>
+                <li className={`${requestIs("dashboard/jadwal*")}`}>
+                    <a
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/dashboard/jadwal");
+                        }}
+                    >
                         <span className="icon">
                             <IoCalendarNumberSharp className="mt-4" />
                         </span>
                         <span className="title">Jadwal</span>
                     </a>
                 </li>
-                <li
-                    className={`${requestIs("dashboard/pengaturan*")}`}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        axios.get("/dashboard/pengaturan");
-                    }}
-                >
-                    <a>
+                <li className={`${requestIs("dashboard/pengaturan*")}`}>
+                    <a
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/dashboard/pengaturan");
+                        }}
+                    >
                         <span className="icon">
                             <IoSettingsSharp className="mt-4" />
                         </span>

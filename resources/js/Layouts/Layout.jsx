@@ -6,6 +6,7 @@ import SwitchMode from "@/Components/SwitchMode";
 import { BsFillArrowRightCircleFill, BsMenuButtonWide } from "react-icons/bs";
 import { AiFillCloseCircle, AiOutlineClose } from "react-icons/ai";
 import gsap from "gsap";
+import axios from "axios";
 
 export default function Layout({ auth, header, children }) {
     const [user, setUser] = useState("");
@@ -14,24 +15,38 @@ export default function Layout({ auth, header, children }) {
     const [changeDropdownIcon, setChangeDropdownIcon] = useState(false);
 
     async function getUser() {
-        const response = await fetch("/get-user");
-        const user = await response.json();
-        return user;
+        try {
+            const response = await fetch("/get-user");
+            const user = await response.json();
+            return user;
+        } catch (error) {
+            if (error instanceof Error && error.status === 500) {
+                // Tindakan yang diambil ketika terjadi Internal Server Error
+                console.error("Terjadi kesalahan internal server:", error);
+            } else {
+                // Tindakan yang diambil untuk jenis kesalahan yang berbeda
+                console.error("Terjadi kesalahan:", error);
+            }
+        }
     }
-
-    getUser().then((user) => {
-        setUser(user.user);
-    });
 
     async function getProfileGor() {
-        const response = await fetch("/get-profile-gor");
-        const gor = await response.json();
-        return gor;
+        try {
+            // Kode yang mungkin menyebabkan kesalahan server
+            const response = await axios.get("/get-profile-gor");
+            // const gor = await response.json();
+            // return gor;
+            return response;
+        } catch (error) {
+            if (error instanceof Error && error.status === 500) {
+                // Tindakan yang diambil ketika terjadi Internal Server Error
+                console.error("Terjadi kesalahan internal server:", error);
+            } else {
+                // Tindakan yang diambil untuk jenis kesalahan yang berbeda
+                console.error("Terjadi kesalahan:", error);
+            }
+        }
     }
-
-    getProfileGor().then((gor) => {
-        setGor(gor["tempat-lapangan"].nama);
-    });
 
     const { requestPath } = usePage().props;
 
@@ -42,6 +57,19 @@ export default function Layout({ auth, header, children }) {
             return "active";
         }
     }
+
+    getUser().then((user) => {
+        setUser(user.user);
+    });
+
+    getProfileGor().then((gor) => {
+        if (gor != undefined) {
+            if (gor["tempat-lapangan"] != null) {
+                const namaGor = gor["tempat-lapangan"].nama;
+                setGor(namaGor == undefined ? "" : namaGor);
+            }
+        }
+    });
 
     useEffect(() => {
         // router.on("start", () => {
@@ -183,7 +211,7 @@ export default function Layout({ auth, header, children }) {
                             className="text-white m-0 mr-2 cursor-pointer font-bold md:text-xl"
                             onClick={(e) => router.get("/")}
                         >
-                            {gor ?? "Gor"}
+                            {gor == "" ? "Gor" : gor}
                         </a>
                         <div
                             className="tooltip hover:tooltip-open tooltip-right"
@@ -194,7 +222,7 @@ export default function Layout({ auth, header, children }) {
                     </div>
                     {user != null ? (
                         <div className="flex-none">
-                            <span className="text-white pr-4 hidden md:inline-block">
+                            <span className="text-white pr-4 hidden sm:inline-block">
                                 {user.nama}
                             </span>
                             <div>

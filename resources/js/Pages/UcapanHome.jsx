@@ -5,7 +5,7 @@ import { MdPersonSearch } from "react-icons/md";
 
 import "../../css/ucapanHome.css";
 
-export default function UcapanHome() {
+export default function UcapanHome(props) {
     const [user, setUser] = useState("");
     fetch("/get-user")
         .then((response) => {
@@ -14,6 +14,9 @@ export default function UcapanHome() {
         .then((response) => {
             setUser(response.user);
         });
+
+    // console.info(props);
+
     if (user != null && user.type == "user") {
         return (
             <>

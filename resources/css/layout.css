@@ -13,6 +13,59 @@
     overflow-y: hidden;
 }
 
+/* #content main table tr td,
+#content main table tr th {
+    background: transparent;
+} */
+
+#overlay {
+    position: absolute;
+    top: 5rem;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.8),
+        rgba(0, 0, 0, 0.4),
+        rgba(0, 0, 0, 0)
+    );
+}
+
+#table-container {
+    position: relative;
+    overflow-x: hidden;
+    white-space: nowrap;
+    cursor: grab;
+}
+
+#table-container:active {
+    cursor: grabbing;
+}
+
+table#my-table tr th:first-child {
+    backdrop-filter: blur(5px) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+    background-color: rgba(135, 206, 235, 0.5) !important;
+    border-radius: 10px;
+    border: none;
+}
+
+/* 
+table#my-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    transition: transform 0.2s ease-in-out;
+}
+
+#my-table th,
+#my-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+} */
+
 nav.navbar {
     /* padding: 10px 20px; */
     /* font-family: "Teko", sans-serif; */

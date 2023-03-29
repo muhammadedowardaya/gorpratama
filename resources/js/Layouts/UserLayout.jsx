@@ -19,24 +19,41 @@ export default function UserLayout({ children, header, title }) {
     const { requestPath } = usePage().props;
 
     async function getUser() {
-        const response = await fetch("/get-user");
-        const user = await response.json();
-        return user;
+        try {
+            const response = await fetch("/get-user");
+            const user = await response.json();
+            return user;
+        } catch (error) {
+            if (error instanceof Error && error.status === 500) {
+                // Tindakan yang diambil ketika terjadi Internal Server Error
+                console.error("Terjadi kesalahan internal server:", error);
+            } else {
+                // Tindakan yang diambil untuk jenis kesalahan yang berbeda
+                console.error("Terjadi kesalahan:", error);
+            }
+        }
     }
 
-    getUser().then((user) => {
-        setUser(user.user);
-    });
-
     async function getProfileGor() {
-        const response = await fetch("/get-profile-gor");
+        const response = await fetch("/api/get-profile-gor");
         const gor = await response.json();
         return gor;
     }
 
-    getProfileGor().then((gor) => {
-        setGor(gor["tempat-lapangan"].nama);
-    });
+    // document.onreadystatechange = function () {
+    //     if (document.readyState == "complete") {
+    //         getUser().then((user) => {
+    //             setUser(user.user);
+    //         });
+
+    //         getProfileGor().then((gor) => {
+    //             if (gor["tempat-lapangan"] != null) {
+    //                 const namaGor = gor["tempat-lapangan"].nama;
+    //                 setGor(namaGor == undefined ? "" : namaGor);
+    //             }
+    //         });
+    //     }
+    // };
 
     function requestIs(path) {
         const pattern = new RegExp(path.toString(), "gi");
@@ -47,22 +64,25 @@ export default function UserLayout({ children, header, title }) {
     }
 
     useEffect(() => {
-        router.on("start", () => {
-            window.document.body.children[0].classList.add("fixed");
-            window.document.body.children[0].classList.add("flex");
-            window.document.body.children[0].classList.remove("hidden");
-            window.document.body.children[0].children[0].classList.remove(
-                "hidden"
-            );
+        getUser().then((user) => {
+            setUser(user.user);
         });
-        router.on("finish", () => {
-            window.document.body.children[0].classList.remove("fixed");
-            window.document.body.children[0].classList.remove("flex");
-            window.document.body.children[0].classList.add("hidden");
-            window.document.body.children[0].children[0].classList.add(
-                "hidden"
-            );
-        });
+        // router.on("start", () => {
+        //     window.document.body.children[0].classList.add("fixed");
+        //     window.document.body.children[0].classList.add("flex");
+        //     window.document.body.children[0].classList.remove("hidden");
+        //     window.document.body.children[0].children[0].classList.remove(
+        //         "hidden"
+        //     );
+        // });
+        // router.on("finish", () => {
+        //     window.document.body.children[0].classList.remove("fixed");
+        //     window.document.body.children[0].classList.remove("flex");
+        //     window.document.body.children[0].classList.add("hidden");
+        //     window.document.body.children[0].children[0].classList.add(
+        //         "hidden"
+        //     );
+        // });
     });
 
     return (
@@ -74,7 +94,7 @@ export default function UserLayout({ children, header, title }) {
                         className="text-white m-0 mr-2 cursor-pointer font-bold md:text-xl"
                         onClick={(e) => router.get("/")}
                     >
-                        {gor ?? "Gor"}
+                        {gor == "" ? "Gor" : gor}
                     </a>
                     <div
                         className="tooltip hover:tooltip-open tooltip-right"
@@ -85,7 +105,7 @@ export default function UserLayout({ children, header, title }) {
                 </div>
                 {user != null ? (
                     <div className="flex-none">
-                        <span className="text-white pr-4 hidden md:inline-block">
+                        <span className="text-white pr-4 hidden sm:inline-block">
                             {user.nama}
                         </span>
                         <div>
@@ -175,6 +195,7 @@ export default function UserLayout({ children, header, title }) {
                 ) : (
                     ""
                 )}
+                <div id="overlay" className="z-40"></div>
             </nav>
 
             {header && (
@@ -183,18 +204,9 @@ export default function UserLayout({ children, header, title }) {
                 </section>
             )}
             <div id="container">
-                <Sidebar className="z-50" />
-                <section id="content" className="z-50 overflow-y-scroll">
-                    <main className="p-8">{children}</main>
-                    <a
-                        onClick={(e) => {
-                            e.preventDefault();
-                            router.get("/dashboard/jadwal");
-                        }}
-                        className="p-20 z-50 cursor-pointer"
-                    >
-                        Pencet OYYY
-                    </a>
+                <Sidebar className="z-40" />
+                <section id="content" className="z-40 overflow-y-scroll ml-8">
+                    <main>{children}</main>
                     <footer>
                         <div className="max-w-md mx-auto flex py-8">
                             <div className="w-full mx-auto flex flex-wrap">

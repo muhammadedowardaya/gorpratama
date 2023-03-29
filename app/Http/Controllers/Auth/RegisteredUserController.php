@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
         $slug = Str::slug($request->nama);
 
         if ($foto = request()->file('foto')) {
-            $nama_foto = $slug . "." . $foto->getClientOriginalExtension();
+            $nama_foto = Str::random(5) . "_" . $slug . "." . $foto->getClientOriginalExtension();
             $foto->storePubliclyAs('user', $nama_foto, 'public');
             $url_foto = '/api/user/image/' . $nama_foto;
         } else {

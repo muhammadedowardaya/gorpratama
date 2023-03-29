@@ -69,7 +69,7 @@ class ProfileController extends Controller
 
 
         if ($foto = request()->file('foto')) {
-            $nama_foto = date('ms') . $request->slug . "." . $foto->getClientOriginalExtension();
+            $nama_foto = Str::random(5) . "_" . $request->slug . "." . $foto->getClientOriginalExtension();
             $foto->storePubliclyAs('tempat-lapangan', $nama_foto, 'public');
             $url_foto = '/api/tempat-lapangan/image/' . $nama_foto;
 

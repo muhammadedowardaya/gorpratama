@@ -35,8 +35,9 @@ export default function UpdateProfileInformation({
         });
     const submit = (e) => {
         e.preventDefault();
+        setDisplayLoading(true);
 
-        // patch(route("profile.update"));
+        patch(route("profile.update"));
         axios
             .post(`/profile-update`, data, {
                 headers: {
@@ -114,6 +115,85 @@ export default function UpdateProfileInformation({
                     }
                 }
             });
+
+        // patch(route("profile.update"));
+        // axios
+        //     .post(`/profile-update`, data, {
+        //         headers: {
+        //             "Content-Type": "multipart/form-data",
+        //         },
+        //         credentials: "same-origin",
+        //         onUploadProgress: function (progressEvent) {
+        //             const percent =
+        //                 (progressEvent.loaded / progressEvent.total) * 100;
+
+        //             // const radialProgress =
+        //             //     document.querySelector(".radial-progress");
+        //             // if (radialProgress.classList.contains("hidden")) {
+        //             //     radialProgress.classList.remove("hidden");
+        //             // }
+        //             // radialProgress.classList.add("fixed");
+        //             // radialProgress.innerHTML = Math.round(percent) + "%";
+        //             // radialProgress.style.setProperty(
+        //             //     "--value",
+        //             //     Math.round(percent)
+        //             // );
+        //         },
+        //     })
+        //     .then((response) => {
+        //         setDisplayLoading(false);
+        //         Toast.fire({
+        //             icon: "success",
+        //             title: `Berhasil memperbarui profile`,
+        //             timer: 3000,
+        //         });
+
+        //         setTimeout(() => {
+        //             router.get("/profile");
+        //         }, 100);
+        //     })
+        //     .catch((errors) => {
+        //         setDisplayLoading(false);
+        //         if (errors.response.status === 400) {
+        //             const error_keys = Object.keys(
+        //                 errors.response.data.message
+        //             );
+        //             const error_values = Object.getOwnPropertyNames(
+        //                 errors.response.data.message
+        //             );
+        //             let error_messages = [];
+        //             let error = errors.response.data.message;
+        //             for (let i = 0; i < error_keys.length; i++) {
+        //                 error_messages.push(error[error_values[i]]);
+        //             }
+
+        //             Swal.fire(
+        //                 "Gagal!",
+        //                 `<ul>${error_messages
+        //                     .map((item) => {
+        //                         if (item.includes("CSRF token mismatch.")) {
+        //                             router.reload();
+        //                         } else {
+        //                             `<li>${item}</li>`;
+        //                         }
+        //                     })
+        //                     .join(" ")}</ul>`,
+        //                 "error"
+        //             );
+        //         } else {
+        //             if (
+        //                 errors.response.data.message == "CSRF token mismatch."
+        //             ) {
+        //                 location.reload();
+        //             } else {
+        //                 Swal.fire(
+        //                     "Gagal!",
+        //                     `${errors.response.data.message}`,
+        //                     "error"
+        //                 );
+        //             }
+        //         }
+        //     });
     };
 
     const handleUpload = (e) => {
@@ -226,7 +306,7 @@ export default function UpdateProfileInformation({
                         value={data.telp}
                         handleChange={(e) => setData("telp", e.target.value)}
                         required
-                        pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}"
+                        pattern="[0-9]{10,12}"
                         autoComplete="telp"
                         placeholder="Nomor Telepon"
                     />

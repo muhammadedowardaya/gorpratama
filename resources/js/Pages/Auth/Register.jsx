@@ -10,9 +10,10 @@ import Swal from "sweetalert2";
 import { PortalWithState } from "react-portal";
 import Loading from "@/Components/Loading";
 import { FaWindowClose } from "react-icons/fa";
+import "../../../css/formStyle.css";
 
 export default function Register() {
-    const [displayLoading, setDisplayLoading] = useState("");
+    const [displayLoading, setDisplayLoading] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         nama: "",
         telp: "",
@@ -58,7 +59,6 @@ export default function Register() {
                         .join(" ")}</ul>`,
                     "error"
                 );
-                console.info(errors);
             },
             onSuccess: () => {
                 Swal.fire({
@@ -104,198 +104,183 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
             <Loading display={displayLoading} />
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel
-                        forInput="nama"
-                        value="Nama"
-                        className="!text-slate-50"
-                    />
-
-                    <TextInput
-                        id="nama"
-                        name="nama"
-                        value={data.nama}
-                        className="mt-1 block w-full"
-                        autoComplete="nama"
-                        isFocused={true}
-                        handleChange={onHandleChange}
-                        required
-                    />
-
-                    <InputError message={errors.nama} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        forInput="telp"
-                        value="Telp"
-                        className="!text-slate-50"
-                    />
-
-                    <TextInput
-                        id="telp"
-                        name="telp"
-                        value={data.telp}
-                        type="number"
-                        className="mt-1 block w-full"
-                        autoComplete="telp"
-                        isFocused={true}
-                        pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}"
-                        handleChange={onHandleChange}
-                        required
-                    />
-
-                    <InputError message={errors.telp} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        forInput="email"
-                        value="Email"
-                        className="!text-slate-50"
-                    />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        handleChange={onHandleChange}
-                        required
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        forInput="alamat"
-                        value="Alamat"
-                        className="!text-slate-50"
-                    />
-
-                    <textarea
-                        id="alamat"
-                        name="alamat"
-                        value={data.alamat}
-                        className="border-gray-300 focus:border-blue-300 focus:ring-blue-300 rounded-md shadow-sm"
-                        autoComplete="alamat"
-                        onChange={onHandleChange}
-                        required
-                    ></textarea>
-
-                    <InputError message={errors.nama} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        forInput="password"
-                        value="Password"
-                        className="!text-slate-50"
-                    />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        handleChange={onHandleChange}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        forInput="password_confirmation"
-                        value="Confirm Password"
-                        className="!text-slate-50"
-                    />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        handleChange={onHandleChange}
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        forInput="foto"
-                        value="Foto"
-                        className="!text-slate-50"
-                    />
-                    <PortalWithState closeOnOutsideClick closeOnEsc>
-                        {({ openPortal, closePortal, isOpen, portal }) => (
-                            <React.Fragment>
-                                <img
-                                    className="my-3 w-32 h-32 rounded-full mx-auto border-4 border-slate-100 overflow-hidden"
-                                    src={data.url_foto}
-                                    alt="avatar"
-                                    onClick={openPortal}
-                                />
-                                {portal(
-                                    <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
-                                        <div className="flex justify-center">
-                                            <div className="border-8 relative bg-slate-100 border-slate-100">
-                                                <h2 className="ml-3 mb-2 mt-1 text-2xl font-bold">
-                                                    Foto
-                                                </h2>
-                                                <img
-                                                    src={data.url_foto}
-                                                    alt="foto user"
-                                                    className="object-cover w-full md:h-96"
-                                                />
-                                                <FaWindowClose
-                                                    size="2em"
-                                                    className="top-1 right-2 absolute cursor-pointer"
-                                                    onClick={closePortal}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </React.Fragment>
-                        )}
-                    </PortalWithState>
-
-                    <input
-                        type="file"
-                        name="foto"
-                        className="w-full text-white rounded-md shadow-sm"
-                        // ref={data.imageRef}
-                        onChange={handleUpload}
-                    />
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
-                    <Link
-                        href={"login"}
-                        className="underline text-sm text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            <h1 className="text-2xl font-bold my-8 text-white">Register</h1>
+            <div>
+                <div className="login-box">
+                    <form
+                        className="grid grid-cols-1 md:grid-cols-2 md:gap-4"
+                        onSubmit={submit}
                     >
-                        Already registered?
-                    </Link>
+                        <div className="col-span-2 md:col-span-1">
+                            <div className="user-box">
+                                <input
+                                    type="text"
+                                    name=""
+                                    required=""
+                                    onChange={(e) => {
+                                        e.preventDefault();
+                                        setData("nama", e.target.value);
+                                    }}
+                                    className={`${
+                                        data.nama != "" ? "aktif" : ""
+                                    }`}
+                                    value={data.nama}
+                                />
+                                <label>Nama</label>
+                            </div>
+                            <div className="user-box">
+                                <input
+                                    value={data.telp}
+                                    type="tel"
+                                    name=""
+                                    required=""
+                                    pattern="[0-9]{10,12}"
+                                    onChange={(e) => {
+                                        e.preventDefault();
+                                        setData("telp", e.target.value);
+                                    }}
+                                    className={`${
+                                        data.telp != "" ? "aktif" : ""
+                                    }`}
+                                />
+                                <label>Telp</label>
+                            </div>
+                            <div className="user-box">
+                                <input
+                                    value={data.email}
+                                    type="email"
+                                    name=""
+                                    required=""
+                                    onChange={(e) => {
+                                        e.preventDefault();
+                                        setData("email", e.target.value);
+                                    }}
+                                    className={`${
+                                        data.email != "" ? "aktif" : ""
+                                    }`}
+                                />
+                                <label>Email</label>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="user-box">
+                                <input
+                                    value={data.alamat}
+                                    name=""
+                                    required=""
+                                    onChange={(e) => {
+                                        e.preventDefault();
+                                        setData("alamat", e.target.value);
+                                    }}
+                                    className={`${
+                                        data.alamat != "" ? "aktif" : ""
+                                    }`}
+                                />
+                                <label>Alamat</label>
+                            </div>
+                            <div className="user-box">
+                                <input
+                                    type="password"
+                                    name=""
+                                    required=""
+                                    onChange={(e) => {
+                                        e.preventDefault();
+                                        setData("password", e.target.value);
+                                    }}
+                                    className={`${
+                                        data.password != "" ? "aktif" : ""
+                                    }`}
+                                />
+                                <label>Password</label>
+                            </div>
+                            <div className="user-box">
+                                <input
+                                    id="password_confirmation"
+                                    type="password"
+                                    name="password_confirmation"
+                                    onChange={(e) => {
+                                        e.preventDefault();
+                                        setData(
+                                            "password_confirmation",
+                                            e.target.value
+                                        );
+                                    }}
+                                    className={`${
+                                        data.password_confirmation != ""
+                                            ? "aktif"
+                                            : ""
+                                    }`}
+                                    required
+                                />
+                                <label>Confirm Password</label>
+                            </div>
+                        </div>
+                        <div className="col-span-2 user-box">
+                            <label>Foto</label>
+                            <PortalWithState closeOnOutsideClick closeOnEsc>
+                                {({
+                                    openPortal,
+                                    closePortal,
+                                    isOpen,
+                                    portal,
+                                }) => (
+                                    <React.Fragment>
+                                        <img
+                                            className="my-3 w-32 h-32 rounded-full mx-auto border-4 border-slate-100 overflow-hidden mt-14"
+                                            src={data.url_foto}
+                                            alt="avatar"
+                                            onClick={openPortal}
+                                        />
+                                        {portal(
+                                            <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
+                                                <div className="flex justify-center">
+                                                    <div className="border-8 relative bg-slate-100 border-slate-100">
+                                                        <h2 className="ml-3 mb-2 mt-1 text-2xl font-bold">
+                                                            Foto
+                                                        </h2>
+                                                        <img
+                                                            src={data.url_foto}
+                                                            alt="foto user"
+                                                            className="object-cover w-full md:h-96"
+                                                        />
+                                                        <FaWindowClose
+                                                            size="2em"
+                                                            className="top-1 right-2 absolute cursor-pointer"
+                                                            onClick={
+                                                                closePortal
+                                                            }
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </React.Fragment>
+                                )}
+                            </PortalWithState>
 
-                    <PrimaryButton className="ml-4" processing={processing}>
-                        Register
-                    </PrimaryButton>
+                            <input
+                                type="file"
+                                name="foto"
+                                className="w-full text-white rounded-md shadow-sm !p-0 mt-2"
+                                // ref={data.imageRef}
+                                onChange={handleUpload}
+                            />
+                        </div>
+                        <Link
+                            href="register"
+                            className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Sudah punya akun?
+                        </Link>
+                        <center className="col-span-2">
+                            <a href="#" className="w-full" type="submit">
+                                SUBMIT
+                                <span></span>
+                            </a>
+                        </center>
+                    </form>
                 </div>
-            </form>
+            </div>
         </GuestLayout>
     );
 }

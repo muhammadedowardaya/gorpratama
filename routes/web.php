@@ -26,6 +26,26 @@ use Inertia\Inertia;
 |
 */
 
+Route::get('/wisata', function () {
+    return Inertia::render('Wisata');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -54,7 +74,11 @@ Route::get('/get-user', function () {
 
 Route::get('/get-profile-gor', function () {
     $user = User::where('type', 1)->first();
-    $tempat_lapangan = TempatLapangan::where('user_id', $user['id'])->first();
+    if ($user && $user['id']) {
+        $tempat_lapangan = TempatLapangan::where('user_id', $user['id'])->first();
+    } else {
+        $tempat_lapangan = null;
+    }
     return response()->json([
         'tempat-lapangan' => $tempat_lapangan
     ]);
