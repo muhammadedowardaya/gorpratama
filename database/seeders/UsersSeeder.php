@@ -17,32 +17,32 @@ class UsersSeeder extends Seeder
     {
         $users = [
             [
-                'nama' => 'Admin User',
-                'slug' => 'admin-user',
-                'telp' => '+62 83808165171',
+                'nama' => 'Admin',
+                'slug' => 'admin',
+                'telp' => '083808165171',
                 'email' => 'admin@gmail.com',
                 'alamat' => 'Bogor',
                 'type' => 1,
-                'password' => bcrypt('1234'),
+                'password' => bcrypt('admin'),
             ],
-            [
-                'nama' => 'Manager User',
-                'slug' => 'manager-user',
-                'telp' => '+62 83808165172',
-                'email' => 'manager@gmail.com',
-                'alamat' => 'Bogor',
-                'type' => 2,
-                'password' => bcrypt('1234'),
-            ],
-            [
-                'nama' => 'User',
-                'slug' => 'user',
-                'telp' => '+62 83808165173',
-                'email' => 'user@gmail.com',
-                'alamat' => 'Bogor',
-                'type' => 0,
-                'password' => bcrypt('1234'),
-            ],
+            // [
+            //     'nama' => 'Manager User',
+            //     'slug' => 'manager-user',
+            //     'telp' => '+62 83808165172',
+            //     'email' => 'manager@gmail.com',
+            //     'alamat' => 'Bogor',
+            //     'type' => 2,
+            //     'password' => bcrypt('1234'),
+            // ],
+            // [
+            //     'nama' => 'User',
+            //     'slug' => 'user',
+            //     'telp' => '+62 83808165173',
+            //     'email' => 'user@gmail.com',
+            //     'alamat' => 'Bogor',
+            //     'type' => 0,
+            //     'password' => bcrypt('1234'),
+            // ],
         ];
 
         foreach ($users as $key => $user) {

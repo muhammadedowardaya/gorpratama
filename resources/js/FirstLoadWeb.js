@@ -3,49 +3,100 @@
 //     children[i].classList.add("pulse-effect");
 // }
 
-document.onreadystatechange = function () {
-    if (document.readyState !== "complete") {
-        window.document.style.visibility = "hidden";
-        // window.document.children[1].style.visibility = "visible";
-        window.document.children[1].classList.add("flex");
-        // window.document.children[1].classList.add("fixed");
-        window.document.children[1].classList.remove("hidden");
-        // window.document.body.children[0].children[0].classList.remove("hidden");
-        // const main = document.querySelector("main");
-        // const children = main.children;
-        // for (let i = 0; i < children.length; i++) {
-        //     // children[i].classList.add("pulse-effect");
-        //     children[i].addEventListener("load", () => {
-        //         children[i].classList.remove("pulse-effect");
-        //     });
-        // }
-    } else {
-        // window.document.body.children[1].classList.remove("fixed");
-        window.document.body.children[1].classList.remove("flex");
-        window.document.body.children[1].classList.add("hidden");
-        // window.document.body.children[0].children[0].classList.add("hidden");
-        // window.document.children[1].style.visibility = "hidden";
-        window.document.body.style.visibility = "visible";
-    }
-    // window.document.body.querySelectorAll("img").forEach((item) => {
-    //     item.addEventListener("loadstart", () => {
-    //         if (item.classList.contains("animate-pulse") == false) {
-    //             item.classList.add("animate-pulse");
-    //         }
-    //     });
-    //     item.addEventListener("load", () => {
-    //         console.info(item.getAttribute("src") + " load selesai");
-    //         if (item.classList.contains("animate-pulse")) {
-    //             item.classList.remove("animate-pulse");
-    //         }
-    //     });
-    // });
-};
-
-// document.addEventListener("DOMContentLoaded", function () {
-//     const main = document.querySelector("main");
-//     const children = main.children;
-//     for (let i = 0; i < children.length; i++) {
-//         children[i].classList.add("pulse-effect");
+// document.onreadystatechange = function () {
+//     if (document.readyState !== "complete") {
+//         window.document.documentElement.children[1].style.visibility = "hidden";
+//         window.document.documentElement.children[2].classList.remove("!hidden");
+//         window.document.documentElement.children[2].firstChild.classList.remove(
+//             "hidden"
+//         );
+//     } else {
+//         window.document.documentElement.children[2].classList.add("!hidden");
+//         window.document.documentElement.children[2].firstChild.classList.remove(
+//             "hidden"
+//         );
+//         window.document.documentElement.children[1].style.visibility =
+//             "visible";
 //     }
+// };
+// document.addEventListener("DOMContentLoaded", function (event) {
+// const loader = window.document.getElementById("loader");
+// const pyramidLoader = window.document
+//     .getElementById("loader")
+//     .querySelector(".pyramid-loader");
+// const body = window.document.body;
+// const app = window.document.getElementById("app");
+// const firstChildApp = window.document.getElementById("main");
+// body.onload = () => {
+//     console.info(firstChildApp);
+// };
+// firstChildApp.addEventListener("load", () => {
+//     // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+//     if (!loader.classList.contains("!hidden")) {
+//         // loader.classList.add("!hidden");
+//         window.document.getElementById("loader").classList.add("!hidden");
+//         // pyramidLoader.classList.add("hidden");
+//         window.document
+//             .getElementById("loader")
+//             .querySelector(".pyramid-loader")
+//             .classList.add("hidden");
+//         console.info("tidak ada class !hidden");
+//     }
+//     console.info("firstChild telah di load");
 // });
+// if (loader.classList.contains("!hidden")) {
+//     loader.classList.remove("!hidden");
+//     loader.querySelector(".pyramid-loader").classList.remove("hidden");
+// }
+// if (body) {
+//     body.addEventListener("load", () => {
+//         if (app) {
+//             app.addEventListener("load", () => {
+//                 firstChildApp.addEventListener("load", () => {
+//                     // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+//                     if (!loader.classList.contains("!hidden")) {
+//                         // loader.classList.add("!hidden");
+//                         window.document
+//                             .getElementById("loader")
+//                             .classList.add("!hidden");
+//                         // pyramidLoader.classList.add("hidden");
+//                         window.document
+//                             .getElementById("loader")
+//                             .querySelector(".pyramid-loader")
+//                             .classList.add("hidden");
+//                         console.info("tidak ada class !hidden");
+//                     }
+//                     console.info("firstChild telah di load");
+//                 });
+//             });
+//         }
+//     });
+// }
+// });
+document.onreadystatechange = function () {
+    const body = window.document.body;
+    const firstChildApp = window.document.getElementById("main");
+    const loader = window.document.getElementById("loader");
+    const pyramidLoader = window.document
+        .getElementById("loader")
+        .querySelector(".pyramid-loader");
+    // const body = window.document.body;
+    const app = window.document.getElementById("app");
+
+    if (document.readyState !== "complete") {
+        if (body) {
+            body.style.visibility = "hidden";
+        }
+    } else {
+        if (app.children.length > 0) {
+            // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+            if (loader) {
+                loader.classList.add("!hidden");
+                pyramidLoader.classList.add("hidden");
+            }
+            if (body) {
+                body.style.visibility = "visible";
+            }
+        }
+    }
+};

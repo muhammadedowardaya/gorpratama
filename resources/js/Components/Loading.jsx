@@ -12,7 +12,7 @@ export default function Loading({ strokeColor = "#04fc43", display }) {
 
     useEffect(() => {
         if (display === true) {
-            setDisplayContainer("fixed");
+            setDisplayContainer("flex");
             setDisplayCircle("");
         } else {
             setDisplayContainer("hidden");
@@ -21,12 +21,14 @@ export default function Loading({ strokeColor = "#04fc43", display }) {
     });
 
     return (
-        <div className={`loader ${displayContainer}`}>
-            <div className="orbe"></div>
-            <div className="orbe"></div>
-            <div className="orbe"></div>
-            <div className="orbe"></div>
-            <div className="orbe"></div>
+        <div className={`container-loader ${displayContainer} `}>
+            <div className={`loader ${displayContainer}`}>
+                <div className="orbe"></div>
+                <div className="orbe"></div>
+                <div className="orbe"></div>
+                <div className="orbe"></div>
+                <div className="orbe"></div>
+            </div>
         </div>
     );
 }

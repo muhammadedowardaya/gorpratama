@@ -44,8 +44,8 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
             {/* <ValidationErrors errors={props.errors} /> */}
             {/* <Loading display={displayLoading} /> */}
 
-            <div className="w-full px-4 md:px-0 md:mt-8 mb-16  leading-normal">
-                <h1 className="text-center my-4 lg:mb-8 font-bold text-2xl text-white">
+            <div className="w-full px-4 md:px-0 md:mt-8 mb-16  leading-normal ">
+                <h1 className="text-center my-4 lg:mb-8 font-bold text-2xl ">
                     Tempat Lapangan
                 </h1>
 
@@ -53,7 +53,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                     id="content-table"
                     className="flex justify-center flex-col md:flex-row"
                 >
-                    <table className="basis-1/3 order-2 md:order-1">
+                    <table className="basis-1/3 order-2 md:order-1 dark:text-white text-slate-800">
                         <tbody>
                             <tr>
                                 <th>Nama</th>
@@ -119,7 +119,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                             {({ openPortal, closePortal, isOpen, portal }) => (
                                 <React.Fragment>
                                     <img
-                                        className="w-full mx-auto border-4 border-white overflow-hidden"
+                                        className="w-full mx-auto border-4 border-white overflow-hidden shadow-sm shadow-slate-700"
                                         src={tempat_lapangan.url_logo}
                                         alt="avatar"
                                         onClick={openPortal}

@@ -137,6 +137,7 @@ export default function Booking(props) {
                             confirmButtonText: "Konfirmasi",
                         }).then((result) => {
                             if (result.isConfirmed) {
+                                console.info(data.amount);
                                 router.post("/booking", data, {
                                     onError: (errors) => {
                                         // const error_keys = Object.keys(errors);
@@ -393,7 +394,7 @@ export default function Booking(props) {
                                     /> */}
 
                                     <TimePicker.RangePicker
-                                        format="HH"
+                                        format="HH:mm"
                                         onChange={(value, dateString) => {
                                             setData({
                                                 ...data,

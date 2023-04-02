@@ -30,7 +30,7 @@ const Pesanan = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.pesanan.map((item, index) => {
+                        {/* {props.pesanan.map((item, index) => {
                             return (
                                 <tr>
                                     <td></td>
@@ -84,7 +84,7 @@ const Pesanan = (props) => {
                                     </td>
                                 </tr>
                             );
-                        })}
+                        })} */}
                     </tbody>
                 </table>
             </div>

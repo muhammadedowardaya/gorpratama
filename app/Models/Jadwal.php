@@ -11,7 +11,7 @@ class Jadwal extends Model
 
     protected $table = 'jadwal';
 
-    protected $fillable = ['user_id', 'lapangan_id', 'judul', 'tanggal', 'jam_mulai', 'jam_selesai'];
+    protected $fillable = ['user_id', 'lapangan_id', 'transaksi_id', 'tanggal', 'jam_mulai', 'jam_selesai'];
 
     public function lapangans()
     {
@@ -21,5 +21,10 @@ class Jadwal extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function transaksi()
+    {
+        return $this->belongsTo(Transaksi::class, 'transaksi_id');
     }
 }

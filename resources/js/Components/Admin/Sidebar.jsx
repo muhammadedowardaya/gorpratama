@@ -7,7 +7,9 @@ import {
     IoSettingsSharp,
 } from "react-icons/io5";
 
-import "../../css/sidebar.css";
+import "../../../css/sidebar.css";
+import { CgProfile } from "react-icons/cg";
+import { GiFootyField, GiShuttlecock } from "react-icons/gi";
 
 export default function Sidebar({ className }) {
     let navigation = document.querySelector(".navigation");
@@ -27,7 +29,7 @@ export default function Sidebar({ className }) {
         <div className={`navigation ${className ?? ""}`}>
             <ul>
                 <li>
-                    <a href="#">
+                    <a href="/">
                         <span className="icon">
                             <IoHome className="mt-4" />
                         </span>
@@ -44,20 +46,48 @@ export default function Sidebar({ className }) {
                         <span className="icon">
                             <IoDocumentTextSharp className="mt-4" />
                         </span>
-                        <span className="title">Pesanan Saya</span>
+                        <span className="title">Pesanan</span>
                     </a>
                 </li>
-                <li className={`${requestIs("dashboard/jadwal*")}`}>
+                <li className={`${requestIs("dashboard/tempat-lapangan*")}`}>
                     <a
                         onClick={(e) => {
                             e.preventDefault();
-                            router.get("/dashboard/jadwal");
+                            router.get("/dashboard/tempat-lapangan");
                         }}
                     >
                         <span className="icon">
-                            <IoCalendarNumberSharp className="mt-4" />
+                            <GiFootyField className="mt-4" />
                         </span>
-                        <span className="title">Jadwal</span>
+                        <span className="title">
+                            Tempat Lapangan / Profil Gor
+                        </span>
+                    </a>
+                </li>
+                <li className={`${requestIs("dashboard/lapangan*")}`}>
+                    <a
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/dashboard/lapangan");
+                        }}
+                    >
+                        <span className="icon">
+                            <GiShuttlecock className="mt-4" />
+                        </span>
+                        <span className="title">Lapangan</span>
+                    </a>
+                </li>
+                <li className={`${requestIs("profile*")}`}>
+                    <a
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.get("/profile");
+                        }}
+                    >
+                        <span className="icon">
+                            <CgProfile className="mt-4" />
+                        </span>
+                        <span className="title">Profile</span>
                     </a>
                 </li>
                 <li className={`${requestIs("dashboard/pengaturan*")}`}>

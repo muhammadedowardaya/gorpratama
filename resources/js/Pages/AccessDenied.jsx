@@ -2,6 +2,7 @@ import { TbHandStop } from "react-icons/tb";
 import { AiOutlineStop } from "react-icons/ai";
 import bg from "../../../public/storage/images/background-welcome.jpg";
 import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/react";
 
 export default function AccessDenied() {
     return (
@@ -22,10 +23,15 @@ export default function AccessDenied() {
                             </p>
                         </div>
 
-                        <button className="btn btn-primary" onClick={(e) => {
-                            e.preventDefault();
-                            Inertia.get('/');
-                        }}>Ke Halaman Awal</button>
+                        <button
+                            className="btn btn-primary"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                router.get("/");
+                            }}
+                        >
+                            Ke Halaman Awal
+                        </button>
                     </div>
                 </div>
             </div>

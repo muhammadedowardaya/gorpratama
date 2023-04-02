@@ -10,7 +10,15 @@ function getCsrfToken() {
     return "";
 }
 
-axios.interceptors.request.use(function (config) {
-    config.headers["X-CSRF-TOKEN"] = getCsrfToken();
-    return config;
-});
+function addCsrfHeader() {
+    const token = getCsrfToken();
+    if (token !== "") {
+        axios.defaults.headers.common["X-CSRF-TOKEN"] = token;
+    }
+}
+
+if (document.readyState === "complete") {
+    addCsrfHeader();
+} else {
+    window.onload = addCsrfHeader;
+}

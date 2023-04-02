@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import UserLayout from "@/Layouts/UserLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import SwitchMode from "@/Components/SwitchMode";
+import AdminLayout from "@/Layouts/AdminLayout";
 
 export default function Pengaturan(props) {
     // Similar to componentDidMount and componentDidUpdate:
@@ -44,5 +45,5 @@ export default function Pengaturan(props) {
 }
 
 Pengaturan.layout = (page) => (
-    <UserLayout children={page} title="Dashboard | Pengaturan" />
+    <AdminLayout children={page} title="Dashboard | Pengaturan" />
 );

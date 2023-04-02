@@ -16,56 +16,90 @@
 
     {{-- style loader --}}
     <style>
-        .container-loader {
-            top: 0;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            display: none;
-            position: fixed;
+        #loader {
+            display: flex;
+            align-content: center;
             justify-content: center;
             align-items: center;
-            background-color: #0ea5e9;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 50;
+            background: #292524;
         }
 
-        .loader {
+        .pyramid-loader {
             position: relative;
+            width: 300px;
+            height: 300px;
+            display: block;
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg);
         }
 
-        .loader span {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            font-size: 10vw;
-            letter-spacing: 5px;
-            left: 50%;
-            width: max-content;
+        .wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: pyramid-spin 4s linear infinite;
         }
 
-        .loader span:nth-child(1) {
-            color: transparent;
-            -webkit-text-stroke: 1px #fff;
-        }
-
-        .loader span:nth-child(2) {
-            /* color: rgb(128, 198, 255); */
-            color: #cffafe;
-            /* -webkit-text-stroke: 1px rgb(128, 198, 255); */
-            -webkit-text-stroke: 1px #fff;
-            animation: uiverse723 3s ease-in-out infinite;
-        }
-
-        @keyframes uiverse723 {
-
-            0%,
+        @keyframes pyramid-spin {
             100% {
-                clip-path: polygon(0% 45%, 15% 44%, 32% 50%,
-                        54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+                transform: rotateY(360deg);
             }
+        }
 
-            50% {
-                clip-path: polygon(0% 60%, 16% 65%, 34% 66%,
-                        51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
-            }
+        .pyramid-loader .wrapper .side {
+            width: 70px;
+            height: 70px;
+            /* you can choose any gradient or color you want */
+            /* background: radial-gradient(#2F2585 10%, #F028FD 70%, #2BDEAC 120%); */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            transform-origin: center top;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .pyramid-loader .wrapper .side1 {
+            transform: rotateZ(-30deg) rotateY(90deg);
+            background: conic-gradient(#2BDEAC, #F028FD, #D8CCE6, #2F2585);
+        }
+
+        .pyramid-loader .wrapper .side2 {
+            transform: rotateZ(30deg) rotateY(90deg);
+            background: conic-gradient(#2F2585, #D8CCE6, #F028FD, #2BDEAC);
+        }
+
+        .pyramid-loader .wrapper .side3 {
+            transform: rotateX(30deg);
+            background: conic-gradient(#2F2585, #D8CCE6, #F028FD, #2BDEAC);
+        }
+
+        .pyramid-loader .wrapper .side4 {
+            transform: rotateX(-30deg);
+            background: conic-gradient(#2BDEAC, #F028FD, #D8CCE6, #2F2585);
+        }
+
+        .pyramid-loader .wrapper .shadow {
+            width: 60px;
+            height: 60px;
+            background: #8B5AD5;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            transform: rotateX(90deg) translateZ(-40px);
+            filter: blur(12px);
         }
     </style>
 
@@ -80,10 +114,15 @@
     @inertia
 </body>
 
-<div class="container-loader z-50">
-    <div class="loader">
-        <span>Tunggu dulu</span>
-        <span>Tunggu dulu</span>
+<div id="loader" class="!hidden">
+    <div class="pyramid-loader hidden">
+        <div class="wrapper">
+            <span class="side side1"></span>
+            <span class="side side2"></span>
+            <span class="side side3"></span>
+            <span class="side side4"></span>
+            <span class="shadow"></span>
+        </div>
     </div>
 </div>
 

@@ -13,7 +13,7 @@ class Transaksi extends Model
     use HasFactory;
 
     protected $table = 'transaksi';
-    protected $fillable = ['tanggal', 'lapangan_id', 'user_id', 'tenpat_lapangan_id', 'admin_lapangan_id', 'jadwal_id', 'nama_pelanggan', 'telp', 'status_transaksi', 'dari_jam', 'sampai_jam', 'harga_persewa', 'total_harga', 'untuk_tanggal'];
+    protected $fillable = ['user_id', 'lapangan_id', 'invoice_id', 'tanggal_main', 'amount', 'description', 'status', 'invoice_url'];
 
     public function lapangan()
     {
@@ -30,6 +30,7 @@ class Transaksi extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
 
     function jadwal()
     {
@@ -64,7 +65,7 @@ class Transaksi extends Model
     protected function status_transaksi(): Attribute
     {
         return new Attribute(
-            get: fn ($value) =>  ["pending", "terkonfirmasi","batal"][$value],
+            get: fn ($value) =>  ["pending", "terkonfirmasi", "batal"][$value],
         );
     }
 }

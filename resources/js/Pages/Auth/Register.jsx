@@ -105,7 +105,7 @@ export default function Register() {
             <Head title="Register" />
             <Loading display={displayLoading} />
             <h1 className="text-2xl font-bold my-8 text-white">Register</h1>
-            <div>
+            <div className="p-4">
                 <div className="login-box">
                     <form
                         className="grid grid-cols-1 md:grid-cols-2 md:gap-4"
@@ -226,7 +226,7 @@ export default function Register() {
                                 }) => (
                                     <React.Fragment>
                                         <img
-                                            className="my-3 w-32 h-32 rounded-full mx-auto border-4 border-slate-100 overflow-hidden mt-14"
+                                            className="my-3 w-32 h-32 object-cover object-center rounded-full mx-auto border-4 border-slate-100 overflow-hidden mt-14"
                                             src={data.url_foto}
                                             alt="avatar"
                                             onClick={openPortal}
@@ -266,19 +266,20 @@ export default function Register() {
                                 onChange={handleUpload}
                             />
                         </div>
-                        <Link
-                            href="register"
-                            className="underline text-sm text-white outline-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Sudah punya akun?
-                        </Link>
+
                         <center className="col-span-2">
-                            <a href="#" className="w-full" type="submit">
+                            <button href="#" className="w-full" type="submit">
                                 SUBMIT
                                 <span></span>
-                            </a>
+                            </button>
                         </center>
                     </form>
+                    <Link
+                        href="login"
+                        className="text-sm text-slate-300 text-neon-hover mt-6 inline-block col-span-1"
+                    >
+                        Sudah punya akun?
+                    </Link>
                 </div>
             </div>
         </GuestLayout>

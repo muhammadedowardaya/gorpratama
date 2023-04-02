@@ -1,9 +1,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import DeleteUserForm from "./Partials/DeleteUserForm";
-import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
-import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
+import DeleteUserForm from "../Partials/DeleteUserForm";
+import UpdatePasswordForm from "../Partials/UpdatePasswordForm";
+import UpdateProfileInformationForm from "../Partials/UpdateProfileInformationForm";
 import { Head } from "@inertiajs/react";
 import UserLayout from "@/Layouts/UserLayout";
+import AdminLayout from "@/Layouts/AdminLayout";
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
     return (
@@ -33,6 +34,4 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
     );
 }
 
-Edit.layout = (page) => (
-    <UserLayout children={page} title="Edit Profile User" />
-);
+Edit.layout = (page) => <AdminLayout children={page} title="Edit Profile" />;

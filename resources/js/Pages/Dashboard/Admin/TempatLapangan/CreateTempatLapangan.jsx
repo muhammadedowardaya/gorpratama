@@ -10,13 +10,16 @@ import MyButton from "@/Components/MyButton";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 
 import "../../../../../css/dashboardTempatLapangan.css";
+import "../../../../../css/formStyle.css";
 import axios from "axios";
 import Loading from "@/Components/Loading";
 
-export default function CreateTempatLapangan(props) {
-    const [displayLoading, setDisplayLoading] = useState("");
+// date picker dan time picker
+import { DatePicker } from "antd";
+import { TimePicker } from "antd";
 
-    const { data, setData, post, patch, processing, errors } = useForm({
+export default function CreateTempatLapangan(props) {
+    const { data, setData, processing, errors } = useForm({
         nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
         alamat:
             props.tempat_lapangan != null ? props.tempat_lapangan.alamat : "",
@@ -46,7 +49,6 @@ export default function CreateTempatLapangan(props) {
 
     const store = (e) => {
         e.preventDefault();
-        setDisplayLoading(true);
         axios
             .post(`/dashboard/tempat-lapangan`, data, {
                 headers: {
@@ -71,38 +73,43 @@ export default function CreateTempatLapangan(props) {
                 },
             })
             .then((response) => {
-                setDisplayLoading(false);
                 Toast.fire({
                     icon: "success",
                     title: `Berhasil menambahkan ${response.data.response.nama}`,
                 });
 
                 setTimeout(() => {
-                    router.get("/dashboard/tempat-lapangan");
+                    axios.get("/dashboard/tempat-lapangan");
                 }, 100);
             })
             .catch((errors) => {
-                setDisplayLoading(false);
                 if (errors.response.status === 400) {
-                    const error_keys = Object.keys(
-                        errors.response.data.message
-                    );
-                    const error_values = Object.getOwnPropertyNames(
-                        errors.response.data.message
-                    );
-                    let error_messages = [];
-                    let error = errors.response.data.message;
-                    for (let i = 0; i < error_keys.length; i++) {
-                        error_messages.push(error[error_values[i]]);
-                    }
+                    if (
+                        errors.response.data.message.nama[0] ==
+                        "Nama sudah ada sebelumnya."
+                    ) {
+                        router.get("/dashboard/tempat-lapangan");
+                    } else {
+                        const error_keys = Object.keys(
+                            errors.response.data.message
+                        );
+                        const error_values = Object.getOwnPropertyNames(
+                            errors.response.data.message
+                        );
+                        let error_messages = [];
+                        let error = errors.response.data.message;
+                        for (let i = 0; i < error_keys.length; i++) {
+                            error_messages.push(error[error_values[i]]);
+                        }
 
-                    Swal.fire(
-                        "Gagal!",
-                        `<ul>${error_messages
-                            .map((item) => `<li>${item}</li>`)
-                            .join(" ")}</ul>`,
-                        "error"
-                    );
+                        Swal.fire(
+                            "Gagal!",
+                            `<ul>${error_messages
+                                .map((item) => `<li>${item}</li>`)
+                                .join(" ")}</ul>`,
+                            "error"
+                        );
+                    }
                 } else {
                     Swal.fire(
                         "Gagal!",
@@ -131,29 +138,295 @@ export default function CreateTempatLapangan(props) {
                     });
                 }
             }
-
-            setDisplayLoading(false);
         };
 
         reader.onprogress = () => {
-            setDisplayLoading(true);
+            // setDisplayLoading(true);
         };
 
         reader.readAsDataURL(e.target.files[0]);
     };
 
+    async function getProfileGor() {
+        try {
+            // Kode yang mungkin menyebabkan kesalahan server
+            const response = await axios.get("/get-profile-gor");
+            // const gor = await response.json();
+            // return gor;
+            return response;
+        } catch (error) {
+            if (error instanceof Error && error.status === 500) {
+                // Tindakan yang diambil ketika terjadi Internal Server Error
+                console.error("Terjadi kesalahan internal server:", error);
+            } else {
+                // Tindakan yang diambil untuk jenis kesalahan yang berbeda
+                console.error("Terjadi kesalahan:", error);
+            }
+        }
+    }
+
+    useEffect(() => {
+        getProfileGor().then((gor) => {
+            if (gor != undefined) {
+                if (gor["tempat-lapangan"] != null) {
+                    // const namaGor = gor["tempat-lapangan"].nama;
+                    // setGor(namaGor == undefined ? "" : namaGor);
+                    router.get("/dashboard/lapangan");
+                }
+            }
+        });
+    });
+
     return (
         <div>
             <Head title="Kelola Tempat Lapangan" />
 
-            <Loading display={displayLoading} />
-
-            <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-white leading-normal">
-                <h1 className="text-center mt-10 md:mt-20 mb-8 text-xl font-bold">
+            <div className="w-full  px-4 md:px-0 md:mt-2 text-white leading-normal grid justify-center justify-items-center">
+                <h1 className="text-center mb-8 text-xl font-bold dark:text-white text-stone-900">
                     Tambahkan informasi tempat Lapangan
                 </h1>
+                <div className="md:max-w-4xl">
+                    <div className="login-box">
+                        <form
+                            className="grid grid-cols-1 md:grid-cols-2 md:gap-4"
+                            onSubmit={store}
+                        >
+                            <div className="col-span-2 md:col-span-1">
+                                <div className="user-box">
+                                    <input
+                                        type="text"
+                                        name="nama"
+                                        value={data.nama}
+                                        autoFocus
+                                        onChange={(e) => {
+                                            e.preventDefault();
+                                            setData("nama", e.target.value);
+                                        }}
+                                        autoComplete="off"
+                                        className={`${
+                                            data.nama != "" ? "aktif" : ""
+                                        }`}
+                                    />
+                                    <label>Nama</label>
+                                </div>
+                                <div className="user-box">
+                                    <input
+                                        type="text"
+                                        name="telp"
+                                        value={data.telp}
+                                        onChange={(e) => {
+                                            e.preventDefault();
+                                            setData("telp", e.target.value);
+                                        }}
+                                        autoComplete="off"
+                                        className={`${
+                                            data.telp != "" ? "aktif" : ""
+                                        }`}
+                                    />
+                                    <label>Telp</label>
+                                </div>
+                                <div className="user-box">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={data.email}
+                                        onChange={(e) => {
+                                            e.preventDefault();
+                                            setData("email", e.target.value);
+                                        }}
+                                        autoComplete="off"
+                                        className={`${
+                                            data.email != "" ? "aktif" : ""
+                                        }`}
+                                    />
+                                    <label>Email</label>
+                                </div>
+                                <div className="user-box">
+                                    <input
+                                        value={data.alamat}
+                                        name=""
+                                        required=""
+                                        onChange={(e) => {
+                                            e.preventDefault();
+                                            setData("alamat", e.target.value);
+                                        }}
+                                        className={`${
+                                            data.alamat != "" ? "aktif" : ""
+                                        }`}
+                                        autoComplete="off"
+                                    />
 
-                <form
+                                    <label>Alamat</label>
+                                </div>
+                                <div className="user-box">
+                                    <textarea
+                                        className={`${
+                                            data.deskripsi != "" ? "aktif" : ""
+                                        } !text-slate-800 mb-4`}
+                                        onChange={(e) => {
+                                            e.preventDefault();
+                                            setData(
+                                                "deskripsi",
+                                                e.target.value
+                                            );
+                                        }}
+                                        name="deskripsi"
+                                        value={data.deskripsi}
+                                    ></textarea>
+
+                                    <label>Deskripsi</label>
+                                </div>
+                            </div>
+                            <div className="col-span-2 md:col-span-1">
+                                <div className="user-box">
+                                    <input
+                                        type="number"
+                                        name="harga_persewa"
+                                        value={data.harga_persewa}
+                                        autoComplete="off"
+                                        onChange={(e) => {
+                                            e.preventDefault();
+                                            setData(
+                                                "harga_persewa",
+                                                e.target.value
+                                            );
+                                        }}
+                                        className={`${
+                                            data.harga_persewa != ""
+                                                ? "aktif"
+                                                : ""
+                                        } `}
+                                    />
+                                    <label>Harga sewa per-jam</label>
+                                </div>
+
+                                <div className="grid grid-cols-2">
+                                    <label className="col-span-1 text-slate-600 text-sm">
+                                        Jam buka
+                                    </label>
+                                    <label className="col-span-1 col-start-2 text-slate-600 text-sm">
+                                        Jam tutup
+                                    </label>
+                                    <TimePicker.RangePicker
+                                        format="HH:mm"
+                                        onChange={(value, dateString) => {
+                                            setData({
+                                                ...data,
+                                                jam_buka: dateString[0],
+                                                jam_tutup: dateString[1],
+                                            });
+                                        }}
+                                        disabled={
+                                            data.tanggal_main == ""
+                                                ? true
+                                                : false
+                                        }
+                                        size="large"
+                                        className="mt-2 col-span-2 bg-stone-50 border-none"
+                                    />
+                                </div>
+
+                                <div className="mt-4">
+                                    <Label forInput="image" value="Logo" />
+                                    <PortalWithState
+                                        closeOnOutsideClick
+                                        closeOnEsc
+                                    >
+                                        {({
+                                            openPortal,
+                                            closePortal,
+                                            isOpen,
+                                            portal,
+                                        }) => (
+                                            <React.Fragment>
+                                                <img
+                                                    className="my-3 w-32 h-32 object-cover object-center mx-auto border dark:border-white rounded-full border-slate-800 overflow-hidden"
+                                                    src={data.preview}
+                                                    alt="avatar"
+                                                    onClick={openPortal}
+                                                />
+                                                {portal(
+                                                    <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
+                                                        <div className="flex justify-center">
+                                                            <div className="border-8 relative bg-slate-100 border-slate-100">
+                                                                <h2 className="ml-3 mb-2 mt-1 text-2xl font-bold">
+                                                                    Foto
+                                                                </h2>
+                                                                <img
+                                                                    src={
+                                                                        data.preview
+                                                                    }
+                                                                    alt="Foto Gor atauTempat lapangan"
+                                                                    className="object-cover w-full md:h-96"
+                                                                />
+                                                                <FaWindowClose
+                                                                    size="2em"
+                                                                    className="top-1 right-2 absolute cursor-pointer"
+                                                                    onClick={
+                                                                        closePortal
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </React.Fragment>
+                                        )}
+                                    </PortalWithState>
+
+                                    <div className="relative flex items-center justify-center w-full max-w-md mx-auto px-6 py-4 bg-white rounded-lg shadow-md">
+                                        <input
+                                            type="file"
+                                            className="absolute inset-0 z-50 w-full h-full opacity-0"
+                                            name="file"
+                                            id="file"
+                                            onChange={handleUpload}
+                                        />
+                                        <div className="flex flex-col items-center justify-center">
+                                            <label
+                                                htmlFor="file-upload"
+                                                className="relative cursor-pointer rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500"
+                                            >
+                                                <span>Upload a file</span>
+                                                <input
+                                                    id="file-upload"
+                                                    name="file-upload"
+                                                    type="file"
+                                                    className="sr-only"
+                                                />
+                                            </label>
+                                            <p className="text-sm text-gray-500">
+                                                PNG, JPG, GIF up to 5MB
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <div className="flex items-center justify-end mt-8">
+                                    <MyButton
+                                        value="Kembali"
+                                        oncClick={(e) => {
+                                            e.preventDefault();
+                                            router.get(
+                                                "/dashboard/admin/profile-gor"
+                                            );
+                                        }}
+                                        className="mr-1"
+                                    />
+
+                                    <MyButton
+                                        value="Submit"
+                                        button="create"
+                                        type="submit"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {/* <form
                     className="p-4 gap-6 flex md:flex-row flex-col justify-center border-4 md:mx-40"
                     encType="multipart/form-data"
                     onSubmit={store}
@@ -386,13 +659,13 @@ export default function CreateTempatLapangan(props) {
                             />
                         </div>
                     </div>
-                </form>
+                </form> */}
             </div>
         </div>
     );
 }
 
-// class CreateTempatLapangan extends React.Component {
+// className CreateTempatLapangan extends React.Component {
 //     // const { errors } = usePage().props;
 //     // const { data, setData } = useForm({
 //     //     slug: "",

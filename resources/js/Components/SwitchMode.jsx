@@ -1,33 +1,49 @@
 import { useEffect, useState } from "react";
 import "../../css/switchMode.css";
 
-export default function SwitchMode({ className, size = "1em" }) {
-    const [check, setCheck] = useState(false);
-    const html = document.querySelector("html");
-
+export default function SwitchMode({ className }) {
+    const [isChecked, setIsChecked] = useState(false);
     useEffect(() => {
-        if (check == true) {
-            html.classList.add("dark");
+        // Mengecek Local Storage untuk mendapatkan mode saat halaman dimuat kembali
+        const mode = localStorage.getItem("mode");
+        if (mode === "dark") {
+            setIsChecked(true);
+            document.documentElement.classList.add("dark");
         } else {
-            html.classList.remove("dark");
+            setIsChecked(false);
+            document.documentElement.classList.remove("dark");
         }
-    });
+    }, []);
 
-    const handleChange = (e) => {
-        setCheck(e.target.checked);
+    const handleCheckboxChange = (event) => {
+        // Menyimpan mode ke Local Storage saat checkbox dicentang
+        if (event.target.checked) {
+            localStorage.setItem("mode", "dark");
+            document.documentElement.classList.add("dark");
+        } else {
+            localStorage.removeItem("mode");
+            document.documentElement.classList.remove("dark");
+        }
+        setIsChecked(event.target.checked);
     };
 
     return (
         <label
-            className={`swap swap-flip ${className}`}
-            style={{
-                fontSize: size,
-            }}
+            className={`my-switch ${className}`}
+            style={{ width: "150px", height: "195px" }}
         >
-            {/* <!-- this hidden checkbox controls the state --> */}
-            <input id="switch-mode" type="checkbox" onChange={handleChange} />
-            <div className="swap-on">😈</div>
-            <div className="swap-off">😇</div>
+            <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+            />
+            <div className="checkbox-button">
+                <div className="light"></div>
+                <div className="dots"></div>
+                <div className="characters"></div>
+                <div className="shine"></div>
+                <div className="shadow"></div>
+            </div>
         </label>
     );
 }
