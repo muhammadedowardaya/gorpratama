@@ -1,0 +1,4 @@
+name: gorpratama
+env: production
+buildScript: composer install --optimize-autoloader --no-dev
+startCommand: php artisan serve
