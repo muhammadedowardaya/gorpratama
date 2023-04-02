@@ -1,14 +1,10 @@
 import React from "react";
-
-import find from "../../../public/storage/images/user-search.png";
-import ready from "../../../public/storage/images/running.png";
 import { TiArrowBack } from "react-icons/ti";
 
 import { Inertia } from "@inertiajs/inertia";
 import Layout from "@/Layouts/Layout";
 
 import "../../css/pilihan.css";
-import CardGlassmorphism from "@/Components/CardGlassmorphism";
 
 const Pilihan = (props) => {
     return (

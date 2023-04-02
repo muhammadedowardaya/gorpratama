@@ -10,7 +10,6 @@ import MyButton from "@/Components/MyButton";
 import { Head, router, useForm } from "@inertiajs/react";
 
 import "../../../../../css/formStyle.css";
-import "../../../../../css/dashboardTempatLapangan.css";
 import axios from "axios";
 import Toast from "@/Components/Toast";
 import Loading from "@/Components/Loading";

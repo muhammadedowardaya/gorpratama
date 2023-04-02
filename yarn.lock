@@ -614,16 +614,6 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mapbox/corslite@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/@mapbox/corslite/-/corslite-0.0.7.tgz"
-  integrity sha512-w/uS474VFjmqQ7fFWIMZINQM1BAQxDLuoJaZZIPES1BmeYpCtlh9MtbFxKGGDAsfvut8/HircIsVvEYRjQ+iMg==
-
-"@mapbox/polyline@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@mapbox/polyline/-/polyline-0.2.0.tgz"
-  integrity sha512-GCddO0iw6AzOQqZgBmjEQI9Pgo40/yRgkTkikGctE01kNBN0ThWYuAnTD+hRWrAWMV6QJ0rNm4m8DAsaAXE7Pg==
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -726,18 +716,6 @@
   integrity sha512-y5mb86JUoiUgBjY/o6FJSFZSEttfb3Q5gllE4xoKjAAD+vBrnIhE4dViwUuow3va8mpH4s9jyUbUbrRGoRdc2Q==
   dependencies:
     mini-svg-data-uri "^1.2.3"
-
-"@terraformer/arcgis@^2.1.0":
-  version "2.1.2"
-  resolved "https://registry.npmjs.org/@terraformer/arcgis/-/arcgis-2.1.2.tgz"
-  integrity sha512-IvdfqehcNAUtKU1OFMKwPT8EvdKlVFZ7q7ZKzkIF8XzYZIVsZLuXuOS1UBdRh5u/o+X5Gax7jiZhD8U/4TV+Jw==
-  dependencies:
-    "@terraformer/common" "^2.1.2"
-
-"@terraformer/common@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.npmjs.org/@terraformer/common/-/common-2.1.2.tgz"
-  integrity sha512-cwPdTFzIpekZhZRrgDEkqLKNPoqbyCBQHiemaovnGIeUx0Pl336MY/eCxzJ5zXkrQLVo9zPalq/vYW5HnyKevQ==
 
 "@types/color-convert@*":
   version "2.0.0"
@@ -1242,22 +1220,6 @@ escape-string-regexp@^1.0.5:
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz"
   integrity sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==
 
-esri-leaflet-geocoder@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.npmjs.org/esri-leaflet-geocoder/-/esri-leaflet-geocoder-3.1.3.tgz"
-  integrity sha512-XuorBaPKOq2XBswyWS3fX4I0EyGamdQsao/NQbn+9wlCZtpDrpIn2iKLY7x4uOaPC4wCjE/rskli8UMCVwlZrg==
-  dependencies:
-    esri-leaflet "^3.0.2"
-    leaflet "^1.0.0"
-
-esri-leaflet@^3.0.10, esri-leaflet@^3.0.2:
-  version "3.0.10"
-  resolved "https://registry.npmjs.org/esri-leaflet/-/esri-leaflet-3.0.10.tgz"
-  integrity sha512-2ma+mMHrJA7oqJFHZDLZrCAMkaXTdFFJRsJqlsh3Z2G+nXKj2SrlzJ2YmN5qgnI9y/X5AkcSfxViBoQTX9rcSw==
-  dependencies:
-    "@terraformer/arcgis" "^2.1.0"
-    tiny-binary-search "^1.0.3"
-
 estree-walker@^2.0.1:
   version "2.0.2"
   resolved "https://registry.npmjs.org/estree-walker/-/estree-walker-2.0.2.tgz"
@@ -1462,25 +1424,6 @@ laravel-vite-plugin@^0.7.4:
     picocolors "^1.0.0"
     vite-plugin-full-reload "^1.0.5"
 
-leaflet-routing-machine@^3.2.12:
-  version "3.2.12"
-  resolved "https://registry.npmjs.org/leaflet-routing-machine/-/leaflet-routing-machine-3.2.12.tgz"
-  integrity sha512-HLde58G1YtD9xSIzZavJ6BPABZaV1hHeGst8ouhzuxmSC3s32NVtADT+njbIUMW1maHRCrsgTk/E4hz5QH7FrA==
-  dependencies:
-    "@mapbox/corslite" "0.0.7"
-    "@mapbox/polyline" "^0.2.0"
-    osrm-text-instructions "^0.13.2"
-
-leaflet.locatecontrol@^0.79.0:
-  version "0.79.0"
-  resolved "https://registry.yarnpkg.com/leaflet.locatecontrol/-/leaflet.locatecontrol-0.79.0.tgz#0236b87c699a49f9ddb2f289941fbc0d3c3f8b62"
-  integrity sha512-h64QIHFkypYdr90lkSfjKvPvvk8/b8UnP3m9WuoWdp5p2AaCWC0T1NVwyuj4rd5U4fBW3tQt4ppmZ2LceHMIDg==
-
-leaflet@^1.0.0, leaflet@^1.9.3:
-  version "1.9.3"
-  resolved "https://registry.npmjs.org/leaflet/-/leaflet-1.9.3.tgz"
-  integrity sha512-iB2cR9vAkDOu5l3HAay2obcUHZ7xwUBBjph8+PGtmW/2lYhbLizWtG7nTeYht36WfOslixQF9D/uSIzhZgGMfQ==
-
 lilconfig@^2.0.5, lilconfig@^2.0.6:
   version "2.0.6"
   resolved "https://registry.npmjs.org/lilconfig/-/lilconfig-2.0.6.tgz"
@@ -1611,11 +1554,6 @@ object-inspect@^1.9.0:
   version "1.12.3"
   resolved "https://registry.npmjs.org/object-inspect/-/object-inspect-1.12.3.tgz"
   integrity sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==
-
-osrm-text-instructions@^0.13.2:
-  version "0.13.4"
-  resolved "https://registry.npmjs.org/osrm-text-instructions/-/osrm-text-instructions-0.13.4.tgz"
-  integrity sha512-ge4ZTIetMQKAHKq2MwWf83ntzdJN20ndRKRaVNoZ3SkDkBNO99Qddz7r6+hrVx38I+ih6Rk5T1yslczAB6Q9Pg==
 
 path-parse@^1.0.7:
   version "1.0.7"
@@ -2386,11 +2324,6 @@ throttle-debounce@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-5.0.0.tgz#a17a4039e82a2ed38a5e7268e4132d6960d41933"
   integrity sha512-2iQTSgkkc1Zyk0MeVrt/3BvuOXYPl/R8Z0U2xxo9rjwNciaHDG3R+Lm6dh4EeUci49DanvBnuqI6jshoQQRGEg==
-
-tiny-binary-search@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/tiny-binary-search/-/tiny-binary-search-1.0.3.tgz"
-  integrity sha512-STSHX/L5nI9WTLv6wrzJbAPbO7OIISX83KFBh2GVbX1Uz/vgZOU/ANn/8iV6t35yMTpoPzzO+3OQid3mifE0CA==
 
 to-fast-properties@^2.0.0:
   version "2.0.0"

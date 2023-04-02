@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 import MyButton from "@/Components/MyButton";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 
-import "../../../../../css/dashboardTempatLapangan.css";
 import "../../../../../css/formStyle.css";
 import axios from "axios";
 import Loading from "@/Components/Loading";
