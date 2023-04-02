@@ -10,7 +10,7 @@ const Pilihan = (props) => {
     return (
         <div className="grid gap-8 grid-cols-1 md:grid-cols-2 justify-items-center justify-between">
             {/* Pilihan  temukan teman atau main langsung */}
-            <CardGlassmorphism
+            {/* <CardGlassmorphism
                 title="Temukan Teman"
                 content="Gak punya teman atau lawan buat main badminton? temukan teman mu sekarang!"
                 link="/find"
@@ -24,7 +24,7 @@ const Pilihan = (props) => {
                 link="/lapangan"
                 linkCaption="Siap Main"
                 width="300px"
-            />
+            /> */}
         </div>
     );
 };
