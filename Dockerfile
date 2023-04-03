@@ -17,7 +17,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Set environment variables
 ENV DB_CONNECTION=mysql
-ENV DB_HOST=containers-us-west-52.railway.app
+ENV DB_HOST=gorpratama-production.up.railway.app
 ENV DB_PORT=5988
 ENV DB_DATABASE=railway
 ENV DB_USERNAME=root
