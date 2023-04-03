@@ -4,6 +4,6 @@ services:
         build:
             context: .
         ports:
-            - "8000:9000"
+            - "8080:9000"
         volumes:
             - .:/var/www/html
