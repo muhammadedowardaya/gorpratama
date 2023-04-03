@@ -1,23 +1,27 @@
-# Set the base image to PHP 7.4
 FROM php:7.4-apache
 
-# Copy the contents of the local directory to the container
-COPY . /var/www/html
-
-# Install required PHP extensions
+# Install required extensions
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Set the working directory to the Laravel application directory
-WORKDIR /var/www/html
+# Set document root
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
-# Copy the .env.example file and create the .env file
-COPY .env.example .env
+# Enable mod_rewrite
+RUN a2enmod rewrite
 
-# Generate a new Laravel application key
-RUN php artisan key:generate
+# Copy application files to container
+COPY . /var/www/html
 
-# Set permissions for the storage and bootstrap cache directories
-RUN chmod -R 777 storage bootstrap/cache
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port 80 for HTTP traffic
+# Set environment variables
+ENV DB_CONNECTION=mysql
+ENV DB_HOST=containers-us-west-52.railway.app
+ENV DB_PORT=5988
+ENV DB_DATABASE=railway
+ENV DB_USERNAME=root
+ENV DB_PASSWORD=Cl0mKrcTylUsHSrt1YvT
+
+# Expose port 80
 EXPOSE 80
