@@ -58,20 +58,24 @@ const Lapangan = (props) => {
                             <div
                                 key={item.id}
                                 className="w-full p-3 flex justify-center container-card cursor-pointer"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    router.get(`/pilih-lapangan/${item.slug}`);
-                                }}
                             >
                                 <div
-                                    className="w-96 h-56 bg-base-100 shadow-xl border-2 border-slate-50 relative"
+                                    className="w-96 h-56 bg-base-100 shadow-xl border-2 border-slate-50 relative flex justify-center"
                                     style={{
                                         backgroundImage: `url(${item.url_foto})`,
                                         backgroundPosition: "center",
                                         backgroundSize: "cover",
                                     }}
                                 >
-                                    <div className="text-center bg-slate-50 absolute bottom-0 left-0 right-0 p-2">
+                                    <div
+                                        className="text-center bg-slate-50 p-2"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            router.get(
+                                                `/pilih-lapangan/${item.slug}`
+                                            );
+                                        }}
+                                    >
                                         <h2 className="text-slate-700 font-bold">
                                             {item.nama}
                                         </h2>
@@ -90,6 +94,14 @@ const Lapangan = (props) => {
                                             )}
                                         </p>
                                     </div>
+                                    <button
+                                        onClick={() => {
+                                            router.get(`/jadwal/${item.id}`);
+                                        }}
+                                        className="btn mt-2 absolute bottom-1 bg-sky-500"
+                                    >
+                                        Lihat jadwal {item.nama}
+                                    </button>
                                 </div>
                             </div>
                         );

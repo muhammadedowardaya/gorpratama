@@ -42,12 +42,15 @@ Route::get('/image/{lapangan}', function ($nama_file) {
 })->name('jadwal.show');
 
 
-
-
-
-Route::get('/wisata', function () {
-    $wisata = Wisata::all();
-    return response()->json([
-        'wisata' => $wisata
-    ]);
+Route::get('/payment/success', function () {
+    return Inertia::render('Payment/Success');
 });
+Route::get('/payment/failed', function () {
+    return Inertia::render('Payment/Failed');
+});
+Route::get('/payment/Pending', function () {
+    return Inertia::render('Payment/Pending');
+});
+
+Route::get('/chat/{sender_id}/{receiver_id}', [ChatController::class, 'index']);
+Route::post('/chat', [ChatController::class, 'store']);

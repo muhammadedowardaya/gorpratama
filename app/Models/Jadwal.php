@@ -13,10 +13,12 @@ class Jadwal extends Model
 
     protected $fillable = ['user_id', 'lapangan_id', 'transaksi_id', 'tanggal', 'jam_mulai', 'jam_selesai'];
 
-    public function lapangans()
+    public function lapangan()
     {
-        return $this->belongsToMany(Lapangan::class, 'lapangan_id');
+        return $this->belongsTo(Lapangan::class);
     }
+
+
 
     public function user()
     {

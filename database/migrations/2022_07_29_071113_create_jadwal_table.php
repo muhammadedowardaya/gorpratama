@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('lapangan_id');
+            $table->boolean('temukan_teman_lawan')->default(false);
             $table->date('tanggal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');

@@ -34,15 +34,15 @@ class UsersSeeder extends Seeder
             //     'type' => 2,
             //     'password' => bcrypt('1234'),
             // ],
-            // [
-            //     'nama' => 'User',
-            //     'slug' => 'user',
-            //     'telp' => '+62 83808165173',
-            //     'email' => 'user@gmail.com',
-            //     'alamat' => 'Bogor',
-            //     'type' => 0,
-            //     'password' => bcrypt('1234'),
-            // ],
+            [
+                'nama' => 'Muhammad Edo Wardaya',
+                'slug' => 'user',
+                'telp' => '083808165173',
+                'email' => 'muhammadedowarday4@gmail.com',
+                'alamat' => 'Bogor',
+                'type' => 0,
+                'password' => bcrypt('1234'),
+            ],
         ];
 
         foreach ($users as $key => $user) {

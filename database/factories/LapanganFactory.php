@@ -23,9 +23,10 @@ class LapanganFactory extends Factory
             'jadwal_id' => fake()->randomDigit(),
             'transaksi_id' => fake()->randomDigit(),
             'foto' => null,
+            'url_foto' => null,
             'nama' => $nama,
             'slug' => Str::slug($nama),
-            'status' => 'booked'
+            'status' => 0
         ];
     }
 }

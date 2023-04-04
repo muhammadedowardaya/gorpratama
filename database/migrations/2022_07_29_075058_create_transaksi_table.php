@@ -19,10 +19,6 @@ return new class extends Migration
             $table->foreignId('lapangan_id')->nullable();
             $table->string('invoice_id');
             $table->date('tanggal_main');
-            $table->integer('amount');
-            $table->string('description');
-            $table->string('status');
-            $table->string('invoice_url');
             $table->timestamps();
         });
     }

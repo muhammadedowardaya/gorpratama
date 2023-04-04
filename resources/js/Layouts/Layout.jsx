@@ -88,22 +88,20 @@ export default function Layout({ auth, header, children }) {
             .querySelector(".pyramid-loader");
 
         router.on("start", () => {
-            if (firstChildApp.children.length > 0) {
-                // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
-                if (loader.classList.contains("!hidden")) {
-                    loader.classList.remove("!hidden");
-                    pyramidLoader.classList.remove("hidden");
-                }
+            // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+            if (loader.classList.contains("!hidden")) {
+                loader.classList.remove("!hidden");
+                pyramidLoader.classList.remove("hidden");
             }
         });
 
         router.on("finish", () => {
-            if (firstChildApp.children.length > 0) {
-                if (loader.classList.contains("!hidden") == false) {
-                    loader.classList.add("!hidden");
-                    pyramidLoader.classList.add("hidden");
-                }
+            // if (firstChildApp.children.length > 0) {
+            if (loader.classList.contains("!hidden") == false) {
+                loader.classList.add("!hidden");
+                pyramidLoader.classList.add("hidden");
             }
+            // }
         });
     });
     return (
@@ -149,6 +147,7 @@ export default function Layout({ auth, header, children }) {
                                                         delay: i * 0.06,
                                                         opacity: 1,
                                                         right: 0,
+                                                        display: "flex",
                                                     });
                                                 });
                                         }}
@@ -169,14 +168,15 @@ export default function Layout({ auth, header, children }) {
                                                         duration: 1,
                                                         ease: "expo.out",
                                                         delay: i * 0.06,
-                                                        opacity: 0,
+                                                        opacity: 1,
+                                                        display: "hidden",
                                                         right: "-14rem",
                                                     });
                                                 });
                                         }}
                                     />
                                 )}
-                                <ul className="menu menu-compact mt-3 w-52 z-20 list-pengaturan-user absolute">
+                                <ul className="menu menu-compact mt-3 w-52 list-pengaturan-user absolute">
                                     <li>
                                         <a
                                             className="justify-between dark:bg-stone-800"

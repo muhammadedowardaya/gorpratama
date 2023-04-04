@@ -1,21 +1,24 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TempatLapanganController;
 use App\Http\Controllers\TransaksiController;
+use App\Models\Jadwal;
 use App\Models\Lapangan;
 use App\Models\TempatLapangan;
 use App\Models\Transaksi;
 use App\Models\User;
-use App\Models\Waktu;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+use function PHPUnit\Framework\isType;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,20 +97,33 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return Inertia::render('Dashboard/Admin/Pesanan');
         } else if (auth()->user()->type == 'user') {
             $transaksi = Transaksi::with(['lapangan', 'user'])->where('user_id', auth()->user()->id)->get();
+            $invoice_id = $transaksi[0]['invoice_id'];
+            $secret_key = 'Basic ' . config('xendit.key_auth');
+            $response = Http::withHeaders([
+                'Authorization' => $secret_key
+            ])->get("https://api.xendit.co/v2/invoices?user_id=$invoice_id");
+            $invoice =  $response->object();
+
             return Inertia::render('Dashboard/User/Pesanan', [
+                'invoice' => $invoice,
                 'transaksi' => $transaksi
             ]);
         }
     });
+
 
     // Dashboard Jadwal
     Route::get('/dashboard/jadwal', function () {
         if (auth()->user()->type == 'admin') {
             return Inertia::render('Dashboard/Admin/Jadwal');
         } else if (auth()->user()->type == 'user') {
-            return Inertia::render('Dashboard/User/Jadwal');
+            $jadwal = Jadwal::with(['lapangan', 'transaksi'])->where('user_id', auth()->user()->id)->get();
+            return Inertia::render('Dashboard/User/Jadwal', [
+                'jadwal' => $jadwal
+            ]);
         }
     });
+
 
     Route::get('/dashboard/pengaturan', function () {
         if (auth()->user()->type == 'admin') {
@@ -141,7 +157,6 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
         return Inertia::render('Booking', [
             'lapangan' => $lapangan,
             'tempat_lapangan' => $tempat_lapangan[0],
-            'jam' => Waktu::all()
         ]);
         // return response()->json([
         //     'tempat_lapangan' => $lapangan
@@ -150,35 +165,52 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
 
     Route::post('/booking', [TransaksiController::class, 'store']);
 
-    Route::get('/payment/{invoice_id}', function ($invoice_id) {
-        $secret_key = 'Basic ' . config('xendit.key_auth');
-        $response = Http::withHeaders([
-            'Authorization' => $secret_key
-        ])->get("https://api.xendit.co/v2/invoices/$invoice_id");
-
-        $invoice = $response->object();
-
-        if ($invoice->status == 'SUCCESS') {
-            return Inertia::render('Payment/Success', [
-                'invoice' => $invoice,
-            ]);
-        } else if ($invoice->status == 'PENDING') {
-            return Inertia::render('Payment/Pending', [
-                'invoice' => $invoice,
-            ]);
-        } else if ($invoice->status == 'FAILED') {
-            return Inertia::render('Payment/Failed', [
-                'invoice' => $invoice,
-            ]);
-        }
-
-
-        // return Inertia::render('Invoice/Show', [
-        //     'invoice' => $invoice,
-        // ]);
-
-        // return Inertia::render('PaymentSuccess');
+    Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
+        $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->paginate(1);
+        return Inertia::render('Jadwal', [
+            'jadwal' => $jadwal
+        ]);
     });
+
+    Route::get('/temukan-teman', function () {
+
+        return Inertia::render('TemukanTeman');
+    });
+
+    // Route::get('/payment/{external_id}', function ($external_id) {
+    //     $secret_key = 'Basic ' . config('xendit.key_auth');
+    //     $response = Http::withHeaders([
+    //         'Authorization' => $secret_key
+    //     ])->get("https://api.xendit.co/v2/invoices?external_id=$external_id");
+
+    //     // $invoice = $response->object();
+
+    //     // if ($invoice->status == 'SUCCESS') {
+    //     //     return Inertia::render('Payment/Success', [
+    //     //         'invoice' => $invoice,
+    //     //     ]);
+    //     // } else if ($invoice->status == 'PENDING') {
+    //     //     return Inertia::render('Payment/Pending', [
+    //     //         'invoice' => $invoice,
+    //     //     ]);
+    //     // } else if ($invoice->status == 'FAILED') {
+    //     //     return Inertia::render('Payment/Failed', [
+    //     //         'invoice' => $invoice,
+    //     //     ]);
+    //     // }
+
+    //     dd($response);
+
+
+    //     // return Inertia::render('Invoice/Show', [
+    //     //     'invoice' => $invoice,
+    //     // ]);
+
+    //     // return Inertia::render('PaymentSuccess');
+    // });
+
+
+
 
 
     Route::prefix('tagihan')->group(function () {

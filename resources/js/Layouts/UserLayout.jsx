@@ -81,22 +81,22 @@ export default function UserLayout({ children, header, title }) {
             .querySelector(".pyramid-loader");
 
         router.on("start", () => {
-            if (firstChildApp.children.length > 0) {
-                // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
-                if (loader.classList.contains("!hidden")) {
-                    loader.classList.remove("!hidden");
-                    pyramidLoader.classList.remove("hidden");
-                }
+            // if (firstChildApp.children.length > 0) {
+            // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+            if (loader.classList.contains("!hidden")) {
+                loader.classList.remove("!hidden");
+                pyramidLoader.classList.remove("hidden");
             }
+            // }
         });
 
         router.on("finish", () => {
-            if (firstChildApp.children.length > 0) {
-                if (loader.classList.contains("!hidden") == false) {
-                    loader.classList.add("!hidden");
-                    pyramidLoader.classList.add("hidden");
-                }
+            // if (firstChildApp.children.length > 0) {
+            if (loader.classList.contains("!hidden") == false) {
+                loader.classList.add("!hidden");
+                pyramidLoader.classList.add("hidden");
             }
+            // }
         });
     });
 

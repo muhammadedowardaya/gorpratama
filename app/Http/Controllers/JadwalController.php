@@ -34,7 +34,7 @@ class JadwalController extends Controller
 
     public function hapusTerlewat()
     {
-        $jadwalTerlewat = Jadwal::where('tanggal', '<', date('Y-m-d'))->get();
+        $jadwalTerlewat = Jadwal::where('tanggal', '<', date('d-m-Y'))->get();
         foreach ($jadwalTerlewat as $jadwal) {
             $jadwal->delete();
         }

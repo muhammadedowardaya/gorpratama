@@ -61,31 +61,31 @@ class TransaksiController extends Controller
                     ]
                 ]
             ],
-            'customer_notification_preference' => [
-                'invoice_created' => [
-                    'whatsapp',
-                    'sms',
-                    'email'
-                ],
-                'invoice_reminder' => [
-                    'whatsapp',
-                    'sms',
-                    'email'
-                ],
-                'invoice_paid' => [
-                    'whatsapp',
-                    'sms',
-                    'email'
-                ],
-                'invoice_expired' => [
-                    'whatsapp',
-                    'sms',
-                    'email'
-                ]
-            ],
+            // 'customer_notification_preference' => [
+            //     'invoice_created' => [
+            //         'whatsapp',
+            //         'sms',
+            //         'email'
+            //     ],
+            //     'invoice_reminder' => [
+            //         'whatsapp',
+            //         'sms',
+            //         'email'
+            //     ],
+            //     'invoice_paid' => [
+            //         'whatsapp',
+            //         'sms',
+            //         'email'
+            //     ],
+            //     'invoice_expired' => [
+            //         'whatsapp',
+            //         'sms',
+            //         'email'
+            //     ]
+            // ],
             // 'success_redirect_url' => 'https=>//www.google.com',
-            'success_redirect_url' => 'https=>//1a7e-140-213-30-175.ap.ngrok.io/PaymentSuccess',
-            // 'failure_redirect_url' => 'https=>//www.google.com',
+            // 'success_redirect_url' => "https://f662-140-213-130-29.ap.ngrok.io/payment/$external_id",
+            // 'failure_redirect_url' => "https://f662-140-213-130-29.ap.ngrok.io/payment/$external_id",
             'currency' => 'IDR',
             // 'items' => [
             //     [
@@ -108,30 +108,27 @@ class TransaksiController extends Controller
 
         // // ]);
         $response = $data_request->object();
+        // 63fcbd4a240a7e17e6b4aee9
 
         // jadikan tanggal dengan format d m Y dapat diterima database
         $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
         Transaksi::create([
             'user_id' => auth()->user()->id,
             'lapangan_id' => request('lapangan_id'),
-            'invoice_id' => $response->id,
+            'invoice_id' => $response->user_id,
             'tanggal_main' => $tanggal_main,
-            'amount' => $response->amount,
-            'description' => $response->description,
-            'status' => $response->status,
-            'invoice_url' => $response->invoice_url
         ]);
-        // return redirect()->to('/dashboard/pesanan');
 
         // buat jadwal baru
         $jadwal = new Jadwal;
         $jadwal->user_id = $request->user_id;
         $jadwal->lapangan_id = $request->lapangan_id;
-        $jadwal->transaksi_id = $response->id;
-        $jadwal->tanggal = $request->tanggal_sewa;
+        $jadwal->tanggal = $tanggal_main;
         $jadwal->jam_mulai = $request->jam_mulai;
         $jadwal->jam_selesai = $request->jam_selesai;
         $jadwal->save();
+
+        return Inertia::location($response->invoice_url);
     }
 
     /**

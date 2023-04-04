@@ -23,10 +23,11 @@ class Lapangan extends Model
         return $this->hasMany(Transaksi::class, 'transaksi_id');
     }
 
-    public function jadwals()
+    public function jadwal()
     {
-        return $this->belongsToMany(Jadwal::class);
+        return $this->hasMany(jadwal::class);
     }
+
 
     protected function status(): Attribute
     {

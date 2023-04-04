@@ -163,7 +163,7 @@ export default function Booking(props) {
                                         //         .join(" ")}</ul>`,
                                         //     "error"
                                         // );
-                                        // console.info(errors);
+                                        console.info(errors);
                                     },
                                     onSuccess: (response) => {
                                         // Swal.fire({
