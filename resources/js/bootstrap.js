@@ -25,7 +25,9 @@ window.Pusher = Pusher;
 
 window.Echo = new Echo({
     broadcaster: "pusher",
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    key: "bda224757a06c9269de3",
+    cluster: "ap1",
+    // key: import.meta.env.MIX_PUSHER_APP_KEY,
+    // cluster: import.meta.env.MIX_PUSHER_APP_CLUSTER,
     encrypted: true,
 });

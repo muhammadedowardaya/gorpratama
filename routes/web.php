@@ -1,6 +1,10 @@
 <?php
 
+use App\Events\ChatSent;
+use App\Events\ServerCreated;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingScheduleController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
@@ -31,9 +35,48 @@ use function PHPUnit\Framework\isType;
 |
 */
 
-Route::get('/wisata', function () {
-    return Inertia::render('Wisata');
+Route::get('/test-broadcast-event', function () {
+    ServerCreated::dispatch('isi parameter untuk message');
+
+    echo 'test broadcast event sangcahaya.id';
 });
+
+
+Route::get('/test-chat', function () {
+    return Inertia::render('ChatPage');
+});
+
+
+// Route::middleware(['auth'])->group(function () {
+//     Route::post('/bookings/{booking}/messages', [MessageController::class, 'store']);
+// });
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('bookings')->group(function () {
+        Route::get('', [BookingController::class, 'index'])->name('bookings.index');
+        Route::get('{id}', [BookingController::class, 'show'])->name('bookings.show');
+        Route::post('{id}/join', [BookingController::class, 'join'])->name('bookings.join');
+        Route::post('{id}/leave', [BookingController::class, 'leave'])->name('bookings.leave');
+        Route::post('{id}/messages', [BookingController::class, 'sendMessage'])->name('bookings.sendMessage');
+    });
+});
+
+
+
+Route::get('/booking-schedules', [BookingScheduleController::class, 'index'])->name('booking-schedules.index');
+Route::post('/booking-schedules', [BookingScheduleController::class, 'store'])->name('booking-schedules.store');
+Route::post('/booking-schedules/{schedule}/messages', [BookingScheduleMessageController::class, 'store'])->name('booking-schedules.messages.store');
+Route::post('/booking-schedules/{schedule}/join', [BookingScheduleController::class, 'join'])->name('booking-schedules.join');
+
+
+
+
+
+
+
+
+
+
 
 
 Route::get('/', function () {

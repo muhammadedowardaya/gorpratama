@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Booking;
 use App\Models\Chat;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -20,4 +21,12 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('chat.{chat}', function ($user, Chat $chat) {
     return $user->id === $chat->sender_id || $user->id === $chat->receiver_id;
+});
+
+Broadcast::channel('gorpratama', function ($user) {
+    return true;
+});
+
+Broadcast::channel('booking.{booking}', function ($user, Booking $booking) {
+    return $user->id === $booking->user_id;
 });

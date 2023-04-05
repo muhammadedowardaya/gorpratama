@@ -9,6 +9,12 @@ const ChatForm = ({ chatId, sendMessage }) => {
         setMessage("");
     };
 
+    useEffect(() => {
+        echo.channel("gorpratama").listen("ChatSent", (data) => {
+            setMessage(data.message);
+        });
+    }, []);
+
     return (
         <form onSubmit={handleSubmit}>
             <div className="mb-4">

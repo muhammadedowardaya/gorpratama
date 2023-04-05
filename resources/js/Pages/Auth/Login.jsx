@@ -54,6 +54,7 @@ export default function Login(props, { status, canResetPassword }) {
                     "error"
                 );
                 // tampilkan sweetalert2 jika terjadi error
+                console.info(errors);
             },
             onSuccess: () => {
                 // tampilkan sweetalert2 jika berhasil

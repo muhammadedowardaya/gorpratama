@@ -54,3 +54,19 @@ Route::get('/payment/Pending', function () {
 
 Route::get('/chat/{sender_id}/{receiver_id}', [ChatController::class, 'index']);
 Route::post('/chat', [ChatController::class, 'store']);
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('/bookings', [BookingController::class, 'index']);
+    Route::get('/bookings/{booking}', [BookingController::class, 'show']);
+    Route::post('/bookings/{booking}/join', [BookingController::class, 'join']);
+    Route::post('/bookings/{booking}/leave', [BookingController::class, 'leave']);
+});
+
+
+Route::get('/booking-schedules', [BookingScheduleController::class, 'index'])->name('booking-schedules.index');

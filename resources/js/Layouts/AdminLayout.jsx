@@ -77,28 +77,23 @@ export default function AdminLayout({ children, header, title }) {
         });
 
         // -------------------
-        const firstChildApp = window.document.getElementById("main");
         const loader = window.document.getElementById("loader");
         const pyramidLoader = window.document
             .getElementById("loader")
             .querySelector(".pyramid-loader");
 
         router.on("start", () => {
-            if (firstChildApp.children.length > 0) {
-                // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
-                if (loader.classList.contains("!hidden")) {
-                    loader.classList.remove("!hidden");
-                    pyramidLoader.classList.remove("hidden");
-                }
+            // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+            if (loader.classList.contains("!hidden")) {
+                loader.classList.remove("!hidden");
+                pyramidLoader.classList.remove("hidden");
             }
         });
 
         router.on("finish", () => {
-            if (firstChildApp.children.length > 0) {
-                if (loader.classList.contains("!hidden") == false) {
-                    loader.classList.add("!hidden");
-                    pyramidLoader.classList.add("hidden");
-                }
+            if (loader.classList.contains("!hidden") == false) {
+                loader.classList.add("!hidden");
+                pyramidLoader.classList.add("hidden");
             }
         });
     });

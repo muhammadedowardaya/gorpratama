@@ -62,10 +62,8 @@ class TempatLapanganController extends Controller
 
         $data = isset($tempat_lapangan) ? $tempat_lapangan : null;
         if ($data == null) {
-            $waktu = Waktu::all();
             $tempat_lapangan = isset($tempat_lapangan) ? TempatLapangan::all() : null;
             return Inertia::render('Dashboard/Admin/TempatLapangan/CreateTempatLapangan', [
-                'jam' => $waktu,
                 'tempat_lapangan' => $tempat_lapangan,
                 'uri' => request()->getUri()
             ]);
@@ -168,7 +166,6 @@ class TempatLapanganController extends Controller
     {
         return Inertia::render('Dashboard/Admin/TempatLapangan/EditTempatLapangan', [
             'tempat_lapangan' => $tempatLapangan,
-            'jam' => Waktu::all(),
         ]);
     }
 
