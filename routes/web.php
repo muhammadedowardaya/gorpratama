@@ -35,64 +35,29 @@ use function PHPUnit\Framework\isType;
 |
 */
 
-Route::get('/test-broadcast-event', function () {
-    ServerCreated::dispatch('isi parameter untuk message');
-
-    echo 'test broadcast event sangcahaya.id';
-});
-
-
-Route::get('/test-chat', function () {
-    return Inertia::render('ChatPage');
-});
 
 
 // Route::middleware(['auth'])->group(function () {
 //     Route::post('/bookings/{booking}/messages', [MessageController::class, 'store']);
 // });
 
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('bookings')->group(function () {
-        Route::get('', [BookingController::class, 'index'])->name('bookings.index');
-        Route::get('{id}', [BookingController::class, 'show'])->name('bookings.show');
-        Route::post('{id}/join', [BookingController::class, 'join'])->name('bookings.join');
-        Route::post('{id}/leave', [BookingController::class, 'leave'])->name('bookings.leave');
-        Route::post('{id}/messages', [BookingController::class, 'sendMessage'])->name('bookings.sendMessage');
-    });
-});
-
-
-
-Route::get('/booking-schedules', [BookingScheduleController::class, 'index'])->name('booking-schedules.index');
-Route::post('/booking-schedules', [BookingScheduleController::class, 'store'])->name('booking-schedules.store');
-Route::post('/booking-schedules/{schedule}/messages', [BookingScheduleMessageController::class, 'store'])->name('booking-schedules.messages.store');
-Route::post('/booking-schedules/{schedule}/join', [BookingScheduleController::class, 'join'])->name('booking-schedules.join');
-
-
-
-
-
-
-
-
-
-
 
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+    // return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'),
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
+    return Inertia::render('Welcome');
+})->middleware('guest');
 
 Route::get('/get-user', function () {
     return response()->json([
         'user' => auth()->user()
     ]);
-});
+})->middleware('guest');
 
 Route::get('/get-profile-gor', function () {
     $user = User::where('type', 1)->first();
@@ -104,7 +69,22 @@ Route::get('/get-profile-gor', function () {
     return response()->json([
         'tempat-lapangan' => $tempat_lapangan
     ]);
+})->middleware('guest');
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('bookings')->group(function () {
+        Route::get('', [BookingController::class, 'index'])->name('bookings.index');
+        Route::get('{id}', [BookingController::class, 'show'])->name('bookings.show');
+        Route::post('{id}/join', [BookingController::class, 'join'])->name('bookings.join');
+        Route::post('{id}/leave', [BookingController::class, 'leave'])->name('bookings.leave');
+        Route::post('{id}/messages', [BookingController::class, 'sendMessage'])->name('bookings.sendMessage');
+    });
 });
+
+Route::get('/booking-schedules', [BookingScheduleController::class, 'index'])->name('booking-schedules.index');
+Route::post('/booking-schedules', [BookingScheduleController::class, 'store'])->name('booking-schedules.store');
+Route::post('/booking-schedules/{schedule}/messages', [BookingScheduleMessageController::class, 'store'])->name('booking-schedules.messages.store');
+Route::post('/booking-schedules/{schedule}/join', [BookingScheduleController::class, 'join'])->name('booking-schedules.join');
 
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('/find', function () {
@@ -254,22 +234,6 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
 
 
 
-
-
-    Route::prefix('tagihan')->group(function () {
-        /**
-         * menampilkan list data tagihan nya
-         */
-        Route::get('/list', [TagihanController::class, 'index'])->name('tagihan.list');
-        /**
-         * menuju halaman create form data tagihan nya
-         */
-        Route::get('/create', [TagihanController::class, 'create'])->name('tagihan.create');
-        /**
-         * store/save data tagihan nya
-         */
-        Route::post('/store', [TagihanController::class, 'store'])->name('tagihan.store');
-    });
 });
 
 /*------------------------------------------

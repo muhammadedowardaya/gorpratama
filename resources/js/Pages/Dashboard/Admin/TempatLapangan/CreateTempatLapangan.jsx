@@ -3,6 +3,7 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import Label from "@/Components/Label";
 
 import { FaWindowClose } from "react-icons/fa";
+import "../../../../modules/csrf.js";
 
 import { PortalWithState } from "react-portal";
 import Swal from "sweetalert2";

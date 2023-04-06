@@ -8,14 +8,17 @@ import { AiFillCloseCircle, AiOutlineClose } from "react-icons/ai";
 import gsap from "gsap";
 
 import "../modules/csrf.js";
-import Sidebar from "@/Components/User/Sidebar";
 import axios from "axios";
 import Loading from "@/Components/Loading";
+import Sidebar from "@/Components/Sidebar";
+import { IoHome } from "react-icons/io5";
 
-export default function UserLayout({ children, header, title }) {
+export default function AdminLayout({ children, header, title }) {
     const [user, setUser] = useState("");
     const [gor, setGor] = useState("");
-    const [displayLoading, setDisplayLoading] = useState(false);
+    const [changeDrawerButtonIcon, setChangeDrawerButtonIcon] = useState(false);
+    const [changeDropdownIcon, setChangeDropdownIcon] = useState(false);
+    const { requestPath } = usePage().props;
 
     async function getUser() {
         try {
@@ -73,30 +76,26 @@ export default function UserLayout({ children, header, title }) {
         getUser().then((user) => {
             setUser(user.user);
         });
+
         // -------------------
-        const firstChildApp = window.document.getElementById("main");
         const loader = window.document.getElementById("loader");
         const pyramidLoader = window.document
             .getElementById("loader")
             .querySelector(".pyramid-loader");
 
         router.on("start", () => {
-            // if (firstChildApp.children.length > 0) {
             // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
             if (loader.classList.contains("!hidden")) {
                 loader.classList.remove("!hidden");
                 pyramidLoader.classList.remove("hidden");
             }
-            // }
         });
 
         router.on("finish", () => {
-            // if (firstChildApp.children.length > 0) {
             if (loader.classList.contains("!hidden") == false) {
                 loader.classList.add("!hidden");
                 pyramidLoader.classList.add("hidden");
             }
-            // }
         });
     });
 
@@ -114,13 +113,13 @@ export default function UserLayout({ children, header, title }) {
                 </div>
                 {user != null ? (
                     <div className="flex-none">
-                        <span className="text-white pr-4 hidden sm:inline-block">
+                        <span className="text-white pr-4 hidden sm:inline-block font-bold">
                             {user.nama}
                         </span>
                         <div>
                             <img
                                 src={user.url_foto}
-                                className="w-10 h-10 rounded-full"
+                                className="w-10 h-10 rounded-full object-cover object-center"
                             />
                         </div>
                     </div>
@@ -128,14 +127,44 @@ export default function UserLayout({ children, header, title }) {
                     ""
                 )}
             </nav>
-
             {header && (
                 <section className="px-5 pt-5 pb-4 fixed top-14 z-10 w-full flex justify-evenly">
                     {header}
                 </section>
             )}
-            <div id="container" className="dark:bg-stone-900 z-40">
-                <Sidebar className="z-40 border-l-[10px] border-sky-500 bg-sky-500 dark:backdrop-filter dark:backdrop-blur-md dark:bg-opacity-30 dark:border-opacity-10 dark:border-slate-700" />
+            <div
+                className="dark:bg-stone-900 z-40 grid"
+                style={{
+                    gridTemplateColumns: `auto ${user != null ? "4fr" : ""}`,
+                    gridTemplateRows: "90vh",
+                    overflowY: "hidden",
+                }}
+            >
+                {user != null ? (
+                    user.type == "admin" ? (
+                        <Sidebar
+                            items={[
+                                {
+                                    path: "/",
+                                    icon: <IoHome className="mt-4" />,
+                                    title: "Home",
+                                },
+                            ]}
+                        />
+                    ) : (
+                        <Sidebar
+                            items={[
+                                {
+                                    path: "/",
+                                    icon: <IoHome className="mt-4" />,
+                                    title: "Home",
+                                },
+                            ]}
+                        />
+                    )
+                ) : (
+                    ""
+                )}
                 <section
                     id="content"
                     className="z-40 overflow-y-scroll ml-8 pt-6"
@@ -194,15 +223,19 @@ export default function UserLayout({ children, header, title }) {
                     </footer>
                 </section>
             </div>
-
             {/* --------------------------------- */}
             {/* <div className="hero__title">Squares Animation</div> */}
-            <div className="cube"></div>
-            <div className="cube"></div>
-            <div className="cube"></div>
-            <div className="cube"></div>
-            <div className="cube"></div>
-            <div className="cube"></div>
+            <div className="cube cube1 visible dark:hidden"></div>
+            <div className="cube cube2 visible dark:hidden"></div>
+            <div className="cube cube3 visible dark:hidden"></div>
+            <div className="cube cube4 visible dark:hidden"></div>
+            <div className="cube cube5 visible dark:hidden"></div>
+            <div className="cube cube6 visible dark:hidden"></div>
+            <div className="neon neon1 dark:visible"></div>
+            <div className="neon neon2 dark:visible"></div>
+            <div className="neon neon3 dark:visible"></div>
+            <div className="neon neon4 dark:visible"></div>
+            <div className="neon neon5 dark:visible"></div>
         </div>
     );
 }

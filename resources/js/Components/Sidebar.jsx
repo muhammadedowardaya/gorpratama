@@ -25,7 +25,7 @@ export default function Sidebar({ className, items }) {
                         <a
                             onClick={(e) => {
                                 e.preventDefault();
-                                router.get(item.path);
+                                item.onClick;
                             }}
                         >
                             <span className="icon">{item.icon}</span>

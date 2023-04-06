@@ -12,15 +12,14 @@ import axios from "axios";
 import Loading from "@/Components/Loading";
 import Sidebar from "@/Components/Sidebar";
 import { IoHome } from "react-icons/io5";
+import { CgProfile } from "react-icons/cg";
 
-export default function AdminLayout({ children, header, title }) {
+export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
     const [gor, setGor] = useState("");
     const [changeDrawerButtonIcon, setChangeDrawerButtonIcon] = useState(false);
     const [changeDropdownIcon, setChangeDropdownIcon] = useState(false);
     const { requestPath } = usePage().props;
-
-    console.info(user);
 
     async function getUser() {
         try {
@@ -134,31 +133,60 @@ export default function AdminLayout({ children, header, title }) {
                     {header}
                 </section>
             )}
-            <div id="container" className="dark:bg-stone-900 z-40">
-                {user.type == "admin" ? (
-                    <Sidebar
-                        items={[
-                            {
-                                path: "/",
-                                icon: <IoHome className="mt-4" />,
-                                title: "Home",
-                            },
-                        ]}
-                    />
+            <div
+                className="dark:bg-stone-900 z-40 grid bg-gradient-to-b from-green-400 to-blue-500"
+                style={{
+                    gridTemplateColumns: `auto ${user != null ? "4fr" : ""}`,
+                    gridTemplateRows: "90vh",
+                    overflowY: "hidden",
+                }}
+            >
+                {user != null ? (
+                    user.type == "admin" ? (
+                        <Sidebar
+                            items={[
+                                {
+                                    path: "/",
+                                    icon: <IoHome className="mt-4" />,
+                                    title: "Home",
+                                },
+                            ]}
+                        />
+                    ) : (
+                        <Sidebar
+                            items={[
+                                {
+                                    path: "/",
+                                    icon: <IoHome className="mt-4" />,
+                                    title: "Home",
+                                },
+                                {
+                                    path: "/profile",
+                                    onClick: router.get("/profile"),
+                                    icon: <CgProfile className="mt-4" />,
+                                    title: "My Profile",
+                                },
+                                {
+                                    path: "/dashboard/pengaturan",
+                                    onClick: router.get("/dashboard/profile"),
+                                    icon: <CgProfile className="mt-4" />,
+                                    title: "My Profile",
+                                },
+                                {
+                                    path: "/",
+                                    onClick: router.post("/logout"),
+                                    icon: <CgProfile className="mt-4" />,
+                                    title: "Logout",
+                                },
+                            ]}
+                        />
+                    )
                 ) : (
-                    <Sidebar
-                        items={[
-                            {
-                                path: "/",
-                                icon: <IoHome className="mt-4" />,
-                                title: "Home",
-                            },
-                        ]}
-                    />
+                    ""
                 )}
                 <section
                     id="content"
-                    className="z-40 overflow-y-scroll ml-8 pt-6"
+                    className="z-40 overflow-y-scroll overflow-x-hidden ml-8 pt-6 "
                 >
                     <main className="p-4">{children}</main>
                     <footer>

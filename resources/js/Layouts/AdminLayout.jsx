@@ -3,14 +3,12 @@ import React, { useEffect, useState } from "react";
 import "../../css/layout.css";
 import { Head, router, usePage } from "@inertiajs/react";
 import SwitchMode from "@/Components/SwitchMode";
-import { BsFillArrowRightCircleFill, BsMenuButtonWide } from "react-icons/bs";
-import { AiFillCloseCircle, AiOutlineClose } from "react-icons/ai";
-import gsap from "gsap";
 
 import "../modules/csrf.js";
-import Sidebar from "@/Components/Admin/Sidebar";
 import axios from "axios";
 import Loading from "@/Components/Loading";
+import { IoHome } from "react-icons/io5";
+import Sidebar from "@/Components/Sidebar";
 
 export default function AdminLayout({ children, header, title }) {
     const [user, setUser] = useState("");
@@ -121,83 +119,6 @@ export default function AdminLayout({ children, header, title }) {
                                 className="w-10 h-10 rounded-full object-cover object-center"
                             />
                         </div>
-                        {/* <div className="dropdown dropdown-end ml-3">
-                            {changeDropdownIcon == false ? (
-                                <BsMenuButtonWide
-                                    size="35px"
-                                    className="fill-white cursor-pointer"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setChangeDropdownIcon(true);
-                                        document
-                                            .querySelectorAll(
-                                                ".list-pengaturan-user li"
-                                            )
-                                            .forEach((list, i) => {
-                                                gsap.to(list, {
-                                                    duration: 1,
-                                                    ease: "expo.out",
-                                                    delay: i * 0.06,
-                                                    opacity: 1,
-                                                    right: 0,
-                                                });
-                                            });
-                                    }}
-                                />
-                            ) : (
-                                <AiOutlineClose
-                                    size="35px"
-                                    className="cursor-pointer fill-white drop-shadow rounded-full"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setChangeDropdownIcon(false);
-                                        document
-                                            .querySelectorAll(
-                                                ".list-pengaturan-user li"
-                                            )
-                                            .forEach((list, i) => {
-                                                gsap.to(list, {
-                                                    duration: 1,
-                                                    ease: "expo.out",
-                                                    delay: i * 0.06,
-                                                    opacity: 0,
-                                                    right: "-14rem",
-                                                });
-                                            });
-                                    }}
-                                />
-                            )}
-                             <ul className="menu menu-compact mt-3 w-52 z-20 list-pengaturan-user absolute">
-                                <li>
-                                    <a
-                                        className="justify-between"
-                                        onClick={(e) => router.get("/profile")}
-                                    >
-                                        Profile
-                                        <span className="badge">New</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        onClick={(e) =>
-                                            router.get("/dashboard/pesanan")
-                                        }
-                                    >
-                                        Pesanan Saya
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            router.post("/logout");
-                                        }}
-                                    >
-                                        Logout
-                                    </a>
-                                </li>
-                            </ul>
-                        </div> */}
                     </div>
                 ) : (
                     ""
@@ -208,8 +129,39 @@ export default function AdminLayout({ children, header, title }) {
                     {header}
                 </section>
             )}
-            <div id="container" className="dark:bg-stone-900 z-40">
-                <Sidebar className="z-40 border-l-[10px] border-sky-500 bg-sky-500 dark:backdrop-filter dark:backdrop-blur-md dark:bg-opacity-30 dark:border-opacity-10 dark:border-slate-700" />
+            <div
+                className="dark:bg-stone-900 z-40 grid"
+                style={{
+                    gridTemplateColumns: `auto ${user != null ? "4fr" : ""}`,
+                    gridTemplateRows: "90vh",
+                    overflowY: "hidden",
+                }}
+            >
+                {user != null ? (
+                    user.type == "admin" ? (
+                        <Sidebar
+                            items={[
+                                {
+                                    path: "/",
+                                    icon: <IoHome className="mt-4" />,
+                                    title: "Home",
+                                },
+                            ]}
+                        />
+                    ) : (
+                        <Sidebar
+                            items={[
+                                {
+                                    path: "/",
+                                    icon: <IoHome className="mt-4" />,
+                                    title: "Home",
+                                },
+                            ]}
+                        />
+                    )
+                ) : (
+                    ""
+                )}
                 <section
                     id="content"
                     className="z-40 overflow-y-scroll ml-8 pt-6"

@@ -1,16 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Checkbox from "@/Components/Checkbox";
 import GuestLayout from "@/Layouts/GuestLayout";
 import InputError from "@/Components/InputError";
-import { Head, Link, router, useForm } from "@inertiajs/react";
 import Swal from "sweetalert2";
 import "../../../css/formStyle.css";
+import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Login(props, { status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        _token: document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content"),
+    const { data, setData } = useForm({
         email: "",
         password: "",
         remember: "",
@@ -22,56 +19,75 @@ export default function Login(props, { status, canResetPassword }) {
         };
     }, []);
 
-    const onHandleChange = (event) => {
-        setData(
-            event.target.name,
-            event.target.type === "checkbox"
-                ? event.target.checked
-                : event.target.value
-        );
-    };
+    // const onHandleChange = (event) => {
+    //     setData(
+    //         event.target.name,
+    //         event.target.type === "checkbox"
+    //             ? event.target.checked
+    //             : event.target.value
+    //     );
+    // };
 
     const submit = (e) => {
         e.preventDefault();
         // Mendapatkan CSRF token dari meta tag
-        const token = document.querySelector('meta[name="csrf-token"]').content;
+        axios
+            .post(`/login`, data, {
+                // headers: {
+                //     "Content-Type": "multipart/form-data",
+                // },
+                // credentials: "same-origin",
+                onUploadProgress: function (progressEvent) {
+                    const percent =
+                        (progressEvent.loaded / progressEvent.total) * 100;
 
-        post("/login", data, {
-            onError: (errors) => {
-                if (errors.email != null && errors.password != null) {
-                    // Swal.fire("Gagal", errors, "error");
+                    // const radialProgress =
+                    //     document.querySelector(".radial-progress");
+                    // if (radialProgress.classList.contains("hidden")) {
+                    //     radialProgress.classList.remove("hidden");
+                    // }
+                    // radialProgress.classList.add("fixed");
+                    // radialProgress.innerHTML = Math.round(percent) + "%";
+                    // radialProgress.style.setProperty(
+                    //     "--value",
+                    //     Math.round(percent)
+                    // );
+                },
+            })
+            .then((response) => {
+                // Toast.fire({
+                //     icon: "success",
+                //     title: `Berhasil menambahkan ${response.data.response.nama}`,
+                // });
+                // setTimeout(() => {
+                //     axios.get("/dashboard/tempat-lapangan");
+                // }, 100);
+                console.info(response);
+            })
+            .catch((errors_data) => {
+                if (
+                    errors_data.response &&
+                    errors_data.response.status === 422
+                ) {
+                    let errors = errors_data.response.data.errors;
+                    let errorText = "";
+                    for (const [key, value] of Object.entries(errors)) {
+                        errorText += `${value[0]}<br>`;
+                    }
                     Swal.fire({
-                        title: "Error",
-                        text: errors,
                         icon: "error",
-                        timer: 3000,
-                        timerProgressBar: true,
+                        title: "Terjadi Kesalahan!",
+                        html: errorText,
                     });
+                } else {
+                    console.log(errors_data);
                 }
-                Swal.fire(
-                    "Gagal!",
-                    `${errors.email ?? ""}</br>${errors.password ?? ""}`,
-                    "error"
-                );
-                // tampilkan sweetalert2 jika terjadi error
-                console.info(errors);
-            },
-            onSuccess: () => {
-                // tampilkan sweetalert2 jika berhasil
-                Swal.fire({
-                    title: "Success",
-                    text: "Data berhasil disimpan",
-                    icon: "success",
-                    timer: 3000,
-                    timerProgressBar: true,
-                });
-            },
-        });
+            });
     };
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Login" />
             <h1 className="text-2xl font-bold my-8 text-white">Login</h1>
             <div>
                 <div className="login-box w-full md:w-96">
@@ -85,18 +101,15 @@ export default function Login(props, { status, canResetPassword }) {
                                     value={data.email}
                                     type="email"
                                     name="email"
-                                    onChange={onHandleChange}
+                                    onChange={(e) => {
+                                        setData("email", e.target.value);
+                                    }}
                                     className={`${
                                         data.email != "" ? "aktif" : ""
                                     }`}
                                     autoComplete="off"
                                 />
                                 <label>Email</label>
-
-                                <InputError
-                                    message={errors.email}
-                                    className="mt-2"
-                                />
                             </div>
 
                             <div className="user-box">
@@ -107,21 +120,26 @@ export default function Login(props, { status, canResetPassword }) {
                                         data.password != "" ? "aktif" : ""
                                     }`}
                                     autoComplete="current-password"
-                                    onChange={onHandleChange}
+                                    onChange={(e) => {
+                                        setData("password", e.target.value);
+                                    }}
+                                    value={data.password}
                                 />
                                 <label>Password</label>
-
-                                <InputError
-                                    message={errors.password}
-                                    className="mt-2"
-                                />
                             </div>
                         </div>
                         <div>
                             <Checkbox
                                 name="remember"
                                 value={data.remember}
-                                handleChange={onHandleChange}
+                                handleChange={(event) => {
+                                    setData(
+                                        "remember",
+                                        event.target.type === "checkbox"
+                                            ? event.target.checked
+                                            : event.target.value
+                                    );
+                                }}
                                 labelValue="Remember me"
                                 classForLabel="dark:text-white text-stone-800 text-sm ml-2 select-none"
                                 id="remember"
@@ -132,7 +150,7 @@ export default function Login(props, { status, canResetPassword }) {
                         </div>
 
                         <center>
-                            <button type="submit" href="#" className="w-full">
+                            <button type="submit" className="w-full">
                                 SUBMIT
                                 <span></span>
                             </button>

@@ -4,6 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -51,6 +52,25 @@ class LoginRequest extends FormRequest
 
         RateLimiter::clear($this->throttleKey());
     }
+
+    // public function authenticate()
+    // {
+    //     $this->ensureIsNotRateLimited();
+
+    //     if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+    //         RateLimiter::hit($this->throttleKey());
+
+    //         return response()->json([
+    //             'message' => trans('auth.failed')
+    //         ], 400);
+    //     }
+
+    //     RateLimiter::clear($this->throttleKey());
+
+    //     return response()->json([
+    //         'message' => 'Authenticated successfully'
+    //     ]);
+    // }
 
     /**
      * Ensure the login request is not rate limited.

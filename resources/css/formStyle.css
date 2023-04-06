@@ -112,7 +112,7 @@
     font-size: 16px;
     /* color: #bdb8b8; */
     color: #1e293b;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     border: none;
     /* border-bottom: 1px solid #292524; */
     border-bottom: 1px solid #1e293b;
@@ -176,12 +176,15 @@
     letter-spacing: 4px;
     text-transform: uppercase;
     text-decoration: none;
-    color: inherit;
     background: none;
     cursor: pointer;
+    color: #1e293b;
     overflow: hidden;
     transition: 0.5s;
     margin-top: 40px;
+}
+.dark .login-box form button[type="submit"] {
+    color: #fafaf9;
 }
 
 .login-box form button[type="submit"]:hover {
