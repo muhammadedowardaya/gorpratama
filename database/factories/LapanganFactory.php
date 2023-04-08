@@ -19,7 +19,6 @@ class LapanganFactory extends Factory
     {
         $nama = fake()->name();
         return [
-            'tempat_lapangan_id' => fake()->randomDigit(),
             'jadwal_id' => fake()->randomDigit(),
             'transaksi_id' => fake()->randomDigit(),
             'foto' => null,

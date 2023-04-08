@@ -1,31 +1,28 @@
 import React, { useEffect, useState } from "react";
 
 import "../../css/layout.css";
-import { Head, router, usePage } from "@inertiajs/react";
-import SwitchMode from "@/Components/SwitchMode";
-import { BsFillArrowRightCircleFill, BsMenuButtonWide } from "react-icons/bs";
-import { AiFillCloseCircle, AiOutlineClose } from "react-icons/ai";
-import gsap from "gsap";
-
+import { router } from "@inertiajs/react";
 import "../modules/csrf.js";
-import axios from "axios";
-import Loading from "@/Components/Loading";
 import Sidebar from "@/Components/Sidebar";
 import { IoHome } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
+import Navbar from "@/Components/Navbar";
+import { FiLogOut } from "react-icons/fi";
+import { GiFootyField, GiSoccerField } from "react-icons/gi";
+import { TbSoccerField } from "react-icons/tb";
+import { AiFillSetting } from "react-icons/ai";
 
 export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
-    const [gor, setGor] = useState("");
-    const [changeDrawerButtonIcon, setChangeDrawerButtonIcon] = useState(false);
-    const [changeDropdownIcon, setChangeDropdownIcon] = useState(false);
-    const { requestPath } = usePage().props;
-
     async function getUser() {
         try {
-            const response = await fetch("/get-user");
-            const user = await response.json();
-            return user;
+            const response = await fetch("/api/get-user");
+            if (response.ok) {
+                const data = await response.json();
+                return data.user;
+            } else {
+                throw new Error("Terjadi kesalahan dalam mengambil data user");
+            }
         } catch (error) {
             if (error instanceof Error && error.status === 500) {
                 // Tindakan yang diambil ketika terjadi Internal Server Error
@@ -36,34 +33,6 @@ export default function Layout({ children, header, title }) {
             }
         }
     }
-
-    async function getProfileGor() {
-        try {
-            // Kode yang mungkin menyebabkan kesalahan server
-            const response = await fetch("/get-profile-gor");
-            const gor = await response.json();
-            return gor;
-            // return response;
-        } catch (error) {
-            if (error instanceof Error && error.status === 500) {
-                // Tindakan yang diambil ketika terjadi Internal Server Error
-                console.error("Terjadi kesalahan internal server:", error);
-            } else {
-                // Tindakan yang diambil untuk jenis kesalahan yang berbeda
-                console.error("Terjadi kesalahan:", error);
-            }
-        }
-    }
-
-    getProfileGor().then((gor) => {
-        if (gor != undefined) {
-            if (gor["tempat-lapangan"] != null) {
-                const namaGor = gor["tempat-lapangan"].nama;
-                setGor(namaGor == undefined ? "" : namaGor);
-            }
-        }
-    });
-
     useEffect(() => {
         const mode = localStorage.getItem("mode");
         if (mode === "dark") {
@@ -74,9 +43,11 @@ export default function Layout({ children, header, title }) {
             document.documentElement.classList.remove("dark");
         }
 
-        getUser().then((user) => {
-            setUser(user.user);
-        });
+        async function fetchData() {
+            const data = await getUser();
+            setUser(data);
+        }
+        fetchData();
 
         // -------------------
         const loader = window.document.getElementById("loader");
@@ -98,57 +69,51 @@ export default function Layout({ children, header, title }) {
                 pyramidLoader.classList.add("hidden");
             }
         });
-    });
+    }, []);
 
     return (
-        <div className="min-h-screen pt-16 bg-fixed bg-gradient-to-l from-slate-50 to-white dark:bg dark:text-white">
-            {/* --------------------------------- */}
-            <nav className="navbar h-16 px-10 fixed z-50 top-0 left-0 right-0 bg-[#0ea5e9] dark:bg-stone-800">
-                <div className="flex-1">
-                    <a
-                        className="text-white m-0 mr-2 cursor-pointer font-bold md:text-xl"
-                        onClick={(e) => router.get("/")}
-                    >
-                        {gor == "" ? "Gor" : gor}
-                    </a>
-                </div>
-                {user != null ? (
-                    <div className="flex-none">
-                        <span className="text-white pr-4 hidden sm:inline-block font-bold">
-                            {user.nama}
-                        </span>
-                        <div>
-                            <img
-                                src={user.url_foto}
-                                className="w-10 h-10 rounded-full object-cover object-center"
-                            />
-                        </div>
-                    </div>
-                ) : (
-                    ""
-                )}
-            </nav>
+        <div className="min-h-screen bg-fixed dark:bg-stone-900 bg-gradient-to-b from-green-400 to-blue-500">
             {header && (
                 <section className="px-5 pt-5 pb-4 fixed top-14 z-10 w-full flex justify-evenly">
                     {header}
                 </section>
             )}
-            <div
-                className="dark:bg-stone-900 z-40 grid bg-gradient-to-b from-green-400 to-blue-500"
-                style={{
-                    gridTemplateColumns: `auto ${user != null ? "4fr" : ""}`,
-                    gridTemplateRows: "90vh",
-                    overflowY: "hidden",
-                }}
-            >
+
+            <Navbar />
+            <div className=" z-40 grid md:grid-cols-[auto,4fr] h-screen overflow-y-hidden ">
                 {user != null ? (
                     user.type == "admin" ? (
                         <Sidebar
                             items={[
                                 {
                                     path: "/",
+                                    url: "/",
                                     icon: <IoHome className="mt-4" />,
                                     title: "Home",
+                                },
+                                {
+                                    path: "profile",
+                                    url: "/profile",
+                                    icon: <CgProfile className="mt-4" />,
+                                    title: "My Profile",
+                                },
+                                {
+                                    path: "dashboard/tempat-lapangan",
+                                    url: "/dashboard/tempat-lapangan",
+                                    icon: <GiFootyField className="mt-4" />,
+                                    title: "Profile Gor | Tempat Lapangan",
+                                },
+                                {
+                                    path: "dashboard/lapangan",
+                                    url: "/dashboard/lapangan",
+                                    icon: <GiSoccerField className="mt-4" />,
+                                    title: "Lapangan",
+                                },
+                                {
+                                    path: "/logout",
+                                    icon: <FiLogOut className="mt-4" />,
+                                    title: "Logout",
+                                    method: "post",
                                 },
                             ]}
                         />
@@ -157,26 +122,28 @@ export default function Layout({ children, header, title }) {
                             items={[
                                 {
                                     path: "/",
+                                    url: "/",
                                     icon: <IoHome className="mt-4" />,
                                     title: "Home",
                                 },
                                 {
-                                    path: "/profile",
-                                    onClick: router.get("/profile"),
+                                    path: "profile",
+                                    url: "/profile",
                                     icon: <CgProfile className="mt-4" />,
                                     title: "My Profile",
                                 },
                                 {
-                                    path: "/dashboard/pengaturan",
-                                    onClick: router.get("/dashboard/profile"),
-                                    icon: <CgProfile className="mt-4" />,
-                                    title: "My Profile",
+                                    path: "dashboard/pengaturan",
+                                    url: "/dashboard/pengaturan",
+                                    icon: <AiFillSetting className="mt-4" />,
+                                    title: "Pengaturan",
                                 },
                                 {
-                                    path: "/",
-                                    onClick: router.post("/logout"),
-                                    icon: <CgProfile className="mt-4" />,
+                                    path: "logout",
+                                    url: "/logout",
+                                    icon: <FiLogOut className="mt-4" />,
                                     title: "Logout",
+                                    method: "post",
                                 },
                             ]}
                         />
@@ -186,7 +153,9 @@ export default function Layout({ children, header, title }) {
                 )}
                 <section
                     id="content"
-                    className="z-40 overflow-y-scroll overflow-x-hidden ml-8 pt-6 "
+                    className={`z-10 overflow-y-scroll overflow-x-hidden md:ml-8 pt-6 col-span-2 ${
+                        user != null ? "md:col-span-1" : "md:col-span-2"
+                    }`}
                 >
                     <main className="p-4">{children}</main>
                     <footer>
@@ -244,17 +213,17 @@ export default function Layout({ children, header, title }) {
             </div>
             {/* --------------------------------- */}
             {/* <div className="hero__title">Squares Animation</div> */}
-            <div className="cube cube1 visible dark:hidden"></div>
-            <div className="cube cube2 visible dark:hidden"></div>
-            <div className="cube cube3 visible dark:hidden"></div>
-            <div className="cube cube4 visible dark:hidden"></div>
-            <div className="cube cube5 visible dark:hidden"></div>
-            <div className="cube cube6 visible dark:hidden"></div>
-            <div className="neon neon1 dark:visible"></div>
-            <div className="neon neon2 dark:visible"></div>
-            <div className="neon neon3 dark:visible"></div>
-            <div className="neon neon4 dark:visible"></div>
-            <div className="neon neon5 dark:visible"></div>
+            <div className="cube  visible dark:hidden"></div>
+            <div className="cube  visible dark:hidden"></div>
+            <div className="cube  visible dark:hidden"></div>
+            <div className="cube  visible dark:hidden"></div>
+            <div className="cube  visible dark:hidden"></div>
+            <div className="cube  visible dark:hidden"></div>
+            <div className="neon dark:visible"></div>
+            <div className="neon dark:visible"></div>
+            <div className="neon dark:visible"></div>
+            <div className="neon dark:visible"></div>
+            <div className="neon dark:visible"></div>
         </div>
     );
 }

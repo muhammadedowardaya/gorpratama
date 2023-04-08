@@ -28,7 +28,7 @@ class TempatLapanganController extends Controller
     public function index()
     {
         $tempat_lapangan = TempatLapangan::where('user_id', auth()->user()->id)->first();
-        $lapangan = Lapangan::where('tempat_lapangan_id', auth()->user()->id)->get();
+        $lapangan = Lapangan::all();
 
         $data = isset($tempat_lapangan) ? $tempat_lapangan : null;
         if ($data != null) {
@@ -36,15 +36,11 @@ class TempatLapanganController extends Controller
                 return Inertia::render('Dashboard/Admin/TempatLapangan/TempatLapangan', [
                     'tempat_lapangan' => $tempat_lapangan,
                     'info' => session()->flash('info', 'Anda belum mengatur lapangan, anda ingin mengaturnya sekarang?'),
-                    'uri' => request()->getUri()
                 ]);
-                // echo 'tidak ada lapangan';
             } else {
                 return Inertia::render('Dashboard/Admin/TempatLapangan/TempatLapangan', [
                     'tempat_lapangan' => $tempat_lapangan,
-                    'uri' => request()->getUri()
                 ]);
-                // echo 'ada lapangan';
             }
         } else {
             return Inertia::render('Dashboard/Admin/TempatLapangan/TempatLapanganIsEmpty');

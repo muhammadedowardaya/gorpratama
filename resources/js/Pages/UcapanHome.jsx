@@ -1,35 +1,54 @@
 import { router } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { IoRocketSharp } from "react-icons/io5";
 import { MdPersonSearch } from "react-icons/md";
 
 export default function UcapanHome(props) {
     const [user, setUser] = useState("");
-    fetch("/get-user")
-        .then((response) => {
-            return response.json();
-        })
-        .then((response) => {
-            setUser(response.user);
-        });
 
-    // console.info(props);
+    async function getUser() {
+        try {
+            const response = await fetch("/api/get-user");
+            if (response.ok) {
+                const data = await response.json();
+                return data.user;
+            } else {
+                throw new Error("Terjadi kesalahan dalam mengambil data user");
+            }
+        } catch (error) {
+            if (error instanceof Error && error.status === 500) {
+                // Tindakan yang diambil ketika terjadi Internal Server Error
+                console.error("Terjadi kesalahan internal server:", error);
+            } else {
+                // Tindakan yang diambil untuk jenis kesalahan yang berbeda
+                console.error("Terjadi kesalahan:", error);
+            }
+        }
+    }
+
+    useEffect(() => {
+        async function fetchData() {
+            const data = await getUser();
+            setUser(data);
+        }
+        fetchData();
+    }, []);
 
     if (user != null && user.type == "user") {
         return (
             <>
-                <section className="py-20 grid grid-cols-2">
+                <section className="pt-20 grid grid-cols-2">
                     <h1 className="py-6 mb-8 text-3xl md:text-5xl font-bold text-white tracking-wide text-center col-span-2">
                         Selamat Datang di Website Pemesanan Lapangan Badminton
                         Gor Pratama!
                     </h1>
-                    <div className="flex flex-col items-center justify-center mt-10">
+                    <div className="flex flex-col items-center justify-bettween mt-4 md:mt-0 md:0 md:min-h-[80px] col-span-2 md:col-span-1 ">
                         <p className="my-4 text-white text-center">
                             Ingin mencari teman atau lawan bermain?
                             <br />
                             Temukan teman atau lawan anda!
                         </p>
-                        <button className="bg-white text-blue-500 w-full md:w-auto mt-4 md:mt-0 py-2 px-6 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300">
+                        <button className="bg-white text-blue-500 w-full md:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300">
                             <MdPersonSearch
                                 className="inline-block mr-2"
                                 size="1.5em"
@@ -37,11 +56,16 @@ export default function UcapanHome(props) {
                             Temukan Teman
                         </button>
                     </div>
-                    <div className="flex flex-col items-center justify-center mt-10">
-                        <p className="my-4 text-white">
-                            Siap Bermain? Ayo segera booking sekarang!
+                    <div className="flex flex-col items-center justify-between md:min-h-[80px] col-span-2 md:col-span-1 ">
+                        <p className="my-4 text-white text-center">
+                            Siap Bermain?
+                            <br />
+                            Ayo segera booking sekarang!
                         </p>
-                        <button className="bg-white text-blue-500 w-full md:w-auto mt-4 md:mt-0 py-2 px-6 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300">
+                        <button
+                            className="bg-white text-blue-500 w-full md:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
+                            onClick={() => router.get("/pilih-lapangan")}
+                        >
                             <IoRocketSharp
                                 className="inline-block mr-2"
                                 size="1.5em"
@@ -55,30 +79,33 @@ export default function UcapanHome(props) {
     } else if (user != null && user.type == "admin") {
         return (
             <>
-                <section className="py-20 grid grid-cols-2">
-                    <h1 className="text-xl leading-7 tracking-widest md:tracking-[0.4rem] md:text-3xl md:leading-10 ml-10 md:ml-20">
+                <section className="pt-20 grid grid-cols-2">
+                    <h1 className="py-6 mb-8 text-3xl md:text-5xl font-bold text-white tracking-wide text-center col-span-2">
                         Selamat Datang
                         <br /> Admin Pengelola Lapangan <br /> Badminton Gor
                         Pratama!
                     </h1>
-                    <div className="flex flex-col items-center justify-center mt-10">
-                        <p>Ayo mulai kelola tempat lapangan!</p>
+                    <div className="flex flex-col items-center justify-end mt-4 md:mt-0 md:0 md:min-h-[80px] col-span-2 md:col-span-1 ">
+                        <p className="my-4 text-white text-center">
+                            Ayo mulai kelola tempat lapangan!
+                        </p>
                         <button
-                            className="bg-white text-blue-500 w-full md:w-auto mt-4 md:mt-0 py-2 px-6 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
+                            className="bg-white text-blue-500 w-full md:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
                             onClick={(e) => {
                                 e.preventDefault();
                                 router.get("/dashboard/tempat-lapangan");
                             }}
                         >
+                            {" "}
                             Kelola Profil Gor
                         </button>
                     </div>
-                    <div className="flex flex-col items-center justify-center mt-10">
-                        <p>
+                    <div className="flex flex-col items-center justify-evenly md:min-h-[80px] col-span-2 md:col-span-1 ">
+                        <p className="my-4 text-white text-center">
                             Jangan lupa untuk melihat pesanan sewa lapangan dari
                             pelanggan!
                         </p>
-                        <button className="bg-white text-blue-500 w-full md:w-auto mt-4 md:mt-0 py-2 px-6 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300">
+                        <button className="bg-white text-blue-500 w-full md:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300">
                             Pesanan
                         </button>
                     </div>
@@ -94,12 +121,12 @@ export default function UcapanHome(props) {
                         <br /> Desa Situ Daun!
                     </h1>
 
-                    <div className="flex flex-col items-center justify-center mt-10 col-span-2 md:col-span-1 px-20">
+                    <div className="flex flex-col items-center justify-end mt-4 md:mt-0 md:0 md:min-h-[80px] col-span-2 md:col-span-1 ">
                         <p className="my-4 text-white text-center">
                             Belum punya akun?
                         </p>
                         <button
-                            className="bg-white text-blue-500 w-full md:w-auto mt-4 md:mt-0 py-2 px-20 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
+                            className="bg-white text-blue-500 w-full md:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
                             onClick={(e) => {
                                 e.preventDefault();
 
@@ -109,12 +136,12 @@ export default function UcapanHome(props) {
                             Register
                         </button>
                     </div>
-                    <div className="flex flex-col items-center justify-center mt-10 col-span-2 md:col-span-1 px-20">
+                    <div className="flex flex-col items-center justify-end md:min-h-[80px] col-span-2 md:col-span-1 ">
                         <p className="my-4 text-white text-center">
                             Sudah punya akun?
                         </p>
                         <button
-                            className="bg-white text-blue-500 w-full md:w-auto mt-4 md:mt-0 py-2 px-20 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
+                            className="bg-white text-blue-500 w-full md:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
                             onClick={(e) => {
                                 e.preventDefault();
                                 router.get("/login");

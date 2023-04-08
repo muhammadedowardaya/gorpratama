@@ -1,9 +1,8 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import Layout from "@/Layouts/Layout";
 import DeleteUserForm from "./Partials/DeleteUserForm";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
 import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
 import { Head } from "@inertiajs/react";
-import UserLayout from "@/Layouts/UserLayout";
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
     return (
@@ -12,7 +11,7 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
 
             <div>
                 <div className="max-w-7xl mx-auto space-y-6">
-                    <div className="p-4 sm:p-8 shadow sm:rounded-lg">
+                    <div className="p-4 sm:p-8 shadow shadow-slate-50 sm:rounded-lg">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
@@ -20,11 +19,11 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                         />
                     </div>
 
-                    <div className="p-4 sm:p-8 shadow sm:rounded-lg">
+                    <div className="p-4 sm:p-8 shadow shadow-slate-50 sm:rounded-lg">
                         <UpdatePasswordForm className="max-w-xl" />
                     </div>
 
-                    <div className="p-4 sm:p-8 shadow sm:rounded-lg">
+                    <div className="p-4 sm:p-8 shadow shadow-slate-50 sm:rounded-lg">
                         <DeleteUserForm className="max-w-xl" />
                     </div>
                 </div>
@@ -33,6 +32,4 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
     );
 }
 
-Edit.layout = (page) => (
-    <UserLayout children={page} title="Edit Profile User" />
-);
+Edit.layout = (page) => <Layout children={page} title="Edit Profile" />;

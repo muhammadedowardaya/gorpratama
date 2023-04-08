@@ -1,8 +1,8 @@
 import { router, usePage } from "@inertiajs/react";
 import "../../css/sidebar.css";
+import { useEffect } from "react";
 
 export default function Sidebar({ className, items }) {
-    let navigation = document.querySelector(".navigation");
     const { requestPath } = usePage().props;
 
     function requestIs(path) {
@@ -13,11 +13,19 @@ export default function Sidebar({ className, items }) {
         }
     }
 
+    useEffect(() => {
+        let navigation = document.querySelector(".navigation");
+        let sidebarToggle = document.querySelector(".sidebar-toggle");
+        sidebarToggle.addEventListener("click", () => {
+            navigation.classList.toggle("active");
+        });
+    }, []);
+
     return (
         <div
             className={`navigation ${
                 className ?? ""
-            } z-40 border-l-[10px] border-sky-500 bg-sky-500 dark:backdrop-filter dark:backdrop-blur-md dark:bg-opacity-30 dark:border-opacity-10 dark:border-slate-700`}
+            } z-40 hidden md:block border-l-[10px] border-sky-500 bg-sky-500 w-[40px] md:w-[80px]`}
         >
             <ul>
                 {items.map((item, index) => (
@@ -25,7 +33,11 @@ export default function Sidebar({ className, items }) {
                         <a
                             onClick={(e) => {
                                 e.preventDefault();
-                                item.onClick;
+                                if (item.method == "post") {
+                                    router.post(item.url);
+                                } else {
+                                    router.get(item.url);
+                                }
                             }}
                         >
                             <span className="icon">{item.icon}</span>
@@ -34,12 +46,7 @@ export default function Sidebar({ className, items }) {
                     </li>
                 ))}
             </ul>
-            <div
-                className="sidebar-toggle"
-                onClick={() => {
-                    navigation.classList.toggle("active");
-                }}
-            ></div>
+            <div className="sidebar-toggle"></div>
         </div>
     );
 }

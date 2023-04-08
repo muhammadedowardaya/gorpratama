@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Link } from "@inertiajs/inertia-react";
-import Layout from "@/Shared/Layout";
-import BookingForm from "@/Components/BookingForm";
-import SlotList from "@/Components/SlotList";
+// import Layout from "@/Shared/Layout";
+// import BookingForm from "@/Components/BookingForm";
+// import SlotList from "@/Components/SlotList";
 import Chat from "@/Components/Chat";
 
 const BookingSchedule = ({ schedule }) => {

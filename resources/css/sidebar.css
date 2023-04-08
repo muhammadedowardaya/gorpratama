@@ -37,6 +37,7 @@
 .navigation ul li.active {
     background-color: #fff;
 }
+
 @media (prefers-color-scheme: dark) {
     /* Tambahkan style untuk mode dark di sini */
     body {

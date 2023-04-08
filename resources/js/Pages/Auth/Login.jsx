@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Checkbox from "@/Components/Checkbox";
-import GuestLayout from "@/Layouts/GuestLayout";
-import InputError from "@/Components/InputError";
 import Swal from "sweetalert2";
 import "../../../css/formStyle.css";
 import { Head, Link, useForm } from "@inertiajs/react";
+import Layout from "@/Layouts/Layout";
+import axios from "axios";
+import Toast from "@/Components/Toast";
 
 export default function Login(props, { status, canResetPassword }) {
-    const { data, setData } = useForm({
+    const { data, setData, reset } = useForm({
         email: "",
         password: "",
         remember: "",
@@ -33,9 +34,9 @@ export default function Login(props, { status, canResetPassword }) {
         // Mendapatkan CSRF token dari meta tag
         axios
             .post(`/login`, data, {
-                // headers: {
-                //     "Content-Type": "multipart/form-data",
-                // },
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
                 // credentials: "same-origin",
                 onUploadProgress: function (progressEvent) {
                     const percent =
@@ -55,14 +56,13 @@ export default function Login(props, { status, canResetPassword }) {
                 },
             })
             .then((response) => {
-                // Toast.fire({
-                //     icon: "success",
-                //     title: `Berhasil menambahkan ${response.data.response.nama}`,
-                // });
-                // setTimeout(() => {
-                //     axios.get("/dashboard/tempat-lapangan");
-                // }, 100);
-                console.info(response);
+                Toast.fire({
+                    icon: "success",
+                    title: `Berhasil Login`,
+                });
+                setTimeout(() => {
+                    axios.get("/");
+                }, 100);
             })
             .catch((errors_data) => {
                 if (
@@ -86,7 +86,7 @@ export default function Login(props, { status, canResetPassword }) {
     };
 
     return (
-        <GuestLayout>
+        <div className="grid justify-center">
             <Head title="Login" />
             <h1 className="text-2xl font-bold my-8 text-white">Login</h1>
             <div>
@@ -174,6 +174,8 @@ export default function Login(props, { status, canResetPassword }) {
                     </form>
                 </div>
             </div>
-        </GuestLayout>
+        </div>
     );
 }
+
+Login.layout = (page) => <Layout children={page} title="Login" />;

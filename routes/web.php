@@ -1,28 +1,16 @@
 <?php
 
-use App\Events\ChatSent;
-use App\Events\ServerCreated;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\BookingController;
-use App\Http\Controllers\BookingScheduleController;
-use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TempatLapanganController;
 use App\Http\Controllers\TransaksiController;
 use App\Models\Jadwal;
 use App\Models\Lapangan;
-use App\Models\TempatLapangan;
 use App\Models\Transaksi;
-use App\Models\User;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-use function PHPUnit\Framework\isType;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,41 +23,24 @@ use function PHPUnit\Framework\isType;
 |
 */
 
-
-
-// Route::middleware(['auth'])->group(function () {
-//     Route::post('/bookings/{booking}/messages', [MessageController::class, 'store']);
-// });
-
-
-
 Route::get('/', function () {
-    // return Inertia::render('Welcome', [
-    //     'canLogin' => Route::has('login'),
-    //     'canRegister' => Route::has('register'),
-    //     'laravelVersion' => Application::VERSION,
-    //     'phpVersion' => PHP_VERSION,
-    // ]);
-    return Inertia::render('Welcome');
-})->middleware('guest');
-
-Route::get('/get-user', function () {
-    return response()->json([
-        'user' => auth()->user()
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
     ]);
-})->middleware('guest');
+});
 
-Route::get('/get-profile-gor', function () {
-    $user = User::where('type', 1)->first();
-    if ($user && $user['id']) {
-        $tempat_lapangan = TempatLapangan::where('user_id', $user['id'])->first();
-    } else {
-        $tempat_lapangan = null;
-    }
-    return response()->json([
-        'tempat-lapangan' => $tempat_lapangan
-    ]);
-})->middleware('guest');
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('bookings')->group(function () {
@@ -149,11 +120,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::get('/dashboard/pengaturan', function () {
-        if (auth()->user()->type == 'admin') {
-            return Inertia::render('Dashboard/Admin/Pengaturan');
-        } else if (auth()->user()->type == 'user') {
-            return Inertia::render('Dashboard/User/Pengaturan');
-        }
+        return Inertia::render('Dashboard/Pengaturan');
     });
 });
 
@@ -169,7 +136,7 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     });
 
     Route::get('/pilih-lapangan', function () {
-        $lapangan = Lapangan::where('tempat_lapangan_id', 1)->get();
+        $lapangan = Lapangan::all();
         return Inertia::render('Lapangan', [
             'lapangan' => $lapangan
         ]);
@@ -267,5 +234,6 @@ Route::middleware(['auth', 'user-access:manager'])->group(function () {
 
     // Route::get('/manager/home', [HomeController::class, 'managerHome'])->name('manager.home');
 });
+
 
 require __DIR__ . '/auth.php';

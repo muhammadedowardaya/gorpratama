@@ -9,6 +9,7 @@ import MyButton from "@/Components/MyButton";
 import { Head, router, usePage } from "@inertiajs/react";
 import Loading from "@/Components/Loading";
 import { FaWindowClose } from "react-icons/fa";
+import Layout from "@/Layouts/Layout";
 
 const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
     // const [displayLoading, setDisplayLoading] = useState("");
@@ -53,7 +54,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                     id="content-table"
                     className="flex justify-center flex-col md:flex-row"
                 >
-                    <table className="basis-1/3 order-2 md:order-1 dark:text-white text-slate-800">
+                    <table className="basis-1/3 order-2 md:order-1 text-slate-800">
                         <tbody>
                             <tr>
                                 <th>Nama</th>
@@ -160,5 +161,5 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
 export default TempatLapangan;
 
 TempatLapangan.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
+    <Layout children={page} title="Tempat Lapangan" />
 );

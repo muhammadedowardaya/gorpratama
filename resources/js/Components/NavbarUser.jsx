@@ -11,7 +11,7 @@ import { Inertia } from "@inertiajs/inertia";
 
 export default function NavbarUser({ auth, header, children }) {
     const [user, setUser] = useState("");
-    fetch("/get-user")
+    fetch("/api/get-user")
         .then((response) => {
             return response.json();
         })

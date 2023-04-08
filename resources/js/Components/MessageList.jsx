@@ -1,6 +1,6 @@
 import React from "react";
 import { useSubscription } from "@inertiajs/inertia-react";
-import { formatDistanceToNow } from "date-fns";
+// import { formatDistanceToNow } from "date-fns";
 
 const MessageList = ({ booking }) => {
     const { data: messages } = useSubscription(

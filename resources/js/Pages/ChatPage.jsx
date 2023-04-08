@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Booking from "./components/Booking";
 import Bookings from "@/Components/Bookings";
 
 const ChatPage = () => {

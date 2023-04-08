@@ -11,6 +11,7 @@ import MyButton from "@/Components/MyButton";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
 import Loading from "@/Components/Loading";
 import Toast from "@/Components/Toast";
+import Layout from "@/Layouts/Layout";
 
 export default function CreateLapangan(props) {
     const [displayLoading, setDisplayLoading] = useState(false);
@@ -134,7 +135,7 @@ export default function CreateLapangan(props) {
             <Head title="Tambah Lapangan" />
 
             <Loading display={displayLoading} />
-            <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-slate-800 leading-normal">
+            <div className="w-full px-4 md:px-0 md:mt-8 mb-16 leading-normal">
                 <h1 className="text-center text-2xl  mb-5">Lapangan</h1>
 
                 <div className="flex justify-center">
@@ -163,16 +164,16 @@ export default function CreateLapangan(props) {
                             <Label forInput="status" value="Status" />
 
                             <div className="grid m-5">
-                                <div className="form-control">
-                                    <label className="label cursor-pointer">
-                                        <span className="label-text dark:text-slate-100 text-slate-800">
+                                <div className="form-control mb-2">
+                                    <label className="label cursor-pointer flex justify-between ">
+                                        <span className="label-text ">
                                             Dalam Pemeliharaan
                                         </span>
                                         <input
                                             type="radio"
                                             name="radio-6"
                                             value="1"
-                                            className="radio checked:!bg-red-500"
+                                            className="radio checked:!bg-red-500 focus:outline-red-500 outline-white outline"
                                             onChange={(e) => {
                                                 setData(
                                                     "status",
@@ -190,15 +191,15 @@ export default function CreateLapangan(props) {
                                     </label>
                                 </div>
                                 <div className="form-control">
-                                    <label className="label cursor-pointer">
-                                        <span className="label-text dark:text-slate-100 text-slate-800">
+                                    <label className="label cursor-pointer flex justify-between ">
+                                        <span className="label-text">
                                             Siap Pakai
                                         </span>
                                         <input
                                             type="radio"
                                             name="radio-6"
                                             value="0"
-                                            className="radio checked:!bg-green-500"
+                                            className="radio checked:!bg-green-500 focus:outline-green-500 outline-white outline"
                                             onChange={(e) => {
                                                 setData(
                                                     "status",
@@ -236,7 +237,7 @@ export default function CreateLapangan(props) {
                                         {portal(
                                             <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
                                                 <div className="flex justify-center">
-                                                    <div className="border-8 relative bg-slate-100 p-2 dark:border-slate-100 border-stone-800">
+                                                    <div className="border-8 relative bg-slate-100 p-2 border-stone-800">
                                                         <h2 className="ml-3 mb-2 mt-1 text-2xl font-bold">
                                                             Foto
                                                         </h2>
@@ -311,5 +312,5 @@ export default function CreateLapangan(props) {
 }
 
 CreateLapangan.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
+    <Layout children={page} title="Tambah Lapangan" />
 );

@@ -22,7 +22,7 @@ export default function AdminLayout({ children, header, title }) {
 
     async function getUser() {
         try {
-            const response = await fetch("/get-user");
+            const response = await fetch("/api/get-user");
             const user = await response.json();
             return user;
         } catch (error) {
@@ -39,7 +39,7 @@ export default function AdminLayout({ children, header, title }) {
     async function getProfileGor() {
         try {
             // Kode yang mungkin menyebabkan kesalahan server
-            const response = await fetch("/get-profile-gor");
+            const response = await fetch("/api/get-profile-gor");
             const gor = await response.json();
             return gor;
             // return response;
@@ -100,9 +100,9 @@ export default function AdminLayout({ children, header, title }) {
     });
 
     return (
-        <div className="min-h-screen pt-16 bg-fixed bg-gradient-to-l from-slate-50 to-white dark:bg dark:text-white">
+        <div className="min-h-screen pt-16 bg-fixed bg-gradient-to-l from-slate-50 to-white">
             {/* --------------------------------- */}
-            <nav className="navbar h-16 px-10 fixed z-50 top-0 left-0 right-0 bg-[#0ea5e9] dark:bg-stone-800">
+            <nav className="navbar h-16 px-10 fixed z-50 top-0 left-0 right-0 bg-[#0ea5e9]">
                 <div className="flex-1">
                     <a
                         className="text-white m-0 mr-2 cursor-pointer font-bold md:text-xl"
@@ -225,17 +225,17 @@ export default function AdminLayout({ children, header, title }) {
             </div>
             {/* --------------------------------- */}
             {/* <div className="hero__title">Squares Animation</div> */}
-            <div className="cube cube1 visible dark:hidden"></div>
-            <div className="cube cube2 visible dark:hidden"></div>
-            <div className="cube cube3 visible dark:hidden"></div>
-            <div className="cube cube4 visible dark:hidden"></div>
-            <div className="cube cube5 visible dark:hidden"></div>
-            <div className="cube cube6 visible dark:hidden"></div>
-            <div className="neon neon1 dark:visible"></div>
-            <div className="neon neon2 dark:visible"></div>
-            <div className="neon neon3 dark:visible"></div>
-            <div className="neon neon4 dark:visible"></div>
-            <div className="neon neon5 dark:visible"></div>
+            <div className="cube cube1 visible"></div>
+            <div className="cube cube2 visible"></div>
+            <div className="cube cube3 visible"></div>
+            <div className="cube cube4 visible"></div>
+            <div className="cube cube5 visible"></div>
+            <div className="cube cube6 visible"></div>
+            <div className="neon neon1"></div>
+            <div className="neon neon2"></div>
+            <div className="neon neon3"></div>
+            <div className="neon neon4"></div>
+            <div className="neon neon5"></div>
         </div>
     );
 }

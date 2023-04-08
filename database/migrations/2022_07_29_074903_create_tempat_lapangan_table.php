@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tempat_lapangan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
+            // $table->foreignId('user_id')->nullable();
             $table->string('nama');
             $table->string('slug');
             $table->string('alamat');

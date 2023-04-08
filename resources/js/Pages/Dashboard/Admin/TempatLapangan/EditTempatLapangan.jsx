@@ -302,7 +302,7 @@ export default function EditTempatLapangan(props) {
                                     }) => (
                                         <React.Fragment>
                                             <img
-                                                className="my-3 w-32 h-32 object-cover object-center mx-auto border dark:border-white rounded-full border-slate-800 overflow-hidden"
+                                                className="my-3 w-32 h-32 object-cover object-center mx-auto border rounded-full border-slate-800 overflow-hidden"
                                                 src={data.preview}
                                                 alt="avatar"
                                                 onClick={openPortal}

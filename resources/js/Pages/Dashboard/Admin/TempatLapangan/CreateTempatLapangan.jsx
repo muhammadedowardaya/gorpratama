@@ -182,7 +182,7 @@ export default function CreateTempatLapangan(props) {
             <Head title="Kelola Tempat Lapangan" />
 
             <div className="w-full  px-4 md:px-0 md:mt-2 text-white leading-normal grid justify-center justify-items-center">
-                <h1 className="text-center mb-8 text-xl font-bold dark:text-white text-stone-900">
+                <h1 className="text-center mb-8 text-xl font-bold text-stone-900">
                     Tambahkan informasi tempat Lapangan
                 </h1>
                 <div className="md:max-w-4xl">
@@ -340,7 +340,7 @@ export default function CreateTempatLapangan(props) {
                                         }) => (
                                             <React.Fragment>
                                                 <img
-                                                    className="my-3 w-32 h-32 object-cover object-center mx-auto border dark:border-white rounded-full border-slate-800 overflow-hidden"
+                                                    className="my-3 w-32 h-32 object-cover object-center mx-auto border rounded-full border-slate-800 overflow-hidden"
                                                     src={data.preview}
                                                     alt="avatar"
                                                     onClick={openPortal}

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingScheduleController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\LapanganImageController;
 use App\Http\Controllers\TempatLapanganImage;
@@ -55,7 +58,23 @@ Route::get('/payment/Pending', function () {
 Route::get('/chat/{sender_id}/{receiver_id}', [ChatController::class, 'index']);
 Route::post('/chat', [ChatController::class, 'store']);
 
+Route::get('/get-user', function () {
+    return response()->json([
+        'user' => auth()->user()
+    ]);
+});
 
+Route::get('/get-profile-gor', function () {
+    $user = User::where('type', 1)->first();
+    if ($user && $user['id']) {
+        $tempat_lapangan = TempatLapangan::where('user_id', $user['id'])->first();
+    } else {
+        $tempat_lapangan = null;
+    }
+    return response()->json([
+        'tempat-lapangan' => $tempat_lapangan
+    ]);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {

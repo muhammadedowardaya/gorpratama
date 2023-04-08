@@ -11,7 +11,7 @@ import { router } from "@inertiajs/react";
 
 export default function NavbarAdmin({ header, children }) {
     const [user, setUser] = useState("");
-    fetch("/get-user")
+    fetch("/api/get-user")
         .then((response) => {
             return response.json();
         })

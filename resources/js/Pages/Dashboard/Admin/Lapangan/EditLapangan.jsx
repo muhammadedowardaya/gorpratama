@@ -13,6 +13,7 @@ import { Head, router, useForm } from "@inertiajs/react";
 import MyButton from "@/Components/MyButton";
 import Toast from "@/Components/Toast";
 import Swal from "sweetalert2";
+import Layout from "@/Layouts/Layout";
 
 export default function EditLapangan({ lapangan }) {
     const [displayLoading, setDisplayLoading] = useState("");
@@ -170,7 +171,7 @@ export default function EditLapangan({ lapangan }) {
                             <div className="grid m-5">
                                 <div className="form-control">
                                     <label className="label cursor-pointer">
-                                        <span className="label-text dark:text-slate-100 text-slate-800">
+                                        <span className="label-text text-slate-800">
                                             Dalam Pemeliharaan
                                         </span>
                                         <input
@@ -196,7 +197,7 @@ export default function EditLapangan({ lapangan }) {
                                 </div>
                                 <div className="form-control">
                                     <label className="label cursor-pointer">
-                                        <span className="label-text dark:text-slate-100 text-slate-800">
+                                        <span className="label-text text-slate-800">
                                             Siap Pakai
                                         </span>
                                         <input
@@ -315,4 +316,6 @@ export default function EditLapangan({ lapangan }) {
     );
 }
 
-EditLapangan.layout = (page) => <AdminLayout children={page} title="Welcome" />;
+EditLapangan.layout = (page) => (
+    <Layout children={page} title="Edit Lapangan" />
+);

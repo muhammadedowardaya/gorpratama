@@ -1,15 +1,8 @@
+import Card from "@/Components/Card";
 import GridLength from "@/Components/GridLength";
-import MyButton from "@/Components/MyButton";
 import Layout from "@/Layouts/Layout";
-import { router } from "@inertiajs/react";
-import gsap from "gsap";
 import { useEffect } from "react";
-import { AiFillSetting } from "react-icons/ai";
-import {
-    BsEmojiNeutral,
-    BsEmojiNeutralFill,
-    BsFillCheckCircleFill,
-} from "react-icons/bs";
+import { FaCheck } from "react-icons/fa";
 
 const Lapangan = (props) => {
     useEffect(() => {
@@ -32,7 +25,7 @@ const Lapangan = (props) => {
         //         });
         //     });
         // });
-    });
+    }, []);
 
     return (
         <>
@@ -48,85 +41,37 @@ const Lapangan = (props) => {
                     props.lapangan.length
                 )}`}
             >
-                {/* <div className="flex justify-center z-10 mt-5 fixed right-0 left-0 top-0 bottom-0"> */}
-
-                {/* </div> */}
-
                 {props.lapangan != null && props.lapangan != "" ? (
                     props.lapangan.map((item, index) => {
                         return (
-                            <div className="bg-white rounded-lg shadow-md p-4">
-                                <img
-                                    src="https://example.com/image.jpg"
-                                    alt="Lapangan"
-                                    className="w-full h-48 object-cover rounded-md"
-                                />
-                                <div className="mt-4">
-                                    <h2 className="text-xl font-bold">
-                                        Nama Lapangan
-                                    </h2>
-                                    <p className="text-gray-600 mt-2">
-                                        Status Lapangan
-                                    </p>
-                                </div>
-                                <div className="mt-4">
-                                    <button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
-                                        Jadwal Lapangan
-                                    </button>
-                                    <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md">
-                                        Pilih Lapangan
-                                    </button>
-                                </div>
-                            </div>
+                            <Card
+                                key={item.id}
+                                name={item.nama}
+                                image={item.url_foto}
+                                status={
+                                    item.status == "siap pakai" ? (
+                                        <span>
+                                            <FaCheck
+                                                className="inline-block mr-2 fill-slate-50 bg-green-500 px-[4px]"
+                                                size="1.5em"
+                                            />
+                                            {item.status}
+                                        </span>
+                                    ) : (
+                                        "icon perbaikan"
+                                    )
+                                }
+                            />
                         );
                     })
                 ) : (
-                    <div className="relative bg-white rounded-lg shadow-md p-4 text-center transform hover:-translate-y-1 transition duration-500">
-                        <svg
-                            className="absolute top-0 right-0 h-20 w-20 text-gray-200 transform translate-x-1/2 -translate-y-1/2 opacity-50"
-                            viewBox="0 0 100 100"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <rect
-                                x="25"
-                                y="25"
-                                width="50"
-                                height="50"
-                                fill="currentColor"
-                            />
-                        </svg>
-                        <svg
-                            className="absolute bottom-0 left-0 h-20 w-20 text-gray-200 transform -translate-x-1/2 translate-y-1/2 opacity-50"
-                            viewBox="0 0 100 100"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <rect
-                                x="25"
-                                y="25"
-                                width="50"
-                                height="50"
-                                fill="currentColor"
-                            />
-                        </svg>
-                        <svg
-                            className="mx-auto h-16 w-16 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                            />
-                        </svg>
-                        <h2 className="text-xl font-bold mt-4">
-                            Belum ada lapangan yang tersedia
-                        </h2>
-                        <p className="text-gray-600 mt-2">
-                            Silakan coba lagi nanti
-                        </p>
+                    <div className="py-20">
+                        <Card>
+                            <div className="p-4">
+                                <h1>Gak ada nanaon</h1>
+                                <p>Belum ada Lapangan yang tersedia</p>
+                            </div>
+                        </Card>
                     </div>
                 )}
             </div>

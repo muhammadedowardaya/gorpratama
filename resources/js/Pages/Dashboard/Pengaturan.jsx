@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import UserLayout from "@/Layouts/UserLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import SwitchMode from "@/Components/SwitchMode";
+import Layout from "@/Layouts/Layout";
 
 export default function Pengaturan(props) {
     // Similar to componentDidMount and componentDidUpdate:
@@ -28,7 +28,7 @@ export default function Pengaturan(props) {
                         <span>Logout</span>
                         <div>
                             <button
-                                className="mr-2 bg-stone-800 dark:border dark:border-white text-white px-4 py-2 rounded hover:bg-green-600"
+                                className="mr-2 bg-stone-800 text-white px-4 py-2 rounded hover:bg-green-600"
                                 onClick={() => {
                                     router.post("/logout");
                                 }}
@@ -44,5 +44,5 @@ export default function Pengaturan(props) {
 }
 
 Pengaturan.layout = (page) => (
-    <UserLayout children={page} title="Dashboard | Pengaturan" />
+    <Layout children={page} title="Dashboard | Pengaturan" />
 );

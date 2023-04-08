@@ -115,85 +115,6 @@ export default function UpdateProfileInformation({
                     }
                 }
             });
-
-        // patch(route("profile.update"));
-        // axios
-        //     .post(`/profile-update`, data, {
-        //         headers: {
-        //             "Content-Type": "multipart/form-data",
-        //         },
-        //         credentials: "same-origin",
-        //         onUploadProgress: function (progressEvent) {
-        //             const percent =
-        //                 (progressEvent.loaded / progressEvent.total) * 100;
-
-        //             // const radialProgress =
-        //             //     document.querySelector(".radial-progress");
-        //             // if (radialProgress.classList.contains("hidden")) {
-        //             //     radialProgress.classList.remove("hidden");
-        //             // }
-        //             // radialProgress.classList.add("fixed");
-        //             // radialProgress.innerHTML = Math.round(percent) + "%";
-        //             // radialProgress.style.setProperty(
-        //             //     "--value",
-        //             //     Math.round(percent)
-        //             // );
-        //         },
-        //     })
-        //     .then((response) => {
-        //         setDisplayLoading(false);
-        //         Toast.fire({
-        //             icon: "success",
-        //             title: `Berhasil memperbarui profile`,
-        //             timer: 3000,
-        //         });
-
-        //         setTimeout(() => {
-        //             router.get("/profile");
-        //         }, 100);
-        //     })
-        //     .catch((errors) => {
-        //         setDisplayLoading(false);
-        //         if (errors.response.status === 400) {
-        //             const error_keys = Object.keys(
-        //                 errors.response.data.message
-        //             );
-        //             const error_values = Object.getOwnPropertyNames(
-        //                 errors.response.data.message
-        //             );
-        //             let error_messages = [];
-        //             let error = errors.response.data.message;
-        //             for (let i = 0; i < error_keys.length; i++) {
-        //                 error_messages.push(error[error_values[i]]);
-        //             }
-
-        //             Swal.fire(
-        //                 "Gagal!",
-        //                 `<ul>${error_messages
-        //                     .map((item) => {
-        //                         if (item.includes("CSRF token mismatch.")) {
-        //                             router.reload();
-        //                         } else {
-        //                             `<li>${item}</li>`;
-        //                         }
-        //                     })
-        //                     .join(" ")}</ul>`,
-        //                 "error"
-        //             );
-        //         } else {
-        //             if (
-        //                 errors.response.data.message == "CSRF token mismatch."
-        //             ) {
-        //                 location.reload();
-        //             } else {
-        //                 Swal.fire(
-        //                     "Gagal!",
-        //                     `${errors.response.data.message}`,
-        //                     "error"
-        //                 );
-        //             }
-        //         }
-        //     });
     };
 
     const handleUpload = (e) => {
@@ -227,11 +148,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-white">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-white">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -242,11 +163,15 @@ export default function UpdateProfileInformation({
                 encType="multipart/form-data"
             >
                 <div>
-                    <InputLabel for="nama" value="Nama" />
+                    <InputLabel
+                        htmlFor="nama"
+                        value="Nama"
+                        className="text-white"
+                    />
 
                     <TextInput
                         id="nama"
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full text-slate-700"
                         value={data.nama}
                         handleChange={(e) => setData("nama", e.target.value)}
                         required
@@ -258,12 +183,16 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel for="email" value="Email" />
+                    <InputLabel
+                        htmlFor="email"
+                        value="Email"
+                        className="text-white"
+                    />
 
                     <TextInput
                         id="email"
                         type="email"
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full text-slate-700"
                         value={data.email}
                         handleChange={(e) => setData("email", e.target.value)}
                         required
@@ -297,12 +226,16 @@ export default function UpdateProfileInformation({
                 )}
 
                 <div>
-                    <InputLabel for="telp" value="Telp" />
+                    <InputLabel
+                        htmlFor="telp"
+                        value="Telp"
+                        className="text-white"
+                    />
 
                     <TextInput
                         id="telp"
                         type="tel"
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full text-slate-700"
                         value={data.telp}
                         handleChange={(e) => setData("telp", e.target.value)}
                         required
@@ -315,13 +248,17 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel for="alamat" value="Alamat" />
+                    <InputLabel
+                        htmlFor="alamat"
+                        value="Alamat"
+                        className="text-white"
+                    />
 
                     <textarea
                         name="alamat"
                         id="alamat"
                         // cols="30"
-                        className={`border-gray-300 focus:border-blue-300 focus:ring-blue-300 rounded-md shadow-sm `}
+                        className={`border-gray-300 focus:border-blue-300 focus:ring-blue-300 rounded-md shadow-sm text-slate-700`}
                         onChange={(e) => setData("alamat", e.target.value)}
                         placeholder="Isikan alamat mu..."
                         value={data.alamat}
@@ -331,7 +268,11 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div className="mt-4">
-                    <Label forInput="foto" value="Foto" />
+                    <Label
+                        forInput="foto"
+                        value="Foto"
+                        className="text-white"
+                    />
                     <PortalWithState closeOnOutsideClick closeOnEsc>
                         {({ openPortal, closePortal, isOpen, portal }) => (
                             <React.Fragment>
@@ -369,7 +310,7 @@ export default function UpdateProfileInformation({
                     <input
                         type="file"
                         name="foto"
-                        className="w-full text-white rounded-md shadow-sm"
+                        className="w-full text-slate-700 rounded-md shadow-sm"
                         // ref={data.imageRef}
                         onChange={handleUpload}
                     />

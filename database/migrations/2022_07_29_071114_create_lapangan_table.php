@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('lapangan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tempat_lapangan_id');
+            // $table->foreignId('tempat_lapangan_id');
             $table->foreignId('jadwal_id')->nullable();
             $table->foreignId('transaksi_id')->nullable();
             $table->string('foto')->nullable();
