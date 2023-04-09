@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import Checkbox from "@/Components/Checkbox";
 import Swal from "sweetalert2";
 import "../../../css/formStyle.css";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, router, useForm } from "@inertiajs/react";
 import Layout from "@/Layouts/Layout";
 import axios from "axios";
 import Toast from "@/Components/Toast";
+import Loading from "@/Components/Loading";
 
 export default function Login(props, { status, canResetPassword }) {
     const { data, setData, reset } = useForm({
@@ -13,6 +14,8 @@ export default function Login(props, { status, canResetPassword }) {
         password: "",
         remember: "",
     });
+
+    const [show, setShow] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -31,6 +34,7 @@ export default function Login(props, { status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
+        setShow(true);
         // Mendapatkan CSRF token dari meta tag
         axios
             .post(`/login`, data, {
@@ -61,7 +65,8 @@ export default function Login(props, { status, canResetPassword }) {
                     title: `Berhasil Login`,
                 });
                 setTimeout(() => {
-                    axios.get("/");
+                    setShow(false);
+                    router.get("/");
                 }, 100);
             })
             .catch((errors_data) => {
@@ -86,10 +91,13 @@ export default function Login(props, { status, canResetPassword }) {
     };
 
     return (
-        <div className="grid justify-center">
+        <div className="grid justify-center min-h-screen bg-fixed bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
             <Head title="Login" />
-            <h1 className="text-2xl font-bold my-8 text-white">Login</h1>
+            <Loading display={show} />
             <div>
+                <h1 className="text-2xl font-bold my-8 text-white text-center">
+                    Login
+                </h1>
                 <div className="login-box w-full md:w-96">
                     <form
                         className="grid grid-cols-1 md:gap-4"
@@ -177,5 +185,3 @@ export default function Login(props, { status, canResetPassword }) {
         </div>
     );
 }
-
-Login.layout = (page) => <Layout children={page} title="Login" />;

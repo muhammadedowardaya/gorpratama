@@ -87,101 +87,119 @@ const Lapangan = (props) => {
                                         "icon perbaikan"
                                     )
                                 }
-                                onDelete={(e) => {
-                                    e.preventDefault();
+                                buttons={[
+                                    {
+                                        className: "bg-sky-500",
+                                        title: "hapus",
+                                        onClick: (e) => {
+                                            e.preventDefault();
 
-                                    Swal.fire({
-                                        title:
-                                            "Yakin ingin menghapus " +
-                                            item.nama +
-                                            "?",
-                                        text: "data lapangan yang dihapus tidak dapat dikembalikan!",
-                                        icon: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#3085d6",
-                                        cancelButtonColor: "#d33",
-                                        confirmButtonText: "Ya, hapus!",
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            setDisplayLoading(true);
-                                            axios
-                                                .delete(
-                                                    `/dashboard/lapangan-delete/${item.slug}`
-                                                )
-                                                .then((response) => {
-                                                    setDisplayLoading(false);
-                                                    Toast.fire({
-                                                        icon: "success",
-                                                        title: `Berhasil memperbarui ${response.data.response.nama}`,
-                                                    });
+                                            Swal.fire({
+                                                title:
+                                                    "Yakin ingin menghapus " +
+                                                    item.nama +
+                                                    "?",
+                                                text: "data lapangan yang dihapus tidak dapat dikembalikan!",
+                                                icon: "warning",
+                                                showCancelButton: true,
+                                                confirmButtonColor: "#3085d6",
+                                                cancelButtonColor: "#d33",
+                                                confirmButtonText: "Ya, hapus!",
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    setDisplayLoading(true);
+                                                    axios
+                                                        .delete(
+                                                            `/dashboard/lapangan-delete/${item.slug}`
+                                                        )
+                                                        .then((response) => {
+                                                            setDisplayLoading(
+                                                                false
+                                                            );
+                                                            Toast.fire({
+                                                                icon: "success",
+                                                                title: `Berhasil memperbarui ${response.data.response.nama}`,
+                                                            });
 
-                                                    setTimeout(() => {
-                                                        router.get(
-                                                            "/dashboard/lapangan"
-                                                        );
-                                                    }, 200);
-                                                })
-                                                .catch((errors) => {
-                                                    setDisplayLoading(false);
+                                                            setTimeout(() => {
+                                                                router.get(
+                                                                    "/dashboard/lapangan"
+                                                                );
+                                                            }, 200);
+                                                        })
+                                                        .catch((errors) => {
+                                                            setDisplayLoading(
+                                                                false
+                                                            );
 
-                                                    if (
-                                                        errors.response
-                                                            .status === 400
-                                                    ) {
-                                                        const error_keys =
-                                                            Object.keys(
+                                                            if (
                                                                 errors.response
-                                                                    .data
-                                                                    .message
-                                                            );
-                                                        const error_values =
-                                                            Object.getOwnPropertyNames(
-                                                                errors.response
-                                                                    .data
-                                                                    .message
-                                                            );
-                                                        let error_messages = [];
-                                                        let error =
-                                                            errors.response.data
-                                                                .message;
-                                                        for (
-                                                            let i = 0;
-                                                            i <
-                                                            error_keys.length;
-                                                            i++
-                                                        ) {
-                                                            error_messages.push(
-                                                                error[
-                                                                    error_values[
-                                                                        i
-                                                                    ]
-                                                                ]
-                                                            );
-                                                        }
+                                                                    .status ===
+                                                                400
+                                                            ) {
+                                                                const error_keys =
+                                                                    Object.keys(
+                                                                        errors
+                                                                            .response
+                                                                            .data
+                                                                            .message
+                                                                    );
+                                                                const error_values =
+                                                                    Object.getOwnPropertyNames(
+                                                                        errors
+                                                                            .response
+                                                                            .data
+                                                                            .message
+                                                                    );
+                                                                let error_messages =
+                                                                    [];
+                                                                let error =
+                                                                    errors
+                                                                        .response
+                                                                        .data
+                                                                        .message;
+                                                                for (
+                                                                    let i = 0;
+                                                                    i <
+                                                                    error_keys.length;
+                                                                    i++
+                                                                ) {
+                                                                    error_messages.push(
+                                                                        error[
+                                                                            error_values[
+                                                                                i
+                                                                            ]
+                                                                        ]
+                                                                    );
+                                                                }
 
-                                                        Swal.fire(
-                                                            "Gagal!",
-                                                            `<ul>${error_messages
-                                                                .map(
-                                                                    (item) =>
-                                                                        `<li>${item}</li>`
-                                                                )
-                                                                .join(
-                                                                    " "
-                                                                )}</ul>`,
-                                                            "error"
-                                                        );
-                                                    } else {
-                                                        Swal.fire(
-                                                            "Gagal!",
-                                                            `${errors.response.data.message}`,
-                                                            "error"
-                                                        );
-                                                    }
-                                                });
-                                        }
-                                    });
-                                }}
+                                                                Swal.fire(
+                                                                    "Gagal!",
+                                                                    `<ul>${error_messages
+                                                                        .map(
+                                                                            (
+                                                                                item
+                                                                            ) =>
+                                                                                `<li>${item}</li>`
+                                                                        )
+                                                                        .join(
+                                                                            " "
+                                                                        )}</ul>`,
+                                                                    "error"
+                                                                );
+                                                            } else {
+                                                                Swal.fire(
+                                                                    "Gagal!",
+                                                                    `${errors.response.data.message}`,
+                                                                    "error"
+                                                                );
+                                                            }
+                                                        });
+                                                }
+                                            });
+                                        },
+                                    },
+                                ]}
                             />
                         );
                     })

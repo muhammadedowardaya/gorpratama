@@ -9,11 +9,14 @@ import { CgProfile } from "react-icons/cg";
 import Navbar from "@/Components/Navbar";
 import { FiLogOut } from "react-icons/fi";
 import { GiFootyField, GiSoccerField } from "react-icons/gi";
-import { TbSoccerField } from "react-icons/tb";
 import { AiFillSetting } from "react-icons/ai";
+import axios from "axios";
+import Loading from "@/Components/Loading";
+import { MdMessage } from "react-icons/md";
 
 export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
+    const [show, setShow] = useState(true);
     async function getUser() {
         try {
             const response = await fetch("/api/get-user");
@@ -33,6 +36,13 @@ export default function Layout({ children, header, title }) {
             }
         }
     }
+
+    async function fetchData() {
+        const data = await getUser();
+        setUser(data);
+        setShow(false);
+    }
+
     useEffect(() => {
         const mode = localStorage.getItem("mode");
         if (mode === "dark") {
@@ -43,10 +53,6 @@ export default function Layout({ children, header, title }) {
             document.documentElement.classList.remove("dark");
         }
 
-        async function fetchData() {
-            const data = await getUser();
-            setUser(data);
-        }
         fetchData();
 
         // -------------------
@@ -72,7 +78,7 @@ export default function Layout({ children, header, title }) {
     }, []);
 
     return (
-        <div className="min-h-screen bg-fixed dark:bg-stone-900 bg-gradient-to-b from-green-400 to-blue-500">
+        <div className="relative min-h-screen bg-fixed bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
             {header && (
                 <section className="px-5 pt-5 pb-4 fixed top-14 z-10 w-full flex justify-evenly">
                     {header}
@@ -87,33 +93,45 @@ export default function Layout({ children, header, title }) {
                             items={[
                                 {
                                     path: "/",
-                                    url: "/",
+                                    onClick: () => router.get("/"),
                                     icon: <IoHome className="mt-4" />,
                                     title: "Home",
                                 },
                                 {
                                     path: "profile",
-                                    url: "/profile",
+                                    onClick: () => router.get("/profile"),
                                     icon: <CgProfile className="mt-4" />,
                                     title: "My Profile",
                                 },
                                 {
                                     path: "dashboard/tempat-lapangan",
-                                    url: "/dashboard/tempat-lapangan",
+                                    onClick: () =>
+                                        router.get(
+                                            "/dashboard/tempat-lapangan"
+                                        ),
                                     icon: <GiFootyField className="mt-4" />,
                                     title: "Profile Gor | Tempat Lapangan",
                                 },
                                 {
                                     path: "dashboard/lapangan",
-                                    url: "/dashboard/lapangan",
+                                    onClick: () =>
+                                        router.get("/dashboard/lapangan"),
                                     icon: <GiSoccerField className="mt-4" />,
                                     title: "Lapangan",
                                 },
                                 {
                                     path: "/logout",
+                                    onClick: () => {
+                                        setShow(true);
+                                        axios
+                                            .post("/logout")
+                                            .then((response) => {
+                                                setShow(false);
+                                                axios.get("/");
+                                            });
+                                    },
                                     icon: <FiLogOut className="mt-4" />,
                                     title: "Logout",
-                                    method: "post",
                                 },
                             ]}
                         />
@@ -122,28 +140,43 @@ export default function Layout({ children, header, title }) {
                             items={[
                                 {
                                     path: "/",
-                                    url: "/",
+                                    onClick: () => router.get("/"),
                                     icon: <IoHome className="mt-4" />,
                                     title: "Home",
                                 },
                                 {
+                                    path: "dashboard/pesanan",
+                                    onClick: () =>
+                                        router.get("/dashboard/pesanan"),
+                                    icon: <MdMessage className="mt-4" />,
+                                    title: "Pesanan Saya",
+                                },
+                                {
                                     path: "profile",
-                                    url: "/profile",
+                                    onClick: () => router.get("/profile"),
                                     icon: <CgProfile className="mt-4" />,
                                     title: "My Profile",
                                 },
                                 {
                                     path: "dashboard/pengaturan",
-                                    url: "/dashboard/pengaturan",
+                                    onClick: () =>
+                                        router.get("/dashboard/pengaturan"),
                                     icon: <AiFillSetting className="mt-4" />,
                                     title: "Pengaturan",
                                 },
                                 {
                                     path: "logout",
-                                    url: "/logout",
+                                    onClick: () => {
+                                        setShow(true);
+                                        axios
+                                            .post("/logout")
+                                            .then((response) => {
+                                                setShow(false);
+                                                axios.get("/");
+                                            });
+                                    },
                                     icon: <FiLogOut className="mt-4" />,
                                     title: "Logout",
-                                    method: "post",
                                 },
                             ]}
                         />
@@ -210,6 +243,7 @@ export default function Layout({ children, header, title }) {
                         </div>
                     </footer>
                 </section>
+                <Loading display={show} />
             </div>
             {/* --------------------------------- */}
             {/* <div className="hero__title">Squares Animation</div> */}

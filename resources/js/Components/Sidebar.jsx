@@ -30,16 +30,7 @@ export default function Sidebar({ className, items }) {
             <ul>
                 {items.map((item, index) => (
                     <li key={index} className={`${requestIs(item.path)}`}>
-                        <a
-                            onClick={(e) => {
-                                e.preventDefault();
-                                if (item.method == "post") {
-                                    router.post(item.url);
-                                } else {
-                                    router.get(item.url);
-                                }
-                            }}
-                        >
+                        <a onClick={item.onClick}>
                             <span className="icon">{item.icon}</span>
                             <span className="title">{item.title}</span>
                         </a>

@@ -167,11 +167,10 @@ button.primary:hover {
 }
 
 .neon {
-    z-index: 40;
     position: fixed;
     visibility: hidden;
-    width: 5px;
-    height: 5px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;

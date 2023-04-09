@@ -1,6 +1,8 @@
 import Card from "@/Components/Card";
 import GridLength from "@/Components/GridLength";
 import Layout from "@/Layouts/Layout";
+import { router } from "@inertiajs/react";
+import axios from "axios";
 import { useEffect } from "react";
 import { FaCheck } from "react-icons/fa";
 
@@ -61,6 +63,18 @@ const Lapangan = (props) => {
                                         "icon perbaikan"
                                     )
                                 }
+                                buttons={[
+                                    {
+                                        title: "Pilih Lapangan",
+                                        className:
+                                            "bg-blue-500 m-4 hover:bg-blue-600 shadow",
+                                        onClick: () => {
+                                            router.get(
+                                                `/pilih-lapangan/${item.slug}`
+                                            );
+                                        },
+                                    },
+                                ]}
                             />
                         );
                     })

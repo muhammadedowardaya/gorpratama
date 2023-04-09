@@ -8,8 +8,8 @@ import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
 
 // date picker dan time picker
-import { DatePicker } from "antd";
-import { TimePicker } from "antd";
+import { DatePicker, Space } from "antd";
+const { RangePicker } = DatePicker;
 
 export default function Booking(props) {
     const { data, setData } = useForm({
@@ -41,18 +41,6 @@ export default function Booking(props) {
         total_harga: "",
         amount: "",
     });
-
-    // async function getJadwal() {
-    //     const response = await fetch(`/api/jadwal/${props.lapangan.id}`);
-    //     const jadwal = await response.json();
-    //     return jadwal;
-    // }
-
-    // getJadwal().then((response) => {
-    //     if (response.jadwal != "") {
-    //         setData(jadwal, response.jadwal);
-    //     }
-    // });
 
     function durasiDanHarga() {
         return new Promise((resolve, reject) => {
@@ -100,16 +88,12 @@ export default function Booking(props) {
             }
         }
 
-        // const tanggalSekarang = new Date().toJSON().slice(0, 10);
         const today = new Date();
         const day = String(today.getDate()).padStart(2, "0");
         const month = String(today.getMonth() + 1).padStart(2, "0");
         const year = today.getFullYear();
         const formattedDate = day + "-" + month + "-" + year;
 
-        // console.log(formattedDate); // Contoh output: "23-03-2023"
-        // console.info(data.tanggal_main < formattedDate);
-        // console.info(parseInt(data.jam_selesai) - parseInt(data.jam_mulai) < 1);
         if (ada_jadwal == false) {
             if (data.tanggal_main < formattedDate) {
                 Swal.fire(
@@ -137,7 +121,6 @@ export default function Booking(props) {
                             confirmButtonText: "Konfirmasi",
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                console.info(data.amount);
                                 router.post("/booking", data, {
                                     onError: (errors) => {
                                         // const error_keys = Object.keys(errors);
@@ -203,13 +186,17 @@ export default function Booking(props) {
                     <div className="flex gap-0 md:gap-14 md:flex-row flex-col">
                         <div className="md:basis-1/2">
                             <div className="mt-4">
-                                <Label forInput="nama" value="Nama" />
+                                <Label
+                                    className="text-slate-700"
+                                    forInput="nama"
+                                    value="Nama"
+                                />
 
                                 <input
                                     type="text"
                                     name="nama"
                                     value={data.nama}
-                                    className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="nama"
                                     autoFocus={true}
                                     onChange={(e) => {
@@ -220,9 +207,13 @@ export default function Booking(props) {
                                 />
                             </div>
                             <div className="mt-4">
-                                <Label forInput="alamat" value="Alamat" />
+                                <Label
+                                    className="text-slate-700"
+                                    forInput="alamat"
+                                    value="Alamat"
+                                />
                                 <textarea
-                                    className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     onChange={(e) => {
                                         e.preventDefault();
                                         setData(alamat, e.target.value);
@@ -234,13 +225,17 @@ export default function Booking(props) {
                             </div>
 
                             <div className="mt-4">
-                                <Label forInput="telp" value="Telp" />
+                                <Label
+                                    className="text-slate-700"
+                                    forInput="telp"
+                                    value="Telp"
+                                />
 
                                 <input
                                     type="text"
                                     name="telp"
                                     value={data.telp}
-                                    className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sms"
+                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sms"
                                     autoComplete="telp"
                                     onChange={(e) => {
                                         e.preventDefault();
@@ -253,13 +248,17 @@ export default function Booking(props) {
                             </div>
 
                             <div className="mt-4">
-                                <Label forInput="email" value="Email" />
+                                <Label
+                                    className="text-slate-700"
+                                    forInput="email"
+                                    value="Email"
+                                />
 
                                 <input
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="email"
                                     // handleChange={onHandleChange}
                                     readOnly
@@ -269,6 +268,7 @@ export default function Booking(props) {
                         <div className="md:basis-1/2 ">
                             <div className="mt-4">
                                 <Label
+                                    className="text-slate-700"
                                     forInput="nama_lapangan"
                                     value="Lapangan yang di pilih"
                                 />
@@ -277,7 +277,7 @@ export default function Booking(props) {
                                     type="text"
                                     name="nama_lapangan"
                                     value={data.nama_lapangan}
-                                    className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="nama_lapangan"
                                     // handleChange={onHandleChange}
                                     readOnly
@@ -285,6 +285,7 @@ export default function Booking(props) {
                             </div>
                             <div className="mt-4">
                                 <Label
+                                    className="text-slate-700"
                                     forInput="harga_lapangan"
                                     value="Harga sewa perjam"
                                 />
@@ -293,7 +294,7 @@ export default function Booking(props) {
                                     type="text"
                                     name="harga_persewa"
                                     value={data.harga_persewa}
-                                    className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="harga_persewa"
                                     // handleChange={onHandleChange}
                                     readOnly
@@ -301,7 +302,50 @@ export default function Booking(props) {
                             </div>
 
                             <div className="mt-4">
-                                <Label forInput="date" value="Tanggal" />
+                                <Label
+                                    className="text-slate-700"
+                                    forInput="date"
+                                    value="Tanggal"
+                                />
+                                <Space direction="vertical" size={12}>
+                                    <DatePicker
+                                        cellRender={(current) => {
+                                            const style = {};
+                                            if (current.date() === 1) {
+                                                style.border =
+                                                    "1px solid #1890ff";
+                                                style.borderRadius = "50%";
+                                            }
+                                            return (
+                                                <div
+                                                    className="ant-picker-cell-inner"
+                                                    style={style}
+                                                >
+                                                    {current.date()}
+                                                </div>
+                                            );
+                                        }}
+                                    />
+                                    <RangePicker
+                                        cellRender={(current) => {
+                                            const style = {};
+                                            if (current.date() === 1) {
+                                                style.border =
+                                                    "1px solid #1890ff";
+                                                style.borderRadius = "50%";
+                                            }
+                                            return (
+                                                <div
+                                                    className="ant-picker-cell-inner"
+                                                    style={style}
+                                                >
+                                                    {current.date()}
+                                                </div>
+                                            );
+                                        }}
+                                    />
+                                </Space>
+
                                 {/* date range */}
 
                                 {/* <DatePicker
@@ -311,14 +355,36 @@ export default function Booking(props) {
                                     setShow={handleClose}
                                 /> */}
 
-                                <DatePicker
+                                {/* <DatePicker
                                     format="DD-MM-YYYY"
                                     className="mt-2"
                                     onChange={(day, date) => {
                                         setData("tanggal_main", date);
                                     }}
-                                    size="large"
-                                />
+                                    picker="large"
+                                /> */}
+
+                                {/* <DatePicker
+                                format="DD-MM-YYYY"
+                                picker="date"
+                                pickerSize="large"
+                                value={
+                                    data.tanggal_main
+                                        ? moment(
+                                              data.tanggal_main,
+                                              "DD-MM-YYYY"
+                                          )
+                                        : undefined
+                                }
+                                disabled={data.tanggal_main === ""}
+                                onChange={(date, dateString) => {
+                                    setData({
+                                        ...data,
+                                        tanggal_main: dateString,
+                                    });
+                                }}
+                                className="mt-2"
+                                /> */}
 
                                 {/* <DatePicker
                                     defaultValue={moment(
@@ -371,8 +437,16 @@ export default function Booking(props) {
 
                             <div className="mt-4">
                                 <div className="grid grid-cols-2">
-                                    <Label forInput="jam" value="Jam mulai" />
-                                    <Label forInput="jam" value="Jam selesai" />
+                                    <Label
+                                        className="text-slate-700"
+                                        forInput="jam"
+                                        value="Jam mulai"
+                                    />
+                                    <Label
+                                        className="text-slate-700"
+                                        forInput="jam"
+                                        value="Jam selesai"
+                                    />
 
                                     {/* <DateRangePicker
                                         startDate={data.jam_mulai}
@@ -393,37 +467,23 @@ export default function Booking(props) {
                                         }}
                                     /> */}
 
-                                    <TimePicker.RangePicker
-                                        format="HH:mm"
-                                        onChange={(value, dateString) => {
-                                            setData({
-                                                ...data,
-                                                jam_mulai: dateString[0],
-                                                jam_selesai: dateString[1],
-                                            });
-                                        }}
-                                        // value={[
-                                        //     data.jam_mulai
-                                        //         ? moment(
-                                        //               data.jam_mulai,
-                                        //               "HH:mm"
-                                        //           )
-                                        //         : null,
-                                        //     data.jam_selesai
-                                        //         ? moment(
-                                        //               data.jam_selesai,
-                                        //               "HH:mm"
-                                        //           )
-                                        //         : null,
-                                        // ]}
-                                        disabled={
-                                            data.tanggal_main == ""
-                                                ? true
-                                                : false
-                                        }
-                                        size="large"
-                                        className="mt-2 col-span-2 text-slate-700"
-                                    />
+                                    {/* <TimePicker.RangePicker
+                                    format="HH:mm"
+                                    onChange={(value, dateString) => {
+                                        setData({
+                                            ...data,
+                                            jam_mulai: dateString[0],
+                                            jam_selesai: dateString[1],
+                                        });
+                                    }}
+                                    disabled={
+                                        data.tanggal_main == ""
+                                            ? true
+                                            : false
+                                    }
+                                    size="large"
+                                    className="mt-2 col-span-2 text-slate-700"
+                                    /> */}
                                 </div>
                             </div>
                         </div>

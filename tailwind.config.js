@@ -9,7 +9,6 @@ module.exports = {
         "./resources/views/**/*.blade.php",
         "./resources/js/**/*.jsx",
     ],
-
     theme: {
         extend: {
             fontFamily: {
