@@ -1,4 +1,4 @@
-import AdminLayout from "@/Layouts/AdminLayout";
+import Layout from "@/Layouts/Layout";
 import { Head, router } from "@inertiajs/react";
 import React from "react";
 
@@ -59,6 +59,4 @@ const LapanganIsEmpty = ({ tempat_lapangan, auth }) => {
 
 export default LapanganIsEmpty;
 
-LapanganIsEmpty.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
-);
+LapanganIsEmpty.layout = (page) => <Layout children={page} title="Welcome" />;

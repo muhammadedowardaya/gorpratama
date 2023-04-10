@@ -1,13 +1,10 @@
 import "../../../../../css/tempatLapangan.css";
 
 import React, { useEffect, useState } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
 import { PortalWithState } from "react-portal";
 import Swal from "sweetalert2";
-import { AiFillCloseCircle } from "react-icons/ai";
 import MyButton from "@/Components/MyButton";
 import { Head, router, usePage } from "@inertiajs/react";
-import Loading from "@/Components/Loading";
 import { FaWindowClose } from "react-icons/fa";
 import Layout from "@/Layouts/Layout";
 

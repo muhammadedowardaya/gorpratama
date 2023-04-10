@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
 import GridLength from "@/Components/GridLength";
 import Swal from "sweetalert2";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { AiFillSetting } from "react-icons/ai";
 import MyButton from "@/Components/MyButton";
 import { Head, router } from "@inertiajs/react";
 import axios from "axios";
 import Loading from "@/Components/Loading";
 import Toast from "@/Components/Toast";
-import gsap from "gsap";
-import CardPosting from "@/Components/CardPosting";
 import Layout from "@/Layouts/Layout";
 import Card from "@/Components/Card";
 import { FaCheck, FaCheckCircle } from "react-icons/fa";
@@ -229,7 +224,7 @@ const Lapangan = (props) => {
                                         className="btn bg-green-500"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            // Inertia.get(`/tempat`);
+                                            // router.get(`/tempat`);
                                             history.back();
                                         }}
                                     >

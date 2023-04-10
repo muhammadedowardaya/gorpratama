@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import UserLayout from "@/Layouts/UserLayout";
-import { Head } from "@inertiajs/react";
-import moment from "moment";
 import Layout from "@/Layouts/Layout";
 import Pagination from "@/Components/Pagination";
 import MyButton from "@/Components/MyButton";
-import AdminLayout from "@/Layouts/AdminLayout";
 
 export default function Jadwal(props) {
     useEffect(() => {

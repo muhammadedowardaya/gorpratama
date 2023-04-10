@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import Echo from "laravel-echo";
-import { usePage } from "@inertiajs/inertia-react";
+import { usePage } from "@inertiajs/react";
 
 const Chat = ({ schedule }) => {
     const { base_url } = usePage().props;

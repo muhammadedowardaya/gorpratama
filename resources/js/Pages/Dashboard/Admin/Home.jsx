@@ -12,7 +12,7 @@ import {
 // import "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js";
 
 import React, { useState } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
+import Layout from "@/Layouts/Layout";
 
 const Home = (props) => {
     /*Toggle dropdown list*/
@@ -230,4 +230,4 @@ const Home = (props) => {
 
 export default Home;
 
-Home.layout = (page) => <AdminLayout children={page} title="Welcome" />;
+Home.layout = (page) => <Layout children={page} title="Welcome" />;

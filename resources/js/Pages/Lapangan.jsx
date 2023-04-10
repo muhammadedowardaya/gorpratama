@@ -2,7 +2,6 @@ import Card from "@/Components/Card";
 import GridLength from "@/Components/GridLength";
 import Layout from "@/Layouts/Layout";
 import { router } from "@inertiajs/react";
-import axios from "axios";
 import { useEffect } from "react";
 import { FaCheck } from "react-icons/fa";
 

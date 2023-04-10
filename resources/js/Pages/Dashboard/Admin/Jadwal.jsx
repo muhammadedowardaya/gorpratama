@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import UserLayout from "@/Layouts/UserLayout";
-import { Head } from "@inertiajs/react";
-import AdminLayout from "@/Layouts/AdminLayout";
+import Layout from "@/Layouts/Layout";
 
 export default function Jadwal(props) {
     // Similar to componentDidMount and componentDidUpdate:
@@ -51,6 +49,4 @@ export default function Jadwal(props) {
     );
 }
 
-Jadwal.layout = (page) => (
-    <AdminLayout children={page} title="Dashboard | Jadwal" />
-);
+Jadwal.layout = (page) => <Layout children={page} title="Dashboard | Jadwal" />;

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
-import { InertiaLink } from "@inertiajs/inertia-react";
+import { router } from "@inertiajs/inertia";
+import { InertiaLink } from "@inertiajs/react";
 
 const BookingIndex = ({ bookings }) => {
     const [bookingId, setBookingId] = useState(null);
@@ -9,7 +9,7 @@ const BookingIndex = ({ bookings }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (message.trim()) {
-            Inertia.post(`/bookings/${bookingId}/messages`, { message });
+            router.post(`/bookings/${bookingId}/messages`, { message });
         }
         setMessage("");
     };

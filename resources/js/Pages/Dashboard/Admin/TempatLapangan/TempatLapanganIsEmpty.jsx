@@ -1,7 +1,5 @@
-import AdminLayout from "@/Layouts/AdminLayout";
 import { Head, router } from "@inertiajs/react";
 import React from "react";
-import MyButton from "@/Components/MyButton";
 
 const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
     return (
@@ -84,5 +82,5 @@ const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
 export default TempatLapanganIsEmpty;
 
 TempatLapanganIsEmpty.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
+    <Layout children={page} title="Welcome" />
 );

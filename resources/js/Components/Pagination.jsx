@@ -1,7 +1,4 @@
 import React from "react";
-import { Link } from "@inertiajs/inertia-react";
-import { CgPlayTrackPrevO } from "react-icons/cg";
-import { router } from "@inertiajs/react";
 
 export default function Pagination({ links, className }) {
     function getClassName(active) {

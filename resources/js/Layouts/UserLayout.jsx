@@ -2,14 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import "../../css/layout.css";
 import { Head, router, usePage } from "@inertiajs/react";
-import SwitchMode from "@/Components/SwitchMode";
-import { BsFillArrowRightCircleFill, BsMenuButtonWide } from "react-icons/bs";
-import { AiFillCloseCircle, AiOutlineClose } from "react-icons/ai";
-import gsap from "gsap";
-
 import "../modules/csrf.js";
-import axios from "axios";
-import Loading from "@/Components/Loading";
 import Sidebar from "@/Components/Sidebar";
 import { IoHome } from "react-icons/io5";
 

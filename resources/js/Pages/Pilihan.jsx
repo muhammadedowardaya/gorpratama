@@ -1,10 +1,7 @@
 import React from "react";
-import { TiArrowBack } from "react-icons/ti";
-
-import { Inertia } from "@inertiajs/inertia";
-import Layout from "@/Layouts/Layout";
 
 import "../../css/pilihan.css";
+import Layout from "@/Layouts/Layout";
 
 const Pilihan = (props) => {
     return (
@@ -31,31 +28,4 @@ const Pilihan = (props) => {
 
 export default Pilihan;
 
-Pilihan.layout = (page) => (
-    <Layout
-        children={page}
-        title="Pilih..."
-        header={
-            <>
-                <div className="text-sm breadcrumbs">
-                    <ul>
-                        <li>
-                            <a href="/">Home</a>
-                        </li>
-                        <li>Pilihan</li>
-                    </ul>
-                </div>
-                <button
-                    className="btn-sm"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        Inertia.get("/");
-                    }}
-                >
-                    <TiArrowBack size="1.8em" className="inline-block" />
-                    Kembali
-                </button>
-            </>
-        }
-    />
-);
+Pilihan.layout = (page) => <Layout children={page} title="Pilih..." />;

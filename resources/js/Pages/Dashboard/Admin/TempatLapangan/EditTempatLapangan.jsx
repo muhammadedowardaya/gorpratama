@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
+
 import Label from "@/Components/Label";
 
 import { FaWindowClose } from "react-icons/fa";
@@ -411,5 +411,5 @@ export default function EditTempatLapangan(props) {
 }
 
 EditTempatLapangan.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
+    <Layout children={page} title="Welcome" />
 );

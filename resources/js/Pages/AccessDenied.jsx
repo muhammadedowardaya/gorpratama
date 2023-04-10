@@ -1,7 +1,4 @@
-import { TbHandStop } from "react-icons/tb";
 import { AiOutlineStop } from "react-icons/ai";
-import bg from "../../../public/storage/images/background-welcome.jpg";
-import { Inertia } from "@inertiajs/inertia";
 import { router } from "@inertiajs/react";
 
 export default function AccessDenied() {

@@ -4,7 +4,6 @@ import UpdatePasswordForm from "../Partials/UpdatePasswordForm";
 import UpdateProfileInformationForm from "../Partials/UpdateProfileInformationForm";
 import { Head } from "@inertiajs/react";
 import UserLayout from "@/Layouts/UserLayout";
-import AdminLayout from "@/Layouts/AdminLayout";
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
     return (
@@ -34,4 +33,4 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
     );
 }
 
-Edit.layout = (page) => <AdminLayout children={page} title="Edit Profile" />;
+Edit.layout = (page) => <Layout children={page} title="Edit Profile" />;

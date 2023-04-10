@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import UserLayout from "@/Layouts/UserLayout";
-import { Head } from "@inertiajs/react";
 import moment from "moment";
 
 export default function Jadwal(props) {
@@ -88,5 +86,5 @@ export default function Jadwal(props) {
 }
 
 Jadwal.layout = (page) => (
-    <UserLayout children={page} title="Dashboard | Jadwal" />
+    <Layout children={page} title="Dashboard | Jadwal" />
 );

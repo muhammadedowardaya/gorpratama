@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Inertia } from "@inertiajs/inertia";
 import Swal from "sweetalert2";
 import { AiFillCloseCircle } from "react-icons/ai";
-import UserLayout from "@/Layouts/UserLayout";
 import { PortalWithState } from "react-portal";
+import Layout from "@/Layouts/Layout";
+import { router } from "@inertiajs/react";
 
 const User = (props) => {
     // Similar to componentDidMount and componentDidUpdate:
@@ -87,7 +87,7 @@ const User = (props) => {
                                     className="btn btn-sm "
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        Inertia.get(
+                                        router.get(
                                             "/user/edit/" +
                                                 props.auth.user.slugh
                                         );
@@ -106,4 +106,4 @@ const User = (props) => {
 
 export default User;
 
-User.layout = (page) => <UserLayout children={page} title="Gudminton | User" />;
+User.layout = (page) => <Layout children={page} title="Gudminton | User" />;

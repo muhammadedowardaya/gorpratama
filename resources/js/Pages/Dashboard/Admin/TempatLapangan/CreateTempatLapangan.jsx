@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
+
 import Label from "@/Components/Label";
 
 import { FaWindowClose } from "react-icons/fa";
@@ -12,10 +12,8 @@ import { Head, router, useForm, usePage } from "@inertiajs/react";
 
 import "../../../../../css/formStyle.css";
 import axios from "axios";
-import Loading from "@/Components/Loading";
 
 // date picker dan time picker
-import { DatePicker } from "antd";
 import { TimePicker } from "antd";
 
 export default function CreateTempatLapangan(props) {
@@ -1039,5 +1037,5 @@ export default function CreateTempatLapangan(props) {
 // export default CreateTempatLapangan;
 
 CreateTempatLapangan.layout = (page) => (
-    <AdminLayout children={page} title="Welcome" />
+    <Layout children={page} title="Welcome" />
 );

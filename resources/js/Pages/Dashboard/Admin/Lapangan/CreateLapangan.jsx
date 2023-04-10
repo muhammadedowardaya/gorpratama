@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
 import Label from "@/Components/Label";
 
 import { FaWindowClose } from "react-icons/fa";
-import { AiFillCloseCircle } from "react-icons/ai";
 
 import { PortalWithState } from "react-portal";
 import Swal from "sweetalert2";

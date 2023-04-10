@@ -1,10 +1,6 @@
+import Layout from "@/Layouts/Layout";
 import React, { useState, useEffect } from "react";
-import AdminLayout from "@/Layouts/AdminLayout";
-import { Inertia } from "@inertiajs/inertia";
-import GridLength from "@/Components/GridLength";
 import Swal from "sweetalert2";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { AiFillSetting } from "react-icons/ai";
 
 const Pesanan = (props) => {
     // Similar to componentDidMount and componentDidUpdate:
@@ -94,4 +90,4 @@ const Pesanan = (props) => {
 
 export default Pesanan;
 
-Pesanan.layout = (page) => <AdminLayout children={page} title="Welcome" />;
+Pesanan.layout = (page) => <Layout children={page} title="Welcome" />;

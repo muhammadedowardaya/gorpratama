@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { InertiaLink } from "@inertiajs/inertia-react";
+import { InertiaLink } from "@inertiajs/react";
 
 const BookingScheduleList = ({ schedules }) => {
     const [selectedSchedule, setSelectedSchedule] = useState(null);

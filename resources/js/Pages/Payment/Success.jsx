@@ -1,8 +1,7 @@
 import "../../../css/paymentSuccess.css";
-import Layout from "@/Layouts/Layout";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/react";
 
 export default function Success() {
     const [numConfetti, setNumConfetti] = useState(0);

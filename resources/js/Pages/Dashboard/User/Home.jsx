@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import UserLayout from "@/Layouts/UserLayout";
 import { Head } from "@inertiajs/react";
+import Layout from "@/Layouts/Layout";
 
 const Home = (props) => {
     // Similar to componentDidMount and componentDidUpdate:
@@ -28,4 +28,4 @@ const Home = (props) => {
 
 export default Home;
 
-Home.layout = (page) => <UserLayout children={page} title="Dashboard | Home" />;
+Home.layout = (page) => <Layout children={page} title="Dashboard | Home" />;

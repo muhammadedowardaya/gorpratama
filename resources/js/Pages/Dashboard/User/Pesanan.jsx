@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import UserLayout from "@/Layouts/UserLayout";
 import { Head, router, usePage } from "@inertiajs/react";
 import "../../../modules/csrf.js";
 import moment from "moment/moment";
 import { MdPaid } from "react-icons/md";
-import axios from "axios";
 import { AiFillSchedule } from "react-icons/ai";
+import Layout from "@/Layouts/Layout.jsx";
 
 export default function Pesanan(props) {
     // Similar to componentDidMount and componentDidUpdate:
@@ -135,5 +134,5 @@ export default function Pesanan(props) {
 }
 
 Pesanan.layout = (page) => (
-    <UserLayout children={page} title="Dashboard | Pesanan" />
+    <Layout children={page} title="Dashboard | Pesanan" />
 );

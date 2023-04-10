@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { usePage } from "@inertiajs/inertia-react";
+import { usePage } from "@inertiajs/react";
 import Echo from "laravel-echo";
 import axios from "axios";
 
