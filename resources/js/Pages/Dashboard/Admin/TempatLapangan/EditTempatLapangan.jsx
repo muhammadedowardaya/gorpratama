@@ -31,14 +31,10 @@ export default function EditTempatLapangan(props) {
             props.tempat_lapangan != null
                 ? props.tempat_lapangan.deskripsi
                 : "",
-        jam_buka:
-            props.tempat_lapangan != null
-                ? props.tempat_lapangan.jam_buka
-                : "DEFAULT",
-        jam_tutup:
-            props.tempat_lapangan != null
-                ? props.tempat_lapangan.jam_tutup
-                : "DEFAULT",
+        jam_buka: "",
+        jam_tutup: "",
+        jam_buka_value: "",
+        jam_tutup_value: "",
         harga_persewa:
             props.tempat_lapangan != null
                 ? props.tempat_lapangan.harga_persewa
@@ -270,7 +266,7 @@ export default function EditTempatLapangan(props) {
                                 <label className="col-span-1 col-start-2 text-slate-600 text-sm">
                                     Jam tutup
                                 </label>
-                                <TimePicker.RangePicker
+                                {/* <TimePicker.RangePicker
                                     defaultValue={[
                                         moment(data.jam_buka, "HH:mm:ss"),
                                         moment(data.jam_tutup, "HH:mm:ss"),
@@ -288,6 +284,28 @@ export default function EditTempatLapangan(props) {
                                     }
                                     size="large"
                                     className="mt-2 col-span-2 bg-stone-50 border-none"
+                                /> */}
+                                <TimePicker
+                                    format="HH:mm"
+                                    onSelect={(time) => {
+                                        setData(
+                                            "jam_buka",
+                                            moment(time["$d"]).format("HH:mm")
+                                        );
+                                        setData("jam_buka_value", time);
+                                    }}
+                                    value={data.jam_buka_value}
+                                />
+                                <TimePicker
+                                    format="HH:mm"
+                                    onSelect={(time) => {
+                                        setData(
+                                            "jam_tutup",
+                                            moment(time["$d"]).format("HH:mm")
+                                        );
+                                        setData("jam_tutup_value", time);
+                                    }}
+                                    value={data.jam_tutup_value}
                                 />
                             </div>
 

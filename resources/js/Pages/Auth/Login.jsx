@@ -91,14 +91,14 @@ export default function Login(props, { status, canResetPassword }) {
     };
 
     return (
-        <div className="grid justify-center min-h-screen bg-fixed bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
+        <div className="grid p-4 justify-center min-h-screen bg-fixed bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
             <Head title="Login" />
             <Loading display={show} />
             <div>
                 <h1 className="text-2xl font-bold my-8 text-white text-center">
                     Login
                 </h1>
-                <div className="login-box w-full md:w-96">
+                <div className="login-box w-full sm:w-80">
                     <form
                         className="grid grid-cols-1 md:gap-4"
                         onSubmit={submit}

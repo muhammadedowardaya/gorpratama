@@ -29,6 +29,11 @@ footer ul li a {
     color: #fff;
 }
 
+/* menghilangkan button OK pada timepicker */
+.ant-picker-footer {
+    display: none;
+}
+
 .dark {
     color: #1c1917;
 }

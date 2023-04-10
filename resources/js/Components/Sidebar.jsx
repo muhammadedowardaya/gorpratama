@@ -25,7 +25,7 @@ export default function Sidebar({ className, items }) {
         <div
             className={`navigation ${
                 className ?? ""
-            } z-40 hidden md:block border-l-[10px] border-sky-500 bg-sky-500 w-[40px] md:w-[80px]`}
+            } z-10 hidden md:block border-l-[10px] border-sky-500 bg-sky-500 w-[40px] md:w-[80px]`}
         >
             <ul>
                 {items.map((item, index) => (

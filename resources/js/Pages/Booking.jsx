@@ -8,26 +8,28 @@ import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
 
 // date picker dan time picker
-import { DatePicker, Space } from "antd";
-const { RangePicker } = DatePicker;
+import { DatePicker, TimePicker } from "antd";
+import moment from "moment";
+import "moment/locale/id";
+import Loading from "@/Components/Loading";
 
 export default function Booking(props) {
+    const [show, setShow] = useState(false);
     const { data, setData } = useForm({
         lapangan_id: props.lapangan.id,
-        // tempat_lapangan_id: props.tempat_lapangan.id,
-        // admin_lapangan_id: props.tempat_lapangan.user_id,
         telp: props.auth.user.telp,
         harga_persewa: props.tempat_lapangan.harga_persewa,
         tanggal_main: "",
+        jam_buka: props.tempat_lapangan.jam_buka,
+        jam_tutup: props.tempat_lapangan.jam_tutup,
 
         user_id: props.auth.user.id,
         jadwal: [],
 
-        dari_jam: "Default",
-        sampai_jam: "Default",
-
         jam_mulai: "",
         jam_selesai: "",
+        jam_mulai_value: "",
+        jam_selesai_value: "",
 
         lama_bermain: "",
         user: props.auth.user,
@@ -36,11 +38,52 @@ export default function Booking(props) {
         email: props.auth.user.email,
         nama_lapangan: props.lapangan.nama,
         nama_tempat_lapangan: props.tempat_lapangan.nama,
-        jam: props.jam,
         tanggal: "",
         total_harga: "",
         amount: "",
     });
+
+    const disabledTime = () => {
+        const disabledHours = [];
+        const disabledMinutes = [];
+
+        const timeHours = moment(data.jam_mulai["$d"])
+            .format("HH:mm")
+            .slice(0, 2);
+
+        // Disable hours before opening time and after closing time
+        for (let i = 0; i < 24; i++) {
+            if (
+                i < parseInt(data.jam_buka.slice(0, 2)) ||
+                i > parseInt(data.jam_tutup.slice(0, 2))
+            ) {
+                disabledHours.push(i);
+            }
+        }
+
+        // Disable minutes when the selected hour is the same as the opening or closing time
+        if (data.jam_mulai && timeHours === data.jam_buka.slice(0, 2)) {
+            for (let i = 0; i < parseInt(data.jam_buka.slice(3, 5)); i++) {
+                disabledMinutes.push(i);
+            }
+        } else if (
+            data.jam_selesai &&
+            timeHours === data.jam_tutup.slice(0, 2)
+        ) {
+            for (
+                let i = parseInt(data.jam_tutup.slice(3, 5)) + 1;
+                i <= 59;
+                i++
+            ) {
+                disabledMinutes.push(i);
+            }
+        }
+
+        return {
+            disabledHours: () => disabledHours,
+            disabledMinutes: () => disabledMinutes,
+        };
+    };
 
     function durasiDanHarga() {
         return new Promise((resolve, reject) => {
@@ -64,14 +107,14 @@ export default function Booking(props) {
         });
     }
 
-    const updateDurasiDanHarga = async () => {
+    const updateData = async () => {
         const data_terbaru = await durasiDanHarga();
         return data_terbaru;
     };
 
     const submit = (e) => {
         e.preventDefault();
-
+        setShow(true);
         let ada_jadwal = false;
         if (data.jadwal != "") {
             for (let i = 0; i < data.jadwal.length; i++) {
@@ -109,7 +152,8 @@ export default function Booking(props) {
             ) {
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
             } else {
-                updateDurasiDanHarga().then((response) => {
+                updateData().then((response) => {
+                    setShow(false);
                     if (response.total_harga != "") {
                         Swal.fire({
                             title: "Konfirmasi Pesanan Mu",
@@ -160,8 +204,6 @@ export default function Booking(props) {
                                 });
                             }
                         });
-                    } else {
-                        document.getElementById("btnSubmit").click();
                     }
                 });
             }
@@ -174,8 +216,15 @@ export default function Booking(props) {
         }
     };
 
+    useEffect(() => {
+        return () => {
+            // second
+        };
+    }, []);
+
     return (
         <>
+            <Loading display={show} />
             <div className="w-full p-10">
                 <form onSubmit={submit} className="bg-white p-4 rounded">
                     <h1 className="text-center text-slate-700 text-2xl font-bold pb-4">
@@ -307,136 +356,20 @@ export default function Booking(props) {
                                     forInput="date"
                                     value="Tanggal"
                                 />
-                                <Space direction="vertical" size={12}>
-                                    <DatePicker
-                                        cellRender={(current) => {
-                                            const style = {};
-                                            if (current.date() === 1) {
-                                                style.border =
-                                                    "1px solid #1890ff";
-                                                style.borderRadius = "50%";
-                                            }
-                                            return (
-                                                <div
-                                                    className="ant-picker-cell-inner"
-                                                    style={style}
-                                                >
-                                                    {current.date()}
-                                                </div>
-                                            );
-                                        }}
-                                    />
-                                    <RangePicker
-                                        cellRender={(current) => {
-                                            const style = {};
-                                            if (current.date() === 1) {
-                                                style.border =
-                                                    "1px solid #1890ff";
-                                                style.borderRadius = "50%";
-                                            }
-                                            return (
-                                                <div
-                                                    className="ant-picker-cell-inner"
-                                                    style={style}
-                                                >
-                                                    {current.date()}
-                                                </div>
-                                            );
-                                        }}
-                                    />
-                                </Space>
 
-                                {/* date range */}
-
-                                {/* <DatePicker
-                                    options={options}
-                                    onChange={handleChange}
-                                    show={show}
-                                    setShow={handleClose}
-                                /> */}
-
-                                {/* <DatePicker
+                                <DatePicker
                                     format="DD-MM-YYYY"
                                     className="mt-2"
                                     onChange={(day, date) => {
                                         setData("tanggal_main", date);
                                     }}
                                     picker="large"
-                                /> */}
-
-                                {/* <DatePicker
-                                format="DD-MM-YYYY"
-                                picker="date"
-                                pickerSize="large"
-                                value={
-                                    data.tanggal_main
-                                        ? moment(
-                                              data.tanggal_main,
-                                              "DD-MM-YYYY"
-                                          )
-                                        : undefined
-                                }
-                                disabled={data.tanggal_main === ""}
-                                onChange={(date, dateString) => {
-                                    setData({
-                                        ...data,
-                                        tanggal_main: dateString,
-                                    });
-                                }}
-                                className="mt-2"
-                                /> */}
-
-                                {/* <DatePicker
-                                    defaultValue={moment(
-                                        "01-01-2023",
-                                        "DD-MM-YYYY"
-                                    )}
-                                    format="DD-MM-YYYY"
-                                    size="middle"
-                                    onChange={(value) => {
-                                        setData("tanggal_main", value);
-                                    }}
-                                    className="mt-2"
-                                /> */}
-
-                                {/* <input
-                                    type="date"
-                                    name="date"
-                                    value={data.tanggal_main}
-                                    className="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                                    autoComplete="date"
-                                    // onChange={onHandleChange}
-                                    onChange={(e) => {
-                                        e.preventDefault();
-
-                                        const date = new Date(e.target.value)
-                                            .toJSON()
-                                            .slice(0, 10);
-                                        const options = { weekday: "long" };
-                                        const hari = new Intl.DateTimeFormat(
-                                            "id-ID",
-                                            options
-                                        ).format(e.target.valueAsDate);
-                                        const tanggal = date.split("-")[2];
-                                        const bulan = new Date(date);
-                                        const namaBulan = bulan.toLocaleString(
-                                            "id-ID",
-                                            {
-                                                month: "long",
-                                            }
-                                        );
-                                        const tahun = date.split("-")[0];
-
-                                        setData({
-                                            ...data,
-                                            tanggal_main: e.target.value,
-                                        });
-                                    }}
-                                /> */}
+                                    size="large"
+                                />
                             </div>
 
                             <div className="mt-4">
-                                <div className="grid grid-cols-2">
+                                <div className="grid grid-cols-2 gap-2 max-w-[200px]">
                                     <Label
                                         className="text-slate-700"
                                         forInput="jam"
@@ -448,42 +381,48 @@ export default function Booking(props) {
                                         value="Jam selesai"
                                     />
 
-                                    {/* <DateRangePicker
-                                        startDate={data.jam_mulai}
-                                        endDate={data.jam_selesai}
-                                        onChange={({
-                                            jam_mulai,
-                                            jam_selesai,
-                                        }) => {
+                                    <TimePicker
+                                        format="HH:mm"
+                                        disabledTime={disabledTime}
+                                        onSelect={(time) => {
                                             setData({
                                                 ...data,
-                                                jam_mulai: jam_mulai,
-                                                jam_selesai: jam_selesai,
+                                                jam_mulai: moment(
+                                                    time["$d"]
+                                                ).format("HH:mm"),
+                                                jam_mulai_value: time,
                                             });
                                         }}
-                                        timePickerProps={{
-                                            showMinute: false,
-                                            use12Hours: true,
+                                        disabled={
+                                            data.tanggal_main == ""
+                                                ? true
+                                                : false
+                                        }
+                                        minuteStep={5}
+                                        value={data.jam_mulai_value}
+                                        size="large"
+                                    />
+                                    <TimePicker
+                                        format="HH:mm"
+                                        onSelect={(time) => {
+                                            setData({
+                                                ...data,
+                                                jam_selesai: moment(
+                                                    time["$d"]
+                                                ).format("HH:mm"),
+                                                jam_selesai_value: time,
+                                            });
                                         }}
-                                    /> */}
-
-                                    {/* <TimePicker.RangePicker
-                                    format="HH:mm"
-                                    onChange={(value, dateString) => {
-                                        setData({
-                                            ...data,
-                                            jam_mulai: dateString[0],
-                                            jam_selesai: dateString[1],
-                                        });
-                                    }}
-                                    disabled={
-                                        data.tanggal_main == ""
-                                            ? true
-                                            : false
-                                    }
-                                    size="large"
-                                    className="mt-2 col-span-2 text-slate-700"
-                                    /> */}
+                                        locale="id"
+                                        disabled={
+                                            data.tanggal_main == ""
+                                                ? true
+                                                : false
+                                        }
+                                        minuteStep={5}
+                                        value={data.jam_selesai_value}
+                                        size="large"
+                                    />
                                 </div>
                             </div>
                         </div>

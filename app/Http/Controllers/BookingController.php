@@ -37,7 +37,8 @@ class BookingController extends Controller
     public function index()
     {
         $bookings = Booking::with('participants')->get();
-        return BookingResource::collection($bookings);
+        dd(BookingResource::collection($bookings));
+        // return BookingResource::collection($bookings);
     }
 
     public function show(Booking $booking)
