@@ -120,6 +120,7 @@ class TransaksiController extends Controller
         ]);
 
         // buat jadwal baru
+        // buat jadwal baru
         $jadwal = new Jadwal;
         $jadwal->user_id = $request->user_id;
         $jadwal->lapangan_id = $request->lapangan_id;
