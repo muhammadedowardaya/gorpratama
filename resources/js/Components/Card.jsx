@@ -2,16 +2,16 @@ import React from "react";
 
 const Card = ({ image, name, status, buttons, onClick, children }) => {
     return (
-        <div className="grid justify-evenly w-full md:w-[250px] h-full rounded overflow-hidden  ">
+        <div className="grid justify-between w-full md:w-[250px] h-full rounded overflow-hidden  ">
             {children ?? (
                 <div className="backdrop-filter backdrop-blur bg-opacity-5 bg-slate-50 shadow-lg">
                     <img
-                        className={`w-full h-[200px] object-cover object-center p-0`}
+                        className={`w-full md:min-w-[250px] h-[200px] object-cover object-center p-0`}
                         src={image}
                         alt={name}
                     />
                     <div
-                        className={`grid justify-between ${
+                        className={`grid justify-center ${
                             name != "" ? "" : "hidden"
                         }`}
                     >

@@ -8,6 +8,7 @@ use App\Http\Controllers\LapanganImageController;
 use App\Http\Controllers\TempatLapanganImage;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserImageController;
+use App\Models\Jadwal;
 use App\Models\TempatLapangan;
 use App\Models\User;
 use App\Models\Wisata;
@@ -38,7 +39,12 @@ Route::apiResource('lapangan/image', LapanganImageController::class);
 Route::get('/user/image/{image}', [UserImageController::class, 'showImage'])->name('user.image.show');
 
 
-Route::get('/jadwal/{lapangan}', [JadwalController::class, 'show'])->name('jadwal.show');
+Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
+    $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->paginate(8);
+    return response()->json([
+        'jadwal' => $jadwal
+    ]);
+})->name('jadwal.show');
 Route::get('/image/{lapangan}', function ($nama_file) {
     $image =   public_path('\storage\images\\' . $nama_file);
     return Response::file($image);
@@ -67,7 +73,7 @@ Route::get('/get-user', function () {
 Route::get('/get-profile-gor', function () {
     $user = User::where('type', 1)->first();
     if ($user && $user['id']) {
-        $tempat_lapangan = TempatLapangan::where('user_id', $user['id'])->first();
+        $tempat_lapangan = TempatLapangan::all()->first();
     } else {
         $tempat_lapangan = null;
     }

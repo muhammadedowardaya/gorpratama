@@ -47,7 +47,7 @@ export default function Pesanan(props) {
             }
             lastX = event.clientX;
         });
-    });
+    }, []);
 
     return (
         <div>

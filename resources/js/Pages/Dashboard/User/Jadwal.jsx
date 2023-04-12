@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import moment from "moment";
+import Layout from "@/Layouts/Layout";
 
 export default function Jadwal(props) {
     // Similar to componentDidMount and componentDidUpdate:
@@ -32,7 +33,7 @@ export default function Jadwal(props) {
             }
             lastX = event.clientX;
         });
-    });
+    }, []);
 
     return (
         <>
@@ -85,6 +86,4 @@ export default function Jadwal(props) {
     );
 }
 
-Jadwal.layout = (page) => (
-    <Layout children={page} title="Dashboard | Jadwal" />
-);
+Jadwal.layout = (page) => <Layout children={page} title="Dashboard | Jadwal" />;

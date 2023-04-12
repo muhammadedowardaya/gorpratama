@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreignId('lapangan_id');
             $table->boolean('temukan_teman_lawan')->default(false);
             $table->date('tanggal');
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
+            $table->time('jam_mulai', 0);
+            $table->time('jam_selesai', 0);
             $table->timestamps();
             // user_id, lapangan_id, tanggal_sewa, waktu_mulai, dan waktu_selesai
         });

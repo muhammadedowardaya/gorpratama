@@ -9,7 +9,7 @@ import { CgProfile } from "react-icons/cg";
 import Navbar from "@/Components/Navbar";
 import { FiLogOut } from "react-icons/fi";
 import { GiFootyField, GiSoccerField } from "react-icons/gi";
-import { AiFillSetting } from "react-icons/ai";
+import { AiFillSetting, AiOutlineCalendar } from "react-icons/ai";
 import axios from "axios";
 import Loading from "@/Components/Loading";
 import { MdMessage } from "react-icons/md";
@@ -85,7 +85,65 @@ export default function Layout({ children, header, title }) {
                 </section>
             )}
 
-            <Navbar />
+            {user != null ? (
+                user.type == "admin" ? (
+                    <Navbar
+                        items={[
+                            {
+                                onClick: () => router.get("/"),
+                                icon: <IoHome />,
+                                title: "Home",
+                            },
+
+                            {
+                                onClick: () =>
+                                    router.get("/dashboard/tempat-lapangan"),
+                                icon: <GiFootyField />,
+                                title: "Profile Gor | Tempat Lapangan",
+                            },
+                            {
+                                onClick: () =>
+                                    router.get("/dashboard/lapangan"),
+                                icon: <GiSoccerField />,
+                                title: "Lapangan",
+                            },
+
+                            {
+                                onClick: () => router.get("/profile"),
+                                icon: <CgProfile />,
+                                title: "My Profile",
+                            },
+                        ]}
+                    />
+                ) : (
+                    <Navbar
+                        items={[
+                            {
+                                onClick: () => router.get("/"),
+                                icon: <IoHome />,
+                                title: "Home",
+                            },
+                            {
+                                onClick: () => router.get("/dashboard/pesanan"),
+                                icon: <MdMessage />,
+                                title: "Pesanan Saya",
+                            },
+                            {
+                                onClick: () => router.get("/dashboard/jadwal"),
+                                icon: <AiOutlineCalendar />,
+                                title: "Jadwal",
+                            },
+                            {
+                                onClick: () => router.get("/profile"),
+                                icon: <CgProfile />,
+                                title: "My Profile",
+                            },
+                        ]}
+                    />
+                )
+            ) : (
+                ""
+            )}
             <div className=" z-40 grid md:grid-cols-[auto,4fr] h-screen overflow-y-hidden ">
                 {user != null ? (
                     user.type == "admin" ? (
@@ -150,6 +208,15 @@ export default function Layout({ children, header, title }) {
                                         router.get("/dashboard/pesanan"),
                                     icon: <MdMessage className="mt-4" />,
                                     title: "Pesanan Saya",
+                                },
+                                {
+                                    path: "dashboard/jadwal",
+                                    onClick: () =>
+                                        router.get("/dashboard/jadwal"),
+                                    icon: (
+                                        <AiOutlineCalendar className="mt-4" />
+                                    ),
+                                    title: "Jadwal",
                                 },
                                 {
                                     path: "profile",

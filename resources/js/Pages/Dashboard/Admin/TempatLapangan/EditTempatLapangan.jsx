@@ -15,6 +15,7 @@ import Toast from "@/Components/Toast";
 import Loading from "@/Components/Loading";
 import { TimePicker } from "antd";
 import moment from "moment";
+import Layout from "@/Layouts/Layout";
 
 export default function EditTempatLapangan(props) {
     const [slug, setSlug] = useState(props.tempat_lapangan.slug);
@@ -288,24 +289,30 @@ export default function EditTempatLapangan(props) {
                                 <TimePicker
                                     format="HH:mm"
                                     onSelect={(time) => {
-                                        setData(
-                                            "jam_buka",
-                                            moment(time["$d"]).format("HH:mm")
-                                        );
-                                        setData("jam_buka_value", time);
+                                        setData({
+                                            ...data,
+                                            jam_buka: moment(time["$d"]).format(
+                                                "HH:mm"
+                                            ),
+                                            jam_buka_value: time,
+                                        });
                                     }}
                                     value={data.jam_buka_value}
+                                    minuteStep={5}
                                 />
                                 <TimePicker
                                     format="HH:mm"
                                     onSelect={(time) => {
-                                        setData(
-                                            "jam_tutup",
-                                            moment(time["$d"]).format("HH:mm")
-                                        );
-                                        setData("jam_tutup_value", time);
+                                        setData({
+                                            ...data,
+                                            jam_tutup: moment(
+                                                time["$d"]
+                                            ).format("HH:mm"),
+                                            jam_tutup_value: time,
+                                        });
                                     }}
                                     value={data.jam_tutup_value}
+                                    minuteStep={5}
                                 />
                             </div>
 
@@ -390,7 +397,7 @@ export default function EditTempatLapangan(props) {
                                     oncClick={(e) => {
                                         e.preventDefault();
                                         router.get(
-                                            "/dashboard/admin/profile-gor"
+                                            "/dashboard/tempat-lapangan"
                                         );
                                     }}
                                     className="mr-1"

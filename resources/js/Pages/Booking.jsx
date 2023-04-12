@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Label from "@/Components/Label";
+import Pagination from "@/Components/Pagination";
 import Swal from "sweetalert2";
 import FormatRupiah from "@/Components/FormatRupiah";
-import { PortalWithState } from "react-portal";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
@@ -12,9 +12,14 @@ import { DatePicker, TimePicker } from "antd";
 import moment from "moment";
 import "moment/locale/id";
 import Loading from "@/Components/Loading";
+import axios from "axios";
 
 export default function Booking(props) {
     const [show, setShow] = useState(false);
+    const [showJadwal, setShowJadwal] = useState(false);
+    const [links, setLinks] = useState(null);
+    const [jadwal, setJadwal] = useState([]);
+
     const { data, setData } = useForm({
         lapangan_id: props.lapangan.id,
         telp: props.auth.user.telp,
@@ -42,6 +47,20 @@ export default function Booking(props) {
         total_harga: "",
         amount: "",
     });
+
+    async function getJadwal() {
+        try {
+            const response = await axios.get(`/api/jadwal/${data.lapangan_id}`);
+            if (
+                Array.isArray(response.data.jadwal.data) &&
+                response.data.jadwal.data.length > 0
+            ) {
+                setJadwal(response.data.jadwal.data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const disabledTime = () => {
         const disabledHours = [];
@@ -85,44 +104,66 @@ export default function Booking(props) {
         };
     };
 
-    function durasiDanHarga() {
-        return new Promise((resolve, reject) => {
-            const total =
-                (parseInt(data.jam_selesai) - parseInt(data.jam_mulai)) *
-                data.harga_persewa;
+    function updateData() {
+        const total =
+            (parseInt(data.jam_selesai) - parseInt(data.jam_mulai)) *
+            data.harga_persewa;
 
-            const lama_bermain =
-                parseInt(data.jam_selesai) - parseInt(data.jam_mulai);
+        const lama_bermain =
+            parseInt(data.jam_selesai) - parseInt(data.jam_mulai);
 
-            setData({
-                ...data,
-                lama_bermain: lama_bermain,
-                total_harga: FormatRupiah(total.toString(), "Rp. "),
-                amount: total,
-            });
-
-            setTimeout(() => {
-                resolve(data);
-            }, 1000);
-        });
+        setData((prevData) => ({
+            ...prevData,
+            lama_bermain: lama_bermain,
+            total_harga: FormatRupiah(total.toString(), "Rp. "),
+            amount: total,
+        }));
     }
 
-    const updateData = async () => {
-        const data_terbaru = await durasiDanHarga();
-        return data_terbaru;
-    };
+    useEffect(() => {
+        getJadwal();
+
+        if (props.flash.success) {
+            Swal.fire("Berhasil!", `${props.flash.success}`, "success");
+        }
+
+        const table = document.querySelector("table");
+        let isDragging = false;
+        let lastX;
+
+        table.addEventListener("mousedown", (event) => {
+            isDragging = true;
+            lastX = event.clientX;
+            event.preventDefault();
+        });
+
+        table.addEventListener("mouseup", () => {
+            isDragging = false;
+        });
+
+        table.addEventListener("mousemove", (event) => {
+            if (isDragging) {
+                const deltaX = event.clientX - lastX;
+                const containerScrollLeft = table.parentElement.scrollLeft;
+                table.parentElement.scrollLeft = containerScrollLeft - deltaX;
+            }
+            lastX = event.clientX;
+        });
+
+        updateData();
+    }, [data.jam_mulai, data.jam_selesai, data.harga_persewa]);
 
     const submit = (e) => {
         e.preventDefault();
         setShow(true);
         let ada_jadwal = false;
-        if (data.jadwal != "") {
-            for (let i = 0; i < data.jadwal.length; i++) {
+        if (Array.isArray(jadwal) && jadwal.length > 0) {
+            for (let i = 0; i < jadwal.length; i++) {
                 if (
-                    (data.jadwal[i].tanggal == data.tanggal &&
-                        data.jadwal[i].dari_jam == data.dari_jam) ||
-                    (data.jadwal[i].tanggal == data.tanggal &&
-                        data.jadwal[i].sampai_jam == data.sampai_jam)
+                    (jadwal[i].tanggal == data.tanggal &&
+                        jadwal[i].jam_mulai == data.jam_mulai) ||
+                    (jadwal[i].tanggal == data.tanggal &&
+                        jadwal[i].jam_selesai == data.jam_selesai)
                 ) {
                     ada_jadwal = true;
                 } else {
@@ -139,70 +180,69 @@ export default function Booking(props) {
 
         if (ada_jadwal == false) {
             if (data.tanggal_main < formattedDate) {
+                setShow(false);
                 Swal.fire(
                     "Hmm..",
                     "Anda belum mengisi tanggal dengan benar",
                     "warning"
                 );
             } else if (data.jam_mulai == "" || data.jam_selesai == "") {
+                setShow(false);
                 Swal.fire("Hmm..", "Lengkapi jam terlebih dahulu", "warning");
             } else if (
                 parseInt(data.jam_selesai) - parseInt(data.jam_mulai) <
                 1
             ) {
+                setShow(false);
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
             } else {
-                updateData().then((response) => {
-                    setShow(false);
-                    if (response.total_harga != "") {
-                        Swal.fire({
-                            title: "Konfirmasi Pesanan Mu",
-                            text: `Anda memesan lapangan untuk tanggal ${data.tanggal_main} selama ${data.lama_bermain} jam seharga ${data.total_harga}`,
-                            icon: "info",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Konfirmasi",
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                router.post("/booking", data, {
-                                    onError: (errors) => {
-                                        // const error_keys = Object.keys(errors);
-                                        // const error_values =
-                                        //     Object.getOwnPropertyNames(errors);
-                                        // let error_messages = [];
-                                        // let error = errors;
-                                        // for (
-                                        //     let i = 0;
-                                        //     i < error_keys.length;
-                                        //     i++
-                                        // ) {
-                                        //     error_messages.push(
-                                        //         error[error_values[i]]
-                                        //     );
-                                        // }
-                                        // Swal.fire(
-                                        //     "Gagal!",
-                                        //     `<ul>${error_messages
-                                        //         .map(
-                                        //             (item) => `<li>${item}</li>`
-                                        //         )
-                                        //         .join(" ")}</ul>`,
-                                        //     "error"
-                                        // );
-                                        console.info(errors);
-                                    },
-                                    onSuccess: (response) => {
-                                        // Swal.fire({
-                                        //     title: "Berhasil!",
-                                        //     text: "Registrasi Berhasil",
-                                        //     icon: "success",
-                                        // });
-                                        // router.get("/");
-                                        console.info(response);
-                                    },
-                                });
-                            }
+                setShow(false);
+                Swal.fire({
+                    title: "Konfirmasi Pesanan Mu",
+                    text: `Anda memesan lapangan untuk tanggal ${data.tanggal_main} selama ${data.lama_bermain} jam seharga ${data.total_harga}`,
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Konfirmasi",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        router.post("/booking", data, {
+                            onError: (errors) => {
+                                // const error_keys = Object.keys(errors);
+                                // const error_values =
+                                //     Object.getOwnPropertyNames(errors);
+                                // let error_messages = [];
+                                // let error = errors;
+                                // for (
+                                //     let i = 0;
+                                //     i < error_keys.length;
+                                //     i++
+                                // ) {
+                                //     error_messages.push(
+                                //         error[error_values[i]]
+                                //     );
+                                // }
+                                // Swal.fire(
+                                //     "Gagal!",
+                                //     `<ul>${error_messages
+                                //         .map(
+                                //             (item) => `<li>${item}</li>`
+                                //         )
+                                //         .join(" ")}</ul>`,
+                                //     "error"
+                                // );
+                                console.info(errors);
+                            },
+                            onSuccess: (response) => {
+                                // Swal.fire({
+                                //     title: "Berhasil!",
+                                //     text: "Registrasi Berhasil",
+                                //     icon: "success",
+                                // });
+                                // router.get("/");
+                                console.info(response);
+                            },
                         });
                     }
                 });
@@ -215,12 +255,6 @@ export default function Booking(props) {
             );
         }
     };
-
-    useEffect(() => {
-        return () => {
-            // second
-        };
-    }, []);
 
     return (
         <>
@@ -392,6 +426,7 @@ export default function Booking(props) {
                                                 ).format("HH:mm"),
                                                 jam_mulai_value: time,
                                             });
+                                            console.info(data.jam_mulai);
                                         }}
                                         disabled={
                                             data.tanggal_main == ""
@@ -413,6 +448,9 @@ export default function Booking(props) {
                                                 jam_selesai_value: time,
                                             });
                                         }}
+                                        onChange={(e) => {
+                                            console.info("berubah");
+                                        }}
                                         locale="id"
                                         disabled={
                                             data.tanggal_main == ""
@@ -428,97 +466,19 @@ export default function Booking(props) {
                         </div>
                     </div>
 
-                    <div className="flex justify-between mt-8">
-                        <PortalWithState closeOnOutsideClick closeOnEsc>
-                            {({ openPortal, closePortal, isOpen, portal }) => (
-                                <React.Fragment>
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        onClick={openPortal}
-                                    >
-                                        Lihat Jadwal
-                                    </button>
-                                    {portal(
-                                        <div className="fixed top-0 bottom-0 right-0 left-0 bg-opacity-50 bg-slate-800 h-screen w-screen z-20 grid">
-                                            <div className="overflow-auto my-5">
-                                                <table className="table table-compact w-full md:w-1/2 mx-auto">
-                                                    <thead className="sticky top-0">
-                                                        <tr>
-                                                            <th
-                                                                colSpan={5}
-                                                                className="rounded-none text-center"
-                                                            >
-                                                                Jadwal
-                                                                Pertandingan
-                                                            </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Nama Pemain</th>
-                                                            <th>Hari</th>
-                                                            <th>Tanggal</th>
-                                                            <th>Bulan</th>
-                                                            <th>Jam Bermain</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {data.jadwal.map(
-                                                            (item, index) => {
-                                                                return (
-                                                                    <tr
-                                                                        className="hover"
-                                                                        key={
-                                                                            item.id
-                                                                        }
-                                                                    >
-                                                                        <td>
-                                                                            {
-                                                                                item
-                                                                                    .user
-                                                                                    .nama
-                                                                            }
-                                                                        </td>
-                                                                        <td>
-                                                                            {
-                                                                                item.hari
-                                                                            }
-                                                                        </td>
-                                                                        <td>
-                                                                            {
-                                                                                item.tanggal
-                                                                            }
-                                                                        </td>
-                                                                        <td>
-                                                                            {
-                                                                                item.bulan
-                                                                            }
-                                                                        </td>
-                                                                        <td className="rounded-none">
-                                                                            {`${item.dari_jam} - ${item.sampai_jam}`}
-                                                                        </td>
-                                                                    </tr>
-                                                                );
-                                                            }
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div
-                                                className="px-2 z-10 bottom-5 fixed justify-self-center animate-bounce"
-                                                onClick={closePortal}
-                                            >
-                                                <AiFillCloseCircle
-                                                    size="3em"
-                                                    className="cursor-pointer fill-red-500 object-cover bg-white rounded-full"
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-                                </React.Fragment>
-                            )}
-                        </PortalWithState>
+                    <div className="flex justify-between mt-8 flex-wrap gap-2">
                         <button
-                            className="btn bg-green-500"
+                            type="button"
+                            className="btn btn-sm md:btn-md"
+                            onClick={() => {
+                                setShowJadwal(true);
+                            }}
+                        >
+                            Lihat Jadwal
+                        </button>
+
+                        <button
+                            className="btn bg-green-500 btn-sm md:btn-md"
                             type="submit"
                             id="btnSubmit"
                         >
@@ -526,6 +486,83 @@ export default function Booking(props) {
                         </button>
                     </div>
                 </form>
+            </div>
+            <div
+                className={`fixed top-0 bottom-0 right-0 left-0 ${
+                    showJadwal ? "grid" : "hidden"
+                } justify-center backdrop-filter backdrop-blur-sm bg-stone-900 bg-opacity-70 h-screen w-screen z-50 pt-20 md:pt-4`}
+            >
+                <div className="px-4 pr-8 w-[95vw]">
+                    <h1 className="text-2xl font-bold md:mt-2">
+                        Jadwal Bermain
+                    </h1>
+                    <div className="overflow-auto mt-7">
+                        <div id="table-container">
+                            <table
+                                id="my-table"
+                                className="table table-compact w-full select-none"
+                                // className="table-compact w-full select-none"
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Pelanggan</th>
+                                        <th>Jadwal Bermain</th>
+                                        <th>Jam Mulai</th>
+                                        <th>Jam Selesai</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="overflow-hidden">
+                                    {Array.isArray(jadwal) &&
+                                    jadwal.length > 0 ? (
+                                        jadwal.map((item, index) => {
+                                            // const tanggal_booking = moment(
+                                            //     item.created_at
+                                            // ).format("DD MMMM YYYY");
+
+                                            const tanggal_bermain = moment(
+                                                item.tanggal
+                                            ).format("DD MMMM YYYY");
+                                            return (
+                                                <tr key={index}>
+                                                    <th>{index + 1}</th>
+                                                    <td>{item.user.nama}</td>
+                                                    <td>{tanggal_bermain}</td>
+                                                    <td>{item.jam_mulai}</td>
+                                                    <td>{item.jam_selesai}</td>
+                                                </tr>
+                                            );
+                                        })
+                                    ) : (
+                                        <tr>
+                                            <td
+                                                colSpan={6}
+                                                className="text-center"
+                                            >
+                                                Belum ada pesanan
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div
+                        className="px-2 z-10 top-20 md:top-4 right-8 fixed justify-self-center animate-pulse"
+                        onClick={() => {
+                            setShowJadwal(false);
+                        }}
+                    >
+                        <AiFillCloseCircle
+                            size="3em"
+                            className="cursor-pointer fill-red-500 object-cover bg-white rounded-full"
+                        />
+                    </div>
+                </div>
+                {/* <Pagination
+                    links={links}
+                    className={`${showJadwal ? "block" : "hidden"}`}
+                /> */}
             </div>
         </>
     );

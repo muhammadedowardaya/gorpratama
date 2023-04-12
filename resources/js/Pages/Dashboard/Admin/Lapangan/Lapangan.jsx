@@ -8,31 +8,13 @@ import Loading from "@/Components/Loading";
 import Toast from "@/Components/Toast";
 import Layout from "@/Layouts/Layout";
 import Card from "@/Components/Card";
-import { FaCheck, FaCheckCircle } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 
 const Lapangan = (props) => {
     // Similar to componentDidMount and componentDidUpdate:
     const [displayLoading, setDisplayLoading] = useState("");
     useEffect(() => {
-        // const containerCards = document.querySelectorAll(".container-card");
-        // containerCards.forEach((item) => {
-        //     item.addEventListener("mouseover", () => {
-        //         gsap.to(item.children[0], {
-        //             y: -20,
-        //             // duration: 0.2,
-        //             // ease: "power1.inOut",
-        //             boxShadow: "0px 30px 10px -20px rgba(0, 0, 0, 0.5)",
-        //         });
-        //     });
-        //     item.addEventListener("mouseout", () => {
-        //         gsap.to(item.children[0], {
-        //             y: 0,
-        //             // duration: 0.5,
-        //             ease: "bounce.out",
-        //             boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.3)",
-        //         });
-        //     });
-        // });
+        //
     });
 
     return (
@@ -54,7 +36,7 @@ const Lapangan = (props) => {
             </h1>
 
             <div
-                className={`grid grid-cols-1 justify-items-center grid-rows-[450px] gap-x-2 gap-y-5 ${GridLength(
+                className={`grid grid-cols-1 justify-items-center grid-rows-[400px] gap-x-2 gap-y-5 ${GridLength(
                     props.lapangan.length
                 )}`}
             >
@@ -84,7 +66,8 @@ const Lapangan = (props) => {
                                 }
                                 buttons={[
                                     {
-                                        className: "bg-sky-500",
+                                        className:
+                                            "bg-gradient-to-br from-red-500 via-red-600 to-red-300 hover:bg-red-300",
                                         title: "hapus",
                                         onClick: (e) => {
                                             e.preventDefault();
@@ -192,6 +175,17 @@ const Lapangan = (props) => {
                                                         });
                                                 }
                                             });
+                                        },
+                                    },
+                                    {
+                                        className:
+                                            "bg-gradient-to-br from-green-500 via-green-600 to-green-300 mt-2",
+                                        title: "edit",
+                                        onClick: (e) => {
+                                            e.preventDefault();
+                                            router.get(
+                                                `/dashboard/lapangan-edit/${item.slug}`
+                                            );
                                         },
                                     },
                                 ]}

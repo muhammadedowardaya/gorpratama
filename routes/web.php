@@ -6,6 +6,7 @@ use App\Http\Controllers\TempatLapanganController;
 use App\Http\Controllers\TransaksiController;
 use App\Models\Jadwal;
 use App\Models\Lapangan;
+use App\Models\TempatLapangan;
 use App\Models\Transaksi;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Http;
@@ -143,10 +144,10 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     });
 
     Route::get('/pilih-lapangan/{lapangan:slug}', function (Lapangan $lapangan) {
-        $tempat_lapangan = $lapangan->tempatLapangan()->get();
+        $tempat_lapangan = TempatLapangan::all()->first();
         return Inertia::render('Booking', [
             'lapangan' => $lapangan,
-            'tempat_lapangan' => $tempat_lapangan[0],
+            'tempat_lapangan' => $tempat_lapangan,
         ]);
         // return response()->json([
         //     'tempat_lapangan' => $lapangan
@@ -156,7 +157,7 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     Route::post('/booking', [TransaksiController::class, 'store']);
 
     Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
-        $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->paginate(1);
+        $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->paginate(8);
         return Inertia::render('Jadwal', [
             'jadwal' => $jadwal
         ]);
@@ -199,8 +200,9 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     //     // return Inertia::render('PaymentSuccess');
     // });
 
-
-
+    Route::get('/payment/success', function () {
+        return Inertia::render('Payment/Success');
+    });
 });
 
 /*------------------------------------------

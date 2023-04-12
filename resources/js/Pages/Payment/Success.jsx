@@ -8,11 +8,16 @@ export default function Success() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setNumConfetti(numConfetti + 20);
+            setNumConfetti((prevNumConfetti) => {
+                const newNumConfetti = prevNumConfetti + 20;
+                return newNumConfetti > 500 ? 0 : newNumConfetti;
+            });
         }, 2000);
 
-        return () => clearInterval(interval);
-    }, [numConfetti]);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     return (
         <>
@@ -47,7 +52,7 @@ export default function Success() {
                             </div>
                             <div className="mt-6">
                                 <Link
-                                    to="/"
+                                    href="/"
                                     className="inline-block bg-green-500 py-2 px-4 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
                                 >
                                     Kembali ke Beranda

@@ -7,25 +7,7 @@ import { FaCheck } from "react-icons/fa";
 
 const Lapangan = (props) => {
     useEffect(() => {
-        // const containerCards = document.querySelectorAll(".container-card");
-        // containerCards.forEach((item) => {
-        //     item.addEventListener("mouseover", () => {
-        //         gsap.to(item.children[0], {
-        //             y: -20,
-        //             // duration: 0.2,
-        //             // ease: "power1.inOut",
-        //             boxShadow: "0px 30px 10px -20px rgba(0, 0, 0, 0.5)",
-        //         });
-        //     });
-        //     item.addEventListener("mouseout", () => {
-        //         gsap.to(item.children[0], {
-        //             y: 0,
-        //             // duration: 0.5,
-        //             ease: "bounce.out",
-        //             boxShadow: "0px 0px 0px 0px rgba(0, 0, 0, 0.3)",
-        //         });
-        //     });
-        // });
+        //
     }, []);
 
     return (

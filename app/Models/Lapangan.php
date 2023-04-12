@@ -13,11 +13,6 @@ class Lapangan extends Model
     protected $table = 'lapangan';
     protected $fillable = ['tempat_lapangan_id', 'jadwal_id', 'transaksi_id', 'nama', 'slug', 'foto', 'url_foto', 'status'];
 
-    public function tempatLapangan()
-    {
-        return $this->belongsTo(TempatLapangan::class, 'tempat_lapangan_id');
-    }
-
     function transaksi()
     {
         return $this->hasMany(Transaksi::class, 'transaksi_id');
