@@ -207,6 +207,7 @@ export default function Booking(props) {
                     confirmButtonText: "Konfirmasi",
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        setShow(true);
                         router.post("/booking", data, {
                             onError: (errors) => {
                                 // const error_keys = Object.keys(errors);
@@ -235,6 +236,7 @@ export default function Booking(props) {
                                 console.info(errors);
                             },
                             onSuccess: (response) => {
+                                setShow(false);
                                 // Swal.fire({
                                 //     title: "Berhasil!",
                                 //     text: "Registrasi Berhasil",
