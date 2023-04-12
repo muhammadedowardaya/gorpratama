@@ -1,5 +1,3 @@
-import React from "react";
-
 const Failed = () => {
     return (
         <div class="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-red-500 to-yellow-500">

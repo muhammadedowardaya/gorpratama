@@ -1,5 +1,3 @@
-import React from "react";
-
 import "../../css/pilihan.css";
 import Layout from "@/Layouts/Layout";
 

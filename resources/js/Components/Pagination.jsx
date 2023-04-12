@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Pagination({ links, className }) {
     function getClassName(active) {
         if (active) {

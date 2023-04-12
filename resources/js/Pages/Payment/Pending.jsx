@@ -1,5 +1,3 @@
-import React from "react";
-
 const Pending = () => {
     return (
         <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-blue-500 to-purple-500">

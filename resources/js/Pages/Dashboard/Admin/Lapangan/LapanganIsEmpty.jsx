@@ -1,6 +1,5 @@
 import Layout from "@/Layouts/Layout";
 import { Head, router } from "@inertiajs/react";
-import React from "react";
 
 const LapanganIsEmpty = ({ tempat_lapangan, auth }) => {
     return (

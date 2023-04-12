@@ -1,5 +1,3 @@
-import React from "react";
-
 const Card = ({ image, name, status, buttons, onClick, children }) => {
     return (
         <div className="grid justify-between w-full md:w-[250px] h-full rounded overflow-hidden  ">

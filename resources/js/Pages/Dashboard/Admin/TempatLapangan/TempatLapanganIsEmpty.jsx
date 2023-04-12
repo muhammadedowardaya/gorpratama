@@ -1,5 +1,4 @@
 import { Head, router } from "@inertiajs/react";
-import React from "react";
 
 const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
     return (
