@@ -39,7 +39,11 @@ Route::apiResource('lapangan/image', LapanganImageController::class);
 Route::get('/user/image/{image}', [UserImageController::class, 'showImage'])->name('user.image.show');
 
 Route::get('/jadwal', function () {
-    $jadwal = Jadwal::with('user')->orderBy('tanggal', 'asc')->paginate(8);
+    $jadwal = Jadwal::with('user')
+        ->where('status_transaksi', 0)
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->paginate(8);
     return response()->json([
         'jadwal' => $jadwal
     ]);
@@ -97,17 +101,3 @@ Route::get('/get-profile-gor', function () {
         'tempat-lapangan' => $tempat_lapangan
     ]);
 });
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-
-    Route::get('/bookings', [BookingController::class, 'index']);
-    Route::get('/bookings/{booking}', [BookingController::class, 'show']);
-    Route::post('/bookings/{booking}/join', [BookingController::class, 'join']);
-    Route::post('/bookings/{booking}/leave', [BookingController::class, 'leave']);
-});
-
-
-Route::get('/booking-schedules', [BookingScheduleController::class, 'index'])->name('booking-schedules.index');

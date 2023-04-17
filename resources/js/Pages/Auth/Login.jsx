@@ -3,7 +3,6 @@ import Checkbox from "@/Components/Checkbox";
 import Swal from "sweetalert2";
 import "../../../css/formStyle.css";
 import { Head, Link, router, useForm } from "@inertiajs/react";
-import Layout from "@/Layouts/Layout";
 import axios from "axios";
 import Toast from "@/Components/Toast";
 import Loading from "@/Components/Loading";
@@ -22,15 +21,6 @@ export default function Login(props, { status, canResetPassword }) {
             reset("password");
         };
     }, []);
-
-    // const onHandleChange = (event) => {
-    //     setData(
-    //         event.target.name,
-    //         event.target.type === "checkbox"
-    //             ? event.target.checked
-    //             : event.target.value
-    //     );
-    // };
 
     const submit = (e) => {
         e.preventDefault();
@@ -99,9 +89,9 @@ export default function Login(props, { status, canResetPassword }) {
                 <h1 className="text-2xl font-bold my-8 text-white text-center">
                     Login
                 </h1>
-                <div className="login-box w-full sm:w-80">
+                <div className="login-box ">
                     <form
-                        className="grid grid-cols-1 md:gap-4"
+                        className="grid grid-cols-1 md:gap-4 w-[60vw] sm:w-56"
                         onSubmit={submit}
                     >
                         <div>

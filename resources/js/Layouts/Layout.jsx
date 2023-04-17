@@ -363,7 +363,7 @@ export default function Layout({ children, header, title }) {
                             </div>
                         </div>
                     </footer>
-                    <div className="fixed bottom-4 right-8">
+                    <div className="fixed bottom-4 left-4">
                         <button
                             className="bg-gray-200 text-gray-800 py-2 px-4 rounded-full flex items-center"
                             onClick={() => setShowModal(true)}
@@ -415,15 +415,15 @@ export default function Layout({ children, header, title }) {
                     )}
                 </section>
                 {showCaraBooking && (
-                    <div className="fixed inset-0 p-4 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
-                        <div className="bg-gray-50 rounded-lg pt-4 px-4 pb-2 relative">
+                    <div className="fixed inset-0 p-4 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <div className="bg-white rounded-lg pt-4 px-4 pb-2 relative">
                             <BookingSteps />
                             <div
                                 onClick={() => setShowCaraBooking(false)}
-                                className="absolute -top-10 right-0"
+                                className="absolute -top-10 right-0 cursor-pointer"
                             >
                                 <IoClose
-                                    className="inline-block ml-1 bg-red-500"
+                                    className="inline-block ml-1 bg-red-500 hover:bg-red-400"
                                     size="2em"
                                 />
                             </div>

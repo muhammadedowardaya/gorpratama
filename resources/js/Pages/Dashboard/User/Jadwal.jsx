@@ -50,7 +50,7 @@ export default function Jadwal(props) {
                         <tr>
                             <th>No</th>
                             <th>Nama Lapangan</th>
-                            <th>Jadwal Bermain</th>
+                            <th>Tanggal Bermain</th>
                             <th>Jam Mulai</th>
                             <th>Jam Selesai</th>
                         </tr>
@@ -65,22 +65,12 @@ export default function Jadwal(props) {
                                     item.tanggal
                                 ).format("DD MMMM YYYY");
                                 return (
-                                    <tr
-                                        key={index}
-                                        className={`${
-                                            invoice[index].status != "PAID"
-                                                ? "hidden"
-                                                : ""
-                                        }`}
-                                    >
+                                    <tr key={index}>
                                         <th>{index + 1}</th>
                                         <td>{item.lapangan.nama}</td>
                                         <td>{tanggal_bermain}</td>
                                         <td>{item.jam_mulai}</td>
                                         <td>{item.jam_selesai}</td>
-                                        {console.info(
-                                            `${invoice[index].external_id}`
-                                        )}
                                     </tr>
                                 );
                             })

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Layout from "@/Layouts/Layout";
 import Pagination from "@/Components/Pagination";
-import MyButton from "@/Components/MyButton";
 import Chat from "@/Components/Chat";
 import moment from "moment";
 import { IoChatboxEllipses, IoCloseCircle } from "react-icons/io5";
@@ -18,6 +17,7 @@ export default function Jadwal(props) {
     const [recipientId, setRecipientId] = useState("");
     const [recipientName, setRecipientName] = useState("");
     const [recipientPhoto, setRecipientPhoto] = useState("");
+    const [showLoading, setShowLoading] = useState(true);
 
     const { auth } = usePage().props;
 
@@ -29,6 +29,7 @@ export default function Jadwal(props) {
                 response.data.jadwal.data.length > 0
             ) {
                 setJadwal(response.data.jadwal.data);
+                setShowLoading(false);
             }
             if (
                 Array.isArray(response.data.jadwal.data) &&
@@ -49,16 +50,6 @@ export default function Jadwal(props) {
         }
 
         debouncedGetJadwal();
-
-        console.info(chatChannel);
-        console.info(recipientId);
-        console.info(auth.user);
-
-        // Ambil chat channel dari server dan simpan ke state
-        // axios.get("/api/chat/channel").then((response) => {
-        //     // setChatChannel(response.data.chat_channel);
-        //     console.info(response);
-        // });
     }, [showChat]);
 
     return (
@@ -66,6 +57,8 @@ export default function Jadwal(props) {
             <h1 className="text-2xl font-bold md:mt-2 text-center mb-4">
                 Jadwal Bermain
             </h1>
+            <Loading display={showLoading} />
+
             <div className="flex flex-wrap justify-center w-full">
                 {Array.isArray(jadwal) && jadwal.length > 0 ? (
                     jadwal.map((item, index) => {

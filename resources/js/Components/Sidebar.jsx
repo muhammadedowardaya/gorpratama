@@ -17,7 +17,7 @@ export default function Sidebar({ className, items }) {
             const response = await axios.get("/api/chat/unread-conversations");
             setUnreadMessages(response.data);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     };
 
@@ -30,7 +30,6 @@ export default function Sidebar({ className, items }) {
 
         // Ambil jumlah pesan yang belum dibaca dari server
         fetchUnreadMessages();
-        console.info(unreadMessages);
     }, []);
 
     return (

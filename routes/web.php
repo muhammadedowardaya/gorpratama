@@ -128,10 +128,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
                 ->get();
 
-            // return Inertia::render('Dashboard/User/Jadwal', [
-            //     'jadwal' => $jadwal
-            // ]);
-            dd($jadwal);
+            return Inertia::render('Dashboard/User/Jadwal', [
+                'jadwal' => $jadwal
+            ]);
         }
     });
 
