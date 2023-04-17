@@ -27,7 +27,7 @@ class TempatLapanganController extends Controller
      */
     public function index()
     {
-        $tempat_lapangan = TempatLapangan::where('user_id', auth()->user()->id)->first();
+        $tempat_lapangan = TempatLapangan::all()->first();
         $lapangan = Lapangan::all();
 
         $data = isset($tempat_lapangan) ? $tempat_lapangan : null;
@@ -54,7 +54,7 @@ class TempatLapanganController extends Controller
      */
     public function create()
     {
-        $tempat_lapangan = TempatLapangan::where('user_id', auth()->user()->id)->first();
+        $tempat_lapangan = TempatLapangan::all()->first();
 
         $data = isset($tempat_lapangan) ? $tempat_lapangan : null;
         if ($data == null) {
@@ -111,7 +111,6 @@ class TempatLapanganController extends Controller
             $url_logo = '/api/tempat-lapangan/image/user.png';
         }
 
-        $tempat_lapangan->user_id = auth()->user()->id;
         // $tempat_lapangan->jadwal_id = auth()->user()->id;
         $tempat_lapangan->nama = $request->nama;
         $tempat_lapangan->slug = $slug;
@@ -121,6 +120,8 @@ class TempatLapanganController extends Controller
         $tempat_lapangan->deskripsi = $request->deskripsi;
         $tempat_lapangan->jam_buka = $request->jam_buka;
         $tempat_lapangan->jam_tutup = $request->jam_tutup;
+        $tempat_lapangan->jam_buka_value = $request->jam_buka_value;
+        $tempat_lapangan->jam_tutup_value = $request->jam_tutup_value;
         $tempat_lapangan->harga_persewa = $request->harga_persewa;
         $tempat_lapangan->logo = $nama_logo;
         $tempat_lapangan->url_logo = $url_logo;
@@ -138,7 +139,7 @@ class TempatLapanganController extends Controller
 
 
 
-        // return Redirect::route('tempat-lapangan.index')->with('success', 'Tempat Lapangan berhasil ditambahkan!');
+        // return Redirect::route('tempat-lapangan.index')->with('success', 'Tempat Lapangan berhasil ditambahkan
     }
 
     /**

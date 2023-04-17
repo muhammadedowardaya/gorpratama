@@ -12,6 +12,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Xendit\Xendit;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,12 +93,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return Inertia::render('Dashboard/Admin/Pesanan');
         } else if (auth()->user()->type == 'user') {
             $transaksi = Transaksi::with(['lapangan', 'user'])->where('user_id', auth()->user()->id)->get();
-            $invoice_id = $transaksi[0]['invoice_id'];
-            $secret_key = 'Basic ' . config('xendit.key_auth');
-            $response = Http::withHeaders([
-                'Authorization' => $secret_key
-            ])->get("https://api.xendit.co/v2/invoices?user_id=$invoice_id");
-            $invoice =  $response->object();
+            if ($transaksi->isEmpty()) {
+                // Tidak ada transaksi yang ditemukan, tampilkan pesan kesalahan
+                $invoice = null;
+                $transaksi = null;
+            } else {
+                $invoice_id = $transaksi[0]['invoice_id'];
+                $secret_key = 'Basic ' . config('xendit.key_auth');
+                $response = Http::withHeaders([
+                    'Authorization' => $secret_key
+                ])->get("https://api.xendit.co/v2/invoices?user_id=$invoice_id");
+                $invoice =  $response->object();
+            }
+
+
 
             return Inertia::render('Dashboard/User/Pesanan', [
                 'invoice' => $invoice,
@@ -112,10 +121,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (auth()->user()->type == 'admin') {
             return Inertia::render('Dashboard/Admin/Jadwal');
         } else if (auth()->user()->type == 'user') {
-            $jadwal = Jadwal::with(['lapangan', 'transaksi'])->where('user_id', auth()->user()->id)->get();
-            return Inertia::render('Dashboard/User/Jadwal', [
-                'jadwal' => $jadwal
-            ]);
+            $jadwal = Jadwal::with('lapangan')
+                ->where('user_id', auth()->user()->id)
+                ->where('status_transaksi', 0)
+                ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+                ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+                ->get();
+
+            // return Inertia::render('Dashboard/User/Jadwal', [
+            //     'jadwal' => $jadwal
+            // ]);
+            dd($jadwal);
         }
     });
 
@@ -156,6 +172,10 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
 
     Route::post('/booking', [TransaksiController::class, 'store']);
 
+    Route::get('/jadwal', function () {
+        return Inertia::render('Jadwal');
+    });
+
     Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
         $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->paginate(8);
         return Inertia::render('Jadwal', [
@@ -168,40 +188,58 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
         return Inertia::render('TemukanTeman');
     });
 
-    // Route::get('/payment/{external_id}', function ($external_id) {
-    //     $secret_key = 'Basic ' . config('xendit.key_auth');
-    //     $response = Http::withHeaders([
-    //         'Authorization' => $secret_key
-    //     ])->get("https://api.xendit.co/v2/invoices?external_id=$external_id");
+    Route::get('/payment/{external_id}', function ($external_id) {
+        $secret_key = 'Basic ' . config('xendit.key_auth');
+        $response = Http::withHeaders([
+            'Authorization' => $secret_key
+        ])->get("https://api.xendit.co/v2/invoices?external_id=$external_id");
+        $invoice = $response->object();
+        if ($invoice[0]->status == 'PAID') {
+            $jadwal = Jadwal::where('external_id', $external_id)->first();
+            if ($jadwal) {
+                $jadwal->status_transaksi = 0;
+                $jadwal->save();
+            }
+            return Inertia::render('Payment/Success', [
+                'invoice' => $invoice,
+            ]);
+        } else if ($invoice[0]->status == 'PENDING') {
+            $jadwal = Jadwal::where('external_id', $external_id)->first();
+            if ($jadwal) {
+                $jadwal->status_transaksi = 1;
+                $jadwal->save();
+            }
+            return Inertia::render('Payment/Pending', [
+                'invoice' => $invoice,
+            ]);
+        } else if ($invoice[0]->status == 'EXPIRED') {
+            $jadwal = Jadwal::where('external_id', $external_id)->first();
+            if ($jadwal) {
+                $jadwal->status_transaksi = 0;
+                $jadwal->save();
+            }
+            return Inertia::render('Payment/Expired', [
+                'invoice' => $invoice,
+            ]);
+        } else {
+            $jadwal = Jadwal::where('external_id', $external_id)->first();
+            if ($jadwal) {
+                $jadwal->status_transaksi = 0;
+                $jadwal->save();
+            }
+            return Inertia::render('Payment/Failed', [
+                'invoice' => $invoice,
+            ]);
+        }
 
-    //     // $invoice = $response->object();
-
-    //     // if ($invoice->status == 'SUCCESS') {
-    //     //     return Inertia::render('Payment/Success', [
-    //     //         'invoice' => $invoice,
-    //     //     ]);
-    //     // } else if ($invoice->status == 'PENDING') {
-    //     //     return Inertia::render('Payment/Pending', [
-    //     //         'invoice' => $invoice,
-    //     //     ]);
-    //     // } else if ($invoice->status == 'FAILED') {
-    //     //     return Inertia::render('Payment/Failed', [
-    //     //         'invoice' => $invoice,
-    //     //     ]);
-    //     // }
-
-    //     dd($response);
 
 
-    //     // return Inertia::render('Invoice/Show', [
-    //     //     'invoice' => $invoice,
-    //     // ]);
 
-    //     // return Inertia::render('PaymentSuccess');
-    // });
+        // return Inertia::render('Invoice/Show', [
+        //     'invoice' => $invoice,
+        // ]);
 
-    Route::get('/payment/success', function () {
-        return Inertia::render('Payment/Success');
+        // return Inertia::render('PaymentSuccess');
     });
 });
 

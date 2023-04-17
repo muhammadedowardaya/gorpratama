@@ -4,10 +4,7 @@ import { router } from "@inertiajs/react";
 export default function AccessDenied() {
     return (
         <>
-            <div
-                className="hero min-h-screen"
-                style={{ backgroundImage: `url(${bg})` }}
-            >
+            <div className="hero min-h-screen">
                 <div className="hero-overlay bg-opacity-70"></div>
                 <div className="hero-content text-center text-neutral-content">
                     <div className="max-w-md">

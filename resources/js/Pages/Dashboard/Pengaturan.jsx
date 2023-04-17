@@ -21,7 +21,7 @@ export default function Pengaturan(props) {
                     <li className="flex items-center justify-between">
                         <span>Aktifkan Mode Gelap</span>
                         <div>
-                            <SwitchMode className="transform scale-50" />
+                            <SwitchMode className="transform scale-[0.4] md:scale-50" />
                         </div>
                     </li>
                     <li className="flex items-center justify-between pr-6">

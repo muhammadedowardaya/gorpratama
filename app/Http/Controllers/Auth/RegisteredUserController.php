@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Str;
 
 class RegisteredUserController extends Controller
 {
@@ -32,16 +33,35 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'nama' => 'required|string|max:255',
+            'telp' => 'required|max:12|unique:' . User::class,
+            'email' => 'required|string|email|max:255|unique:' . User::class,
+            'alamat' => 'required',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'foto' => 'nullable|image',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $slug = Str::slug($request->nama);
+
+        if ($foto = request()->file('foto')) {
+            $nama_foto = Str::random(5) . "_" . $slug . "." . $foto->getClientOriginalExtension();
+            $foto->storePubliclyAs('user', $nama_foto, 'public');
+            $url_foto = '/api/user/image/' . $nama_foto;
+        } else {
+            $nama_foto = 'user.png';
+            $url_foto = '/api/user/image/user.png';
+        }
+
+        $user = new User();
+        $user->nama = $request->nama;
+        $user->slug = $slug;
+        $user->telp = $request->telp;
+        $user->email = $request->email;
+        $user->alamat = $request->alamat;
+        $user->password = Hash::make($request->password);
+        $user->foto = $nama_foto;
+        $user->url_foto = $url_foto;
+        $user->save();
 
         event(new Registered($user));
 

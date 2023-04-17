@@ -173,7 +173,7 @@ export default function UpdateProfileInformation({
                         id="nama"
                         className="mt-1 block w-full text-slate-700"
                         value={data.nama}
-                        handleChange={(e) => setData("nama", e.target.value)}
+                        onChange={(e) => setData("nama", e.target.value)}
                         required
                         isFocused
                         autoComplete="nama"
@@ -194,7 +194,7 @@ export default function UpdateProfileInformation({
                         type="email"
                         className="mt-1 block w-full text-slate-700"
                         value={data.email}
-                        handleChange={(e) => setData("email", e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
                         required
                         autoComplete="email"
                     />
@@ -237,7 +237,7 @@ export default function UpdateProfileInformation({
                         type="tel"
                         className="mt-1 block w-full text-slate-700"
                         value={data.telp}
-                        handleChange={(e) => setData("telp", e.target.value)}
+                        onChange={(e) => setData("telp", e.target.value)}
                         required
                         pattern="[0-9]{10,12}"
                         autoComplete="telp"
@@ -317,7 +317,9 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton processing={processing}>Save</PrimaryButton>
+                    <PrimaryButton processing={processing.toString()}>
+                        Save
+                    </PrimaryButton>
 
                     <Transition
                         show={recentlySuccessful}

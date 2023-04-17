@@ -38,6 +38,12 @@ Route::apiResource('lapangan/image', LapanganImageController::class);
 
 Route::get('/user/image/{image}', [UserImageController::class, 'showImage'])->name('user.image.show');
 
+Route::get('/jadwal', function () {
+    $jadwal = Jadwal::with('user')->orderBy('tanggal', 'asc')->paginate(8);
+    return response()->json([
+        'jadwal' => $jadwal
+    ]);
+});
 
 Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
     $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->paginate(8);
@@ -45,6 +51,7 @@ Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
         'jadwal' => $jadwal
     ]);
 })->name('jadwal.show');
+
 Route::get('/image/{lapangan}', function ($nama_file) {
     $image =   public_path('\storage\images\\' . $nama_file);
     return Response::file($image);
@@ -61,12 +68,21 @@ Route::get('/payment/Pending', function () {
     return Inertia::render('Payment/Pending');
 });
 
-Route::get('/chat/{sender_id}/{receiver_id}', [ChatController::class, 'index']);
-Route::post('/chat', [ChatController::class, 'store']);
+Route::put('/chat/mark-as-read/{chat_channel}', [ChatController::class, 'markAsRead']);
+Route::get('/chat/unread-conversations', [ChatController::class, 'getUnreadConversations']);
+Route::get('/chat/unread-messages', [ChatController::class, 'getUnreadMessages']);
+Route::get('/chat/conversation/{user1Id}/{user2Id}', [ChatController::class, 'showConversation']);
+Route::post('chat/send-message', [ChatController::class, 'sendMessage']);
 
 Route::get('/get-user', function () {
     return response()->json([
         'user' => auth()->user()
+    ]);
+});
+
+Route::get('/user/{id}', function ($id) {
+    return response()->json([
+        'user' => User::where('id', $id)->get()->first()
     ]);
 });
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable();
             $table->foreignId('lapangan_id')->nullable();
-            $table->string('invoice_id');
+            $table->string('external_id');
             $table->date('tanggal_main');
             $table->timestamps();
         });

@@ -34,8 +34,10 @@ footer ul li a {
     display: none;
 }
 
-.dark {
-    color: #1c1917;
+.navbar-items button.active,
+.navbar-items a.active {
+    background: #fff;
+    color: #0ea5e9;
 }
 
 .pay-btn {

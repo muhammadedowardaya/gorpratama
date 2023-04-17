@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import moment from "moment";
 import Layout from "@/Layouts/Layout";
+import { usePage } from "@inertiajs/react";
 
 export default function Jadwal(props) {
     // Similar to componentDidMount and componentDidUpdate:
+    const { invoice } = usePage().props;
 
     useEffect(() => {
         if (props.flash.success) {
@@ -54,7 +56,7 @@ export default function Jadwal(props) {
                         </tr>
                     </thead>
                     <tbody className="overflow-hidden">
-                        {props.jadwal != null ? (
+                        {props.jadwal.length !== 0 ? (
                             props.jadwal.map((item, index) => {
                                 // const tanggal_booking = moment(
                                 //     item.created_at
@@ -63,19 +65,30 @@ export default function Jadwal(props) {
                                     item.tanggal
                                 ).format("DD MMMM YYYY");
                                 return (
-                                    <tr key={index}>
+                                    <tr
+                                        key={index}
+                                        className={`${
+                                            invoice[index].status != "PAID"
+                                                ? "hidden"
+                                                : ""
+                                        }`}
+                                    >
                                         <th>{index + 1}</th>
                                         <td>{item.lapangan.nama}</td>
                                         <td>{tanggal_bermain}</td>
                                         <td>{item.jam_mulai}</td>
                                         <td>{item.jam_selesai}</td>
+                                        {console.info(
+                                            `${invoice[index].external_id}`
+                                        )}
                                     </tr>
                                 );
                             })
                         ) : (
                             <tr>
                                 <td colSpan={6} className="text-center">
-                                    Belum ada pesanan
+                                    Belum ada jadwal, kamu bisa booking dulu ya
+                                    gaes :)
                                 </td>
                             </tr>
                         )}

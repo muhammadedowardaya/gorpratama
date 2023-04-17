@@ -43,7 +43,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
             {/* <Loading display={displayLoading} /> */}
 
             <div className="w-full px-4 md:px-0 md:mt-8 mb-16  leading-normal ">
-                <h1 className="text-center my-4 lg:mb-8 font-bold text-2xl ">
+                <h1 className="text-center my-4 lg:mb-8 font-bold text-2xl text-slate-50">
                     Tempat Lapangan
                 </h1>
 

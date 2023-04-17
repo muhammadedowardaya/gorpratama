@@ -15,12 +15,14 @@ return new class extends Migration
     {
         Schema::create('jadwal', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
             $table->foreignId('lapangan_id');
-            $table->boolean('temukan_teman_lawan')->default(false);
+            $table->tinyInteger('status_transaksi')->nullable();
+            $table->string('external_id')->nullable();
             $table->date('tanggal');
-            $table->time('jam_mulai', 0);
-            $table->time('jam_selesai', 0);
+            $table->string('jam_mulai');
+            $table->string('jam_selesai');
+            $table->string('pesan')->nullable();
+            $table->boolean('izinkan_permintaan_bergabung')->default(false);
             $table->timestamps();
             // user_id, lapangan_id, tanggal_sewa, waktu_mulai, dan waktu_selesai
         });

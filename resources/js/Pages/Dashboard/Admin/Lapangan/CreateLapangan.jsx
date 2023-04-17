@@ -164,7 +164,7 @@ export default function CreateLapangan(props) {
                             <div className="grid m-5">
                                 <div className="form-control mb-2">
                                     <label className="label cursor-pointer flex justify-between ">
-                                        <span className="label-text ">
+                                        <span className="label-text text-slate-50">
                                             Dalam Pemeliharaan
                                         </span>
                                         <input
@@ -190,7 +190,7 @@ export default function CreateLapangan(props) {
                                 </div>
                                 <div className="form-control">
                                     <label className="label cursor-pointer flex justify-between ">
-                                        <span className="label-text">
+                                        <span className="label-text text-slate-50">
                                             Siap Pakai
                                         </span>
                                         <input
@@ -227,7 +227,7 @@ export default function CreateLapangan(props) {
                                 }) => (
                                     <React.Fragment>
                                         <img
-                                            className="my-3 min-w-[8rem] h-32  mx-auto border border-black overflow-hidden"
+                                            className="my-3 w-full object-cover object-center h-32  mx-auto border border-black overflow-hidden"
                                             src={data.preview}
                                             alt="avatar"
                                             onClick={openPortal}

@@ -11,8 +11,8 @@ class UserImageController extends Controller
     public function showImage($nama_file)
     {
         // dd($nama_file);
-        // $logo =   public_path('\storage\user\\' . $nama_file);
-        // return Response::file($logo);
+        $foto =   public_path('\storage\user\\' . $nama_file);
+        return Response::file($foto);
         // dd($logo);
         // dd('naon bhujank');
         // $user = User::all();

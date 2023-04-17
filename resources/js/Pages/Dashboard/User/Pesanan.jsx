@@ -55,7 +55,7 @@ export default function Pesanan(props) {
             <div id="table-container">
                 <table
                     id="my-table"
-                    className="table table-compact w-full select-none"
+                    className="table table-compact w-full select-none !rounded-none"
                     // className="table-compact w-full select-none"
                 >
                     <thead>

@@ -2,43 +2,80 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatEvent;
 use App\Events\ChatSent;
 use App\Models\Chat;
+use App\Models\Conversation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Pusher\Pusher;
 
 class ChatController extends Controller
 {
-    public function index($sender_id, $receiver_id)
-    {
-        $chats = Chat::where(function ($query) use ($sender_id, $receiver_id) {
-            $query->where('sender_id', $sender_id)
-                ->where('receiver_id', $receiver_id);
-        })->orWhere(function ($query) use ($sender_id, $receiver_id) {
-            $query->where('sender_id', $receiver_id)
-                ->where('receiver_id', $sender_id);
-        })->orderBy('created_at', 'asc')->get();
 
-        return response()->json([
-            'data' => $chats,
+    public function sendMessage(Request $request)
+    {
+        $message = $request->message;
+
+        // Simpan pesan ke database
+        $conversation = Conversation::create([
+            'user_id' => $request->sender_id,
+            'recipient_id' => $request->recipient_id,
+            'message' => $message,
         ]);
+
+        // Kirim pesan ke Pusher
+        event(new ChatEvent($message, $request->channel, $request->sender_id));
+
+        // Kirim balasan ke pengguna lain di channel yang sama
+        broadcast(new ChatEvent($message, $request->channel, $request->recipient_id))->toOthers();
+
+        return response()->json(['success' => true]);
     }
 
-    public function store(Request $request)
+    public function showConversation($userId, $recipientId)
     {
-        $validatedData = $request->validate([
-            'sender_id' => 'required',
-            'receiver_id' => 'required',
-            'message' => 'required',
-        ]);
+        $conversations = Conversation::where(function ($query) use ($userId, $recipientId) {
+            $query->where('user_id', $userId)->where('recipient_id', $recipientId);
+        })->orWhere(function ($query) use ($userId, $recipientId) {
+            $query->where('user_id', $recipientId)->where('recipient_id', $userId);
+        })->orderBy('created_at', 'asc')->get();
 
-        $chat = Chat::create($validatedData);
+        foreach ($conversations as $conversation) {
+            $conversation->sender = $conversation->sender;
+            $conversation->recipient = $conversation->recipient;
+        }
 
-        event(new ChatSent($chat));
+        return response()->json(['conversations' => $conversations]);
+    }
 
+    public function getUnreadConversations(Request $request)
+    {
+        $unreadConversations = Conversation::where('recipient_id', $request->user()->id)
+            ->whereNull('read_at')
+            ->groupBy('chat_channel')
+            ->get();
 
-        return response()->json([
-            'message' => 'Chat created successfully',
-            'data' => $chat,
-        ]);
+        return response()->json(['unread_conversations' => $unreadConversations]);
+    }
+
+    public function getUnreadMessages(Request $request, $chatChannel)
+    {
+        $unreadMessages = Conversation::where('recipient_id', $request->user()->id)
+            ->where('chat_channel', $chatChannel)
+            ->whereNull('read_at')
+            ->get();
+
+        return response()->json(['unread_messages' => $unreadMessages]);
+    }
+
+    public function markAsRead(Request $request, $chatChannel)
+    {
+        Conversation::where('recipient_id', $request->user()->id)
+            ->where('chat_channel', $chatChannel)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        return response()->json(['success' => true]);
     }
 }

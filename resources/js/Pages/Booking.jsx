@@ -36,6 +36,9 @@ export default function Booking(props) {
         jam_mulai_value: "",
         jam_selesai_value: "",
 
+        izinkan_permintaan_bergabung: false,
+        pesan: "",
+
         lama_bermain: "",
         user: props.auth.user,
         nama: props.auth.user.nama,
@@ -151,7 +154,12 @@ export default function Booking(props) {
         });
 
         updateData();
-    }, [data.jam_mulai, data.jam_selesai, data.harga_persewa]);
+    }, [
+        data.jam_mulai,
+        data.jam_selesai,
+        data.harga_persewa,
+        data.izinkan_permintaan_bergabung,
+    ]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -209,40 +217,13 @@ export default function Booking(props) {
                     if (result.isConfirmed) {
                         setShow(true);
                         router.post("/booking", data, {
+                            forceFormData: true,
                             onError: (errors) => {
-                                // const error_keys = Object.keys(errors);
-                                // const error_values =
-                                //     Object.getOwnPropertyNames(errors);
-                                // let error_messages = [];
-                                // let error = errors;
-                                // for (
-                                //     let i = 0;
-                                //     i < error_keys.length;
-                                //     i++
-                                // ) {
-                                //     error_messages.push(
-                                //         error[error_values[i]]
-                                //     );
-                                // }
-                                // Swal.fire(
-                                //     "Gagal!",
-                                //     `<ul>${error_messages
-                                //         .map(
-                                //             (item) => `<li>${item}</li>`
-                                //         )
-                                //         .join(" ")}</ul>`,
-                                //     "error"
-                                // );
+                                setShow(false);
                                 console.info(errors);
                             },
                             onSuccess: (response) => {
                                 setShow(false);
-                                // Swal.fire({
-                                //     title: "Berhasil!",
-                                //     text: "Registrasi Berhasil",
-                                //     icon: "success",
-                                // });
-                                // router.get("/");
                                 console.info(response);
                             },
                         });
@@ -261,7 +242,7 @@ export default function Booking(props) {
     return (
         <>
             <Loading display={show} />
-            <div className="w-full p-10">
+            <div className="w-full p-1 sm:p-10">
                 <form onSubmit={submit} className="bg-white p-4 rounded">
                     <h1 className="text-center text-slate-700 text-2xl font-bold pb-4">
                         Booking
@@ -309,7 +290,7 @@ export default function Booking(props) {
                                 ></textarea>
                             </div>
 
-                            <div className="mt-4">
+                            <div className="mt-4 md:mt-2">
                                 <Label
                                     className="text-slate-700"
                                     forInput="telp"
@@ -349,8 +330,6 @@ export default function Booking(props) {
                                     readOnly
                                 />
                             </div>
-                        </div>
-                        <div className="md:basis-1/2 ">
                             <div className="mt-4">
                                 <Label
                                     className="text-slate-700"
@@ -368,6 +347,8 @@ export default function Booking(props) {
                                     readOnly
                                 />
                             </div>
+                        </div>
+                        <div className="md:basis-1/2 ">
                             <div className="mt-4">
                                 <Label
                                     className="text-slate-700"
@@ -428,7 +409,6 @@ export default function Booking(props) {
                                                 ).format("HH:mm"),
                                                 jam_mulai_value: time,
                                             });
-                                            console.info(data.jam_mulai);
                                         }}
                                         disabled={
                                             data.tanggal_main == ""
@@ -450,9 +430,6 @@ export default function Booking(props) {
                                                 jam_selesai_value: time,
                                             });
                                         }}
-                                        onChange={(e) => {
-                                            console.info("berubah");
-                                        }}
                                         locale="id"
                                         disabled={
                                             data.tanggal_main == ""
@@ -463,6 +440,73 @@ export default function Booking(props) {
                                         value={data.jam_selesai_value}
                                         size="large"
                                     />
+                                </div>
+                            </div>
+
+                            <div className="mt-4 select-none">
+                                <p className="text-slate-700 font-bold">
+                                    Izinkan permintaan bergabung?
+                                </p>
+                                <div className="flex items-center my-1 p-2">
+                                    <input
+                                        id="join-request"
+                                        type="checkbox"
+                                        className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                        checked={
+                                            data.izinkan_permintaan_bergabung
+                                        }
+                                        onChange={(e) => {
+                                            setData(
+                                                "izinkan_permintaan_bergabung",
+                                                e.target.checked
+                                            );
+                                        }}
+                                    />
+                                    <label
+                                        htmlFor="join-request"
+                                        className="ml-2 block text-sm text-gray-900"
+                                    >
+                                        Izinkan Permintaan Bergabung
+                                    </label>
+                                </div>
+                                <p className="text-stone-400 text-sm ">
+                                    Jika anda mengizinkan permintaan bergabung,
+                                    ini akan menampilkan kolom chat pada
+                                    informasi jadwal bermain yang tersedia,
+                                    mengizinkan orang lain untuk mengirimkan
+                                    pesan kepada anda untuk meminta bergabung
+                                    dalam permainan badminton
+                                </p>
+                                <div
+                                    className={`mt-2 ${
+                                        data.izinkan_permintaan_bergabung
+                                            ? "block"
+                                            : "hidden"
+                                    }`}
+                                >
+                                    <Label
+                                        className="text-slate-700 text-sm"
+                                        forInput="harga_lapangan"
+                                        value="Pesan"
+                                    />
+                                    <input
+                                        type="text"
+                                        name="pesan"
+                                        value={data.pesan}
+                                        className="w-full mt-1  border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                        autoComplete="pesan"
+                                        onChange={(e) => {
+                                            e.preventDefault();
+                                            setData("pesan", e.target.value);
+                                        }}
+                                    />
+                                    <p className="text-stone-400 text-sm mt-2">
+                                        Berikan pesan kepada pemain lain, pesan
+                                        ini akan tampil pada kartu jadwal anda
+                                        jika anda mengizinkan pemain lain untuk
+                                        bergabung, contoh pesan : "Ayo kita
+                                        bermain bersama!"
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -541,7 +585,7 @@ export default function Booking(props) {
                                                 colSpan={6}
                                                 className="text-center"
                                             >
-                                                Belum ada pesanan
+                                                Belum ada jadwal bermain
                                             </td>
                                         </tr>
                                     )}

@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Jadwal>
@@ -17,12 +19,13 @@ class JadwalFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => 4,
+            'user_id' => 1,
             'lapangan_id' => 1,
-            'hari' => 'senin',
-            'tanggal' => fake()->randomNumber(2),
-            'bulan' => 'September',
-            'tahun' => 2022,
+            'chat_channel' => 'channel_' . Str::random(5),
+            'tanggal' => Carbon::createFromFormat('d-m-Y', fake()->date('d-m-Y'))->toDateString(),
+            'jam_mulai' => Carbon::createFromFormat('H:i', fake()->time('H:i'))->format('H:i'),
+            'jam_selesai' => Carbon::createFromFormat('H:i', fake()->time('H:i'))->format('H:i'),
+            'izinkan_permintaan_bergabung' => fake()->boolean()
         ];
     }
 }

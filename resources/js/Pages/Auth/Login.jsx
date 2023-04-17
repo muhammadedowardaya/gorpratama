@@ -70,6 +70,7 @@ export default function Login(props, { status, canResetPassword }) {
                 }, 100);
             })
             .catch((errors_data) => {
+                setShow(false);
                 if (
                     errors_data.response &&
                     errors_data.response.status === 422

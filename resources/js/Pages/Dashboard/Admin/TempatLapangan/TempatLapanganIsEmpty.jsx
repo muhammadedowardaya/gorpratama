@@ -1,3 +1,4 @@
+import Layout from "@/Layouts/Layout";
 import { Head, router } from "@inertiajs/react";
 
 const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
@@ -31,7 +32,7 @@ const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
                 </div>
                 <div className="card w-96 bg-slate-50 shadow-lg mt-5 text-center">
                     <div className="card-body">
-                        <h2 className="card-title tracking-widest mb-4">
+                        <h2 className="card-title tracking-widest mb-4 text-slate-700">
                             Anda ingin mengaturnya sekarang?
                         </h2>
                         <div className="card-actions justify-center">

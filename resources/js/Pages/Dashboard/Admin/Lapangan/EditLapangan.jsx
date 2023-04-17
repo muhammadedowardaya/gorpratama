@@ -167,7 +167,7 @@ export default function EditLapangan({ lapangan }) {
                             <div className="grid m-5">
                                 <div className="form-control">
                                     <label className="label cursor-pointer">
-                                        <span className="label-text text-slate-800">
+                                        <span className="label-text text-slate-50">
                                             Dalam Pemeliharaan
                                         </span>
                                         <input
@@ -193,7 +193,7 @@ export default function EditLapangan({ lapangan }) {
                                 </div>
                                 <div className="form-control">
                                     <label className="label cursor-pointer">
-                                        <span className="label-text text-slate-800">
+                                        <span className="label-text text-slate-50">
                                             Siap Pakai
                                         </span>
                                         <input

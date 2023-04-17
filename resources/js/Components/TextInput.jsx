@@ -13,6 +13,7 @@ export default forwardRef(function TextInput(
         handleChange,
         placeholder,
         pattern,
+        onChange,
     },
     ref
 ) {
@@ -38,7 +39,7 @@ export default forwardRef(function TextInput(
                 ref={input}
                 autoComplete={autoComplete}
                 required={required}
-                onChange={(e) => handleChange(e)}
+                onChange={onChange}
                 placeholder={placeholder}
                 pattern={pattern}
             />

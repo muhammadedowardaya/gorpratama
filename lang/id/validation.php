@@ -148,7 +148,7 @@ return [
         'description'              => 'deskripsi',
         'district'                 => 'district',
         'duration'                 => 'duration',
-        'email'                    => 'surel',
+        'email'                    => 'Email',
         'excerpt'                  => 'kutipan',
         'filter'                   => 'filter',
         'first_name'               => 'nama depan',

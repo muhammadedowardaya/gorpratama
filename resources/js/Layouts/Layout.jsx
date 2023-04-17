@@ -1,22 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import "../../css/layout.css";
 import { router } from "@inertiajs/react";
 import "../modules/csrf.js";
 import Sidebar from "@/Components/Sidebar";
-import { IoHome } from "react-icons/io5";
+import { IoClose, IoHome } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import Navbar from "@/Components/Navbar";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiSkipForward } from "react-icons/fi";
 import { GiFootyField, GiSoccerField } from "react-icons/gi";
-import { AiFillSetting, AiOutlineCalendar } from "react-icons/ai";
+import {
+    AiFillSetting,
+    AiOutlineCalendar,
+    AiOutlineMessage,
+} from "react-icons/ai";
 import axios from "axios";
 import Loading from "@/Components/Loading";
-import { MdMessage } from "react-icons/md";
+import { MdFindInPage, MdLocalGroceryStore } from "react-icons/md";
+import { FaCalendarAlt, FaQuestionCircle } from "react-icons/fa";
+import BookingSteps from "@/Components/BookingSteps";
 
 export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
     const [show, setShow] = useState(true);
+    // state untuk menampilkan atau menyembunyikan modal
+    const [showModal, setShowModal] = useState(false);
+    const [showCaraBooking, setShowCaraBooking] = useState(false);
+    const [showCaraTemukanTeman, setCaraTemukanTeman] = useState(false);
+
     async function getUser() {
         try {
             const response = await fetch("/api/get-user");
@@ -90,28 +101,24 @@ export default function Layout({ children, header, title }) {
                     <Navbar
                         items={[
                             {
+                                path: "/",
                                 onClick: () => router.get("/"),
-                                icon: <IoHome />,
+                                icon: <IoHome size="1.5em" />,
                                 title: "Home",
                             },
-
                             {
+                                path: "/dashboard/tempat-lapangan",
                                 onClick: () =>
                                     router.get("/dashboard/tempat-lapangan"),
-                                icon: <GiFootyField />,
+                                icon: <GiFootyField size="1.5em" />,
                                 title: "Profile Gor | Tempat Lapangan",
                             },
                             {
+                                path: "/dashboard/lapangan",
                                 onClick: () =>
                                     router.get("/dashboard/lapangan"),
-                                icon: <GiSoccerField />,
+                                icon: <GiSoccerField size="1.5em" />,
                                 title: "Lapangan",
-                            },
-
-                            {
-                                onClick: () => router.get("/profile"),
-                                icon: <CgProfile />,
-                                title: "My Profile",
                             },
                         ]}
                     />
@@ -119,24 +126,28 @@ export default function Layout({ children, header, title }) {
                     <Navbar
                         items={[
                             {
+                                path: "/",
                                 onClick: () => router.get("/"),
-                                icon: <IoHome />,
+                                icon: <IoHome size="1.5em" />,
                                 title: "Home",
                             },
                             {
+                                path: "/dashboard/pesan",
+                                onClick: () => router.get("/dashboard/pesan"),
+                                icon: <AiOutlineMessage size="1.5em" />,
+                                title: "Pesan",
+                            },
+                            {
+                                path: "/dashboard/pesanan",
                                 onClick: () => router.get("/dashboard/pesanan"),
-                                icon: <MdMessage />,
+                                icon: <MdLocalGroceryStore size="1.5em" />,
                                 title: "Pesanan Saya",
                             },
                             {
+                                path: "/dashboard/jadwal",
                                 onClick: () => router.get("/dashboard/jadwal"),
-                                icon: <AiOutlineCalendar />,
+                                icon: <AiOutlineCalendar size="1.5em" />,
                                 title: "Jadwal",
-                            },
-                            {
-                                onClick: () => router.get("/profile"),
-                                icon: <CgProfile />,
-                                title: "My Profile",
                             },
                         ]}
                     />
@@ -156,13 +167,13 @@ export default function Layout({ children, header, title }) {
                                     title: "Home",
                                 },
                                 {
-                                    path: "profile",
+                                    path: "/profile",
                                     onClick: () => router.get("/profile"),
                                     icon: <CgProfile className="mt-4" />,
                                     title: "My Profile",
                                 },
                                 {
-                                    path: "dashboard/tempat-lapangan",
+                                    path: "/dashboard/tempat-lapangan",
                                     onClick: () =>
                                         router.get(
                                             "/dashboard/tempat-lapangan"
@@ -171,7 +182,7 @@ export default function Layout({ children, header, title }) {
                                     title: "Profile Gor | Tempat Lapangan",
                                 },
                                 {
-                                    path: "dashboard/lapangan",
+                                    path: "/dashboard/lapangan",
                                     onClick: () =>
                                         router.get("/dashboard/lapangan"),
                                     icon: <GiSoccerField className="mt-4" />,
@@ -180,12 +191,28 @@ export default function Layout({ children, header, title }) {
                                 {
                                     path: "/logout",
                                     onClick: () => {
-                                        setShow(true);
+                                        const loader =
+                                            window.document.getElementById(
+                                                "loader"
+                                            );
+                                        const pyramidLoader = window.document
+                                            .getElementById("loader")
+                                            .querySelector(".pyramid-loader");
+                                        if (
+                                            loader.classList.contains("!hidden")
+                                        ) {
+                                            loader.classList.remove("!hidden");
+                                            pyramidLoader.classList.remove(
+                                                "hidden"
+                                            );
+                                        }
                                         axios
                                             .post("/logout")
                                             .then((response) => {
-                                                setShow(false);
-                                                axios.get("/");
+                                                window.location.href = "/";
+                                                setTimeout(() => {
+                                                    window.location.reload();
+                                                }, 300);
                                             });
                                     },
                                     icon: <FiLogOut className="mt-4" />,
@@ -203,14 +230,23 @@ export default function Layout({ children, header, title }) {
                                     title: "Home",
                                 },
                                 {
-                                    path: "dashboard/pesanan",
+                                    path: "/dashboard/pesan",
+                                    onClick: () =>
+                                        router.get("/dashboard/pesan"),
+                                    icon: <AiOutlineMessage className="mt-4" />,
+                                    title: "Pesan",
+                                },
+                                {
+                                    path: "/dashboard/pesanan",
                                     onClick: () =>
                                         router.get("/dashboard/pesanan"),
-                                    icon: <MdMessage className="mt-4" />,
+                                    icon: (
+                                        <MdLocalGroceryStore className="mt-4" />
+                                    ),
                                     title: "Pesanan Saya",
                                 },
                                 {
-                                    path: "dashboard/jadwal",
+                                    path: "/dashboard/jadwal",
                                     onClick: () =>
                                         router.get("/dashboard/jadwal"),
                                     icon: (
@@ -219,27 +255,43 @@ export default function Layout({ children, header, title }) {
                                     title: "Jadwal",
                                 },
                                 {
-                                    path: "profile",
+                                    path: "/profile",
                                     onClick: () => router.get("/profile"),
                                     icon: <CgProfile className="mt-4" />,
                                     title: "My Profile",
                                 },
                                 {
-                                    path: "dashboard/pengaturan",
+                                    path: "/dashboard/pengaturan",
                                     onClick: () =>
                                         router.get("/dashboard/pengaturan"),
                                     icon: <AiFillSetting className="mt-4" />,
                                     title: "Pengaturan",
                                 },
                                 {
-                                    path: "logout",
+                                    path: "/logout",
                                     onClick: () => {
-                                        setShow(true);
+                                        const loader =
+                                            window.document.getElementById(
+                                                "loader"
+                                            );
+                                        const pyramidLoader = window.document
+                                            .getElementById("loader")
+                                            .querySelector(".pyramid-loader");
+                                        if (
+                                            loader.classList.contains("!hidden")
+                                        ) {
+                                            loader.classList.remove("!hidden");
+                                            pyramidLoader.classList.remove(
+                                                "hidden"
+                                            );
+                                        }
                                         axios
                                             .post("/logout")
                                             .then((response) => {
-                                                setShow(false);
-                                                axios.get("/");
+                                                window.location.href = "/";
+                                                setTimeout(() => {
+                                                    window.location.reload();
+                                                }, 300);
                                             });
                                     },
                                     icon: <FiLogOut className="mt-4" />,
@@ -251,13 +303,15 @@ export default function Layout({ children, header, title }) {
                 ) : (
                     ""
                 )}
+
                 <section
                     id="content"
-                    className={`z-10 overflow-y-scroll overflow-x-hidden md:ml-8 pt-6 col-span-2 ${
+                    className={`z-10 overflow-y-scroll scrollbar-hide md:ml-8 md:pt-1 pt-16 col-span-2 ${
                         user != null ? "md:col-span-1" : "md:col-span-2"
                     }`}
                 >
                     <main className="p-4">{children}</main>
+
                     <footer>
                         <div className="max-w-md mx-auto flex py-8">
                             <div className="w-full mx-auto flex flex-wrap">
@@ -309,7 +363,73 @@ export default function Layout({ children, header, title }) {
                             </div>
                         </div>
                     </footer>
+                    <div className="fixed bottom-4 right-8">
+                        <button
+                            className="bg-gray-200 text-gray-800 py-2 px-4 rounded-full flex items-center"
+                            onClick={() => setShowModal(true)}
+                        >
+                            <FaQuestionCircle className="mr-2" />
+                            Bantuan
+                        </button>
+                    </div>
+                    {showModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                            <div className="bg-gray-50 rounded-lg p-8 relative">
+                                <h2 className="text-lg text-gray-800 font-semibold mb-4">
+                                    Pilih Bantuan
+                                </h2>
+                                <div className="flex flex-col flex-wrap text-gray-800">
+                                    <div
+                                        onClick={() => {
+                                            setShowModal(false);
+                                            setShowCaraBooking(true);
+                                        }}
+                                        className="cursor-pointer flex flex-wrap items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4"
+                                    >
+                                        <FaCalendarAlt
+                                            size="0.8em"
+                                            className="text-4xl mr-2"
+                                        />
+                                        <span className="px-2">
+                                            Step by Step Booking Lapangan
+                                        </span>
+                                    </div>
+                                    <div className="cursor-pointer flex flex-wrap items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4">
+                                        <MdFindInPage
+                                            size="0.8em"
+                                            className="text-4xl mr-2"
+                                        />
+                                        <span className="px-2">
+                                            Step by Step Temukan Teman
+                                        </span>
+                                    </div>
+                                </div>
+                                <button
+                                    className="absolute top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-800"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    X
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </section>
+                {showCaraBooking && (
+                    <div className="fixed inset-0 p-4 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                        <div className="bg-gray-50 rounded-lg pt-4 px-4 pb-2 relative">
+                            <BookingSteps />
+                            <div
+                                onClick={() => setShowCaraBooking(false)}
+                                className="absolute -top-10 right-0"
+                            >
+                                <IoClose
+                                    className="inline-block ml-1 bg-red-500"
+                                    size="2em"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <Loading display={show} />
             </div>
             {/* --------------------------------- */}

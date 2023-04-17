@@ -9,6 +9,7 @@ import Toast from "@/Components/Toast";
 import Layout from "@/Layouts/Layout";
 import Card from "@/Components/Card";
 import { FaCheck } from "react-icons/fa";
+import { AiFillSetting } from "react-icons/ai";
 
 const Lapangan = (props) => {
     // Similar to componentDidMount and componentDidUpdate:
@@ -18,7 +19,7 @@ const Lapangan = (props) => {
     });
 
     return (
-        <div>
+        <div className="w-screen">
             <Head title="Lapangan" />
             <Loading display={displayLoading} />
             <MyButton
@@ -31,184 +32,182 @@ const Lapangan = (props) => {
                 button="create"
                 underline="true"
             />
-            <h1 className="text-center text-slate-50 font-bold text-2xl md:mb-8 xl:mb-10">
+
+            <h1 className="text-center text-slate-50 font-bold text-2xl mb-6 md:mb-8 xl:mb-10">
                 Lapangan
             </h1>
-
             <div
-                className={`grid grid-cols-1 justify-items-center grid-rows-[400px] gap-x-2 gap-y-5 ${GridLength(
-                    props.lapangan.length
-                )}`}
+                className={`flex flex-wrap justify-center justify-items-center items-center`}
             >
-                {/* <div className="flex justify-center z-10 mt-5 fixed right-0 left-0 top-0 bottom-0"> */}
-
-                {/* </div> */}
-
                 {props.lapangan != null && props.lapangan != "" ? (
                     props.lapangan.map((item, index) => {
                         return (
-                            <Card
+                            <div
                                 key={item.id}
-                                name={item.nama}
-                                image={item.url_foto}
-                                status={
-                                    item.status == "siap pakai" ? (
-                                        <span>
-                                            <FaCheck
-                                                className="inline-block mr-2 fill-slate-50 bg-green-500 px-[4px]"
-                                                size="1.5em"
-                                            />
-                                            {item.status}
-                                        </span>
-                                    ) : (
-                                        "icon perbaikan"
-                                    )
-                                }
-                                buttons={[
-                                    {
-                                        className:
-                                            "bg-gradient-to-br from-red-500 via-red-600 to-red-300 hover:bg-red-300",
-                                        title: "hapus",
-                                        onClick: (e) => {
-                                            e.preventDefault();
+                                className="flex flex-col justify-between rounded-lg p-4 w-full max-w-sm mx-4 my-4 md:w-1/2 lg:w-1/3 lg:mx-8"
+                            >
+                                <Card
+                                    name={item.nama}
+                                    image={item.url_foto}
+                                    status={
+                                        item.status == "siap pakai" ? (
+                                            <span>
+                                                <FaCheck
+                                                    className="inline-block mr-2 fill-slate-50 bg-green-500 px-[4px]"
+                                                    size="1.5em"
+                                                />
+                                                {item.status}
+                                            </span>
+                                        ) : (
+                                            <span>
+                                                <AiFillSetting
+                                                    className="inline-block mr-2 fill-slate-50 bg-green-500 px-[4px]"
+                                                    size="1.5em"
+                                                />
+                                                {item.status}
+                                            </span>
+                                        )
+                                    }
+                                    buttons={[
+                                        {
+                                            className:
+                                                "bg-gradient-to-br from-red-500 via-red-600 to-red-300 hover:bg-red-300 mr-2 mb-2",
+                                            title: "hapus",
+                                            onClick: (e) => {
+                                                e.preventDefault();
 
-                                            Swal.fire({
-                                                title:
-                                                    "Yakin ingin menghapus " +
-                                                    item.nama +
-                                                    "?",
-                                                text: "data lapangan yang dihapus tidak dapat dikembalikan!",
-                                                icon: "warning",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#3085d6",
-                                                cancelButtonColor: "#d33",
-                                                confirmButtonText: "Ya, hapus!",
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    setDisplayLoading(true);
-                                                    axios
-                                                        .delete(
-                                                            `/dashboard/lapangan-delete/${item.slug}`
-                                                        )
-                                                        .then((response) => {
-                                                            setDisplayLoading(
-                                                                false
-                                                            );
-                                                            Toast.fire({
-                                                                icon: "success",
-                                                                title: `Berhasil memperbarui ${response.data.response.nama}`,
-                                                            });
-
-                                                            setTimeout(() => {
-                                                                router.get(
-                                                                    "/dashboard/lapangan"
-                                                                );
-                                                            }, 200);
-                                                        })
-                                                        .catch((errors) => {
-                                                            setDisplayLoading(
-                                                                false
-                                                            );
-
-                                                            if (
-                                                                errors.response
-                                                                    .status ===
-                                                                400
-                                                            ) {
-                                                                const error_keys =
-                                                                    Object.keys(
-                                                                        errors
-                                                                            .response
-                                                                            .data
-                                                                            .message
+                                                Swal.fire({
+                                                    title:
+                                                        "Yakin ingin menghapus " +
+                                                        item.nama +
+                                                        "?",
+                                                    text: "data lapangan yang dihapus tidak dapat dikembalikan!",
+                                                    icon: "warning",
+                                                    showCancelButton: true,
+                                                    confirmButtonColor:
+                                                        "#3085d6",
+                                                    cancelButtonColor: "#d33",
+                                                    confirmButtonText:
+                                                        "Ya, hapus!",
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        setDisplayLoading(true);
+                                                        axios
+                                                            .delete(
+                                                                `/dashboard/lapangan-delete/${item.slug}`
+                                                            )
+                                                            .then(
+                                                                (response) => {
+                                                                    setDisplayLoading(
+                                                                        false
                                                                     );
-                                                                const error_values =
-                                                                    Object.getOwnPropertyNames(
-                                                                        errors
-                                                                            .response
-                                                                            .data
-                                                                            .message
-                                                                    );
-                                                                let error_messages =
-                                                                    [];
-                                                                let error =
-                                                                    errors
-                                                                        .response
-                                                                        .data
-                                                                        .message;
-                                                                for (
-                                                                    let i = 0;
-                                                                    i <
-                                                                    error_keys.length;
-                                                                    i++
-                                                                ) {
-                                                                    error_messages.push(
-                                                                        error[
-                                                                            error_values[
-                                                                                i
-                                                                            ]
-                                                                        ]
+                                                                    Toast.fire({
+                                                                        icon: "success",
+                                                                        title: `Berhasil memperbarui ${response.data.response.nama}`,
+                                                                    });
+
+                                                                    setTimeout(
+                                                                        () => {
+                                                                            router.get(
+                                                                                "/dashboard/lapangan"
+                                                                            );
+                                                                        },
+                                                                        200
                                                                     );
                                                                 }
+                                                            )
+                                                            .catch((errors) => {
+                                                                setDisplayLoading(
+                                                                    false
+                                                                );
 
-                                                                Swal.fire(
-                                                                    "Gagal!",
-                                                                    `<ul>${error_messages
-                                                                        .map(
-                                                                            (
-                                                                                item
-                                                                            ) =>
-                                                                                `<li>${item}</li>`
-                                                                        )
-                                                                        .join(
-                                                                            " "
-                                                                        )}</ul>`,
-                                                                    "error"
-                                                                );
-                                                            } else {
-                                                                Swal.fire(
-                                                                    "Gagal!",
-                                                                    `${errors.response.data.message}`,
-                                                                    "error"
-                                                                );
-                                                            }
-                                                        });
-                                                }
-                                            });
+                                                                if (
+                                                                    errors
+                                                                        .response
+                                                                        .status ===
+                                                                    400
+                                                                ) {
+                                                                    const error_keys =
+                                                                        Object.keys(
+                                                                            errors
+                                                                                .response
+                                                                                .data
+                                                                                .message
+                                                                        );
+                                                                    const error_values =
+                                                                        Object.getOwnPropertyNames(
+                                                                            errors
+                                                                                .response
+                                                                                .data
+                                                                                .message
+                                                                        );
+                                                                    let error_messages =
+                                                                        [];
+                                                                    let error =
+                                                                        errors
+                                                                            .response
+                                                                            .data
+                                                                            .message;
+                                                                    for (
+                                                                        let i = 0;
+                                                                        i <
+                                                                        error_keys.length;
+                                                                        i++
+                                                                    ) {
+                                                                        error_messages.push(
+                                                                            error[
+                                                                                error_values[
+                                                                                    i
+                                                                                ]
+                                                                            ]
+                                                                        );
+                                                                    }
+
+                                                                    Swal.fire(
+                                                                        "Gagal!",
+                                                                        `<ul>${error_messages
+                                                                            .map(
+                                                                                (
+                                                                                    item
+                                                                                ) =>
+                                                                                    `<li>${item}</li>`
+                                                                            )
+                                                                            .join(
+                                                                                " "
+                                                                            )}</ul>`,
+                                                                        "error"
+                                                                    );
+                                                                } else {
+                                                                    Swal.fire(
+                                                                        "Gagal!",
+                                                                        `${errors.response.data.message}`,
+                                                                        "error"
+                                                                    );
+                                                                }
+                                                            });
+                                                    }
+                                                });
+                                            },
                                         },
-                                    },
-                                    {
-                                        className:
-                                            "bg-gradient-to-br from-green-500 via-green-600 to-green-300 mt-2",
-                                        title: "edit",
-                                        onClick: (e) => {
-                                            e.preventDefault();
-                                            router.get(
-                                                `/dashboard/lapangan-edit/${item.slug}`
-                                            );
+                                        {
+                                            className:
+                                                "bg-gradient-to-br from-green-500 via-green-600 to-green-300 mr-2",
+                                            title: "edit",
+                                            onClick: (e) => {
+                                                e.preventDefault();
+                                                router.get(
+                                                    `/dashboard/lapangan-edit/${item.slug}`
+                                                );
+                                            },
                                         },
-                                    },
-                                ]}
-                            />
+                                    ]}
+                                />
+                            </div>
                         );
                     })
                 ) : (
                     <div className="w-full flex justify-items-center justify-center justify-self-center">
                         <div className="card w-96 bg-base-100 shadow-xl">
-                            <figure className="flex-col">
-                                <img src={surprised} alt="" srcSet="" />
-                                <figcaption>
-                                    <a
-                                        href="https://www.flaticon.com/free-stickers/emoji"
-                                        title="emoji stickers"
-                                        className="text-xs text-slate-300"
-                                    >
-                                        Emoji stickers created by Stickers -
-                                        Flaticon
-                                    </a>
-                                </figcaption>
-                            </figure>
-
                             <div className="card-body">
                                 <h1 className="text-center">
                                     Belum ada Tempat Lapangan yang terdaftar

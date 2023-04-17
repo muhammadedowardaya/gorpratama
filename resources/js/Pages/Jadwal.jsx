@@ -3,64 +3,189 @@ import Swal from "sweetalert2";
 import Layout from "@/Layouts/Layout";
 import Pagination from "@/Components/Pagination";
 import MyButton from "@/Components/MyButton";
+import Chat from "@/Components/Chat";
+import moment from "moment";
+import { IoChatboxEllipses, IoCloseCircle } from "react-icons/io5";
+import { router, usePage } from "@inertiajs/react";
+import { debounce } from "lodash";
+import Draggable from "react-draggable";
 
 export default function Jadwal(props) {
+    const [chatChannel, setChatChannel] = useState("");
+    const [showChat, setShowChat] = useState(false);
+    const [jadwal, setJadwal] = useState([]);
+    const [links, setLinks] = useState([]);
+    const [recipientId, setRecipientId] = useState("");
+    const [recipientName, setRecipientName] = useState("");
+    const [recipientPhoto, setRecipientPhoto] = useState("");
+
+    const { auth } = usePage().props;
+
+    async function getJadwal() {
+        try {
+            const response = await axios.get(`/api/jadwal`);
+            if (
+                Array.isArray(response.data.jadwal.data) &&
+                response.data.jadwal.data.length > 0
+            ) {
+                setJadwal(response.data.jadwal.data);
+            }
+            if (
+                Array.isArray(response.data.jadwal.data) &&
+                response.data.jadwal.data.length > 0
+            ) {
+                setLinks(response.data.jadwal.links);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const debouncedGetJadwal = debounce(getJadwal, 500);
+
     useEffect(() => {
         if (props.flash.success) {
             Swal.fire("Berhasil!", `${props.flash.success}`, "success");
         }
 
-        // const table = document.querySelector("table");
-        // let isDragging = false;
-        // let lastX;
+        debouncedGetJadwal();
 
-        // table.addEventListener("mousedown", (event) => {
-        //     isDragging = true;
-        //     lastX = event.clientX;
-        //     event.preventDefault();
-        // });
+        console.info(chatChannel);
+        console.info(recipientId);
+        console.info(auth.user);
 
-        // table.addEventListener("mouseup", () => {
-        //     isDragging = false;
+        // Ambil chat channel dari server dan simpan ke state
+        // axios.get("/api/chat/channel").then((response) => {
+        //     // setChatChannel(response.data.chat_channel);
+        //     console.info(response);
         // });
+    }, [showChat]);
 
-        // table.addEventListener("mousemove", (event) => {
-        //     if (isDragging) {
-        //         const deltaX = event.clientX - lastX;
-        //         const containerScrollLeft = table.parentElement.scrollLeft;
-        //         table.parentElement.scrollLeft = containerScrollLeft - deltaX;
-        //     }
-        //     lastX = event.clientX;
-        // });
-    });
     return (
-        <div>
-            <div className="flex flex-wrap -m-4">
-                <div className="p-4 md:w-1/2 lg:w-1/3">
-                    <div className="h-full border-2 border-gray-200 rounded-lg overflow-hidden">
-                        <div className="p-6">
-                            <h2 className="text-2xl font-bold mb-2">
-                                {props.jadwal}
-                            </h2>
-                            <p className="text-gray-700 text-base mb-4">
-                                {props.jadwal}
-                            </p>
-                            <p className="text-gray-700 text-base mb-4">
-                                {props.jadwal} - {props.jadwal}
-                            </p>
-                        </div>
+        <div className="flex flex-col items-center">
+            <h1 className="text-2xl font-bold md:mt-2 text-center mb-4">
+                Jadwal Bermain
+            </h1>
+            <div className="flex flex-wrap justify-center w-full">
+                {Array.isArray(jadwal) && jadwal.length > 0 ? (
+                    jadwal.map((item, index) => {
+                        const tanggal_bermain = moment(item.tanggal).format(
+                            "DD MMMM YYYY"
+                        );
+                        return (
+                            <div
+                                className="flex flex-col justify-between bg-white shadow-lg rounded-lg p-4 text-slate-700 w-full max-w-sm mx-4 my-4 md:w-1/2 lg:w-1/3 lg:mx-8"
+                                key={index}
+                            >
+                                <div className="flex justify-between items-center">
+                                    <div className="flex">
+                                        <img
+                                            src={item.user.url_foto}
+                                            alt="item.user.nama"
+                                            className="object-cover object-center w-10 h-10 inline-block rounded-full mt-1"
+                                        />
+                                        <div className="ml-2">
+                                            <h2 className="text-lg font-bold inline-block p-0">
+                                                {item.user.nama}
+                                            </h2>
+                                            <p className="text-sm">
+                                                {tanggal_bermain}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <table className="text-sm font-semibold">
+                                        <tbody>
+                                            <tr>
+                                                <td>Mulai</td>
+                                                <td className="pl-1">:</td>
+                                                <td className="px-1">
+                                                    {item.jam_mulai}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Selesai</td>
+                                                <td className="pl-1">:</td>
+                                                <td className="px-1">
+                                                    {item.jam_selesai}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="flex justify-end items-center">
+                                    {item.izinkan_permintaan_bergabung &&
+                                    item.user.id !== auth.user.id ? (
+                                        <button
+                                            onClick={() => {
+                                                setShowChat(true);
+                                                setChatChannel(
+                                                    item.chat_channel
+                                                );
+                                                setRecipientId(item.user.id);
+                                                setRecipientName(
+                                                    item.user.nama
+                                                );
+                                                setRecipientPhoto(
+                                                    item.user.url_foto
+                                                );
+                                            }}
+                                            className="bg-green-500 mt-3 text-white px-2 hover:bg-white hover:text-green-500 border border-white hover:border-green-500 py-1 rounded"
+                                        >
+                                            <IoChatboxEllipses className="inline-block mr-1" />
+                                            Chat
+                                        </button>
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })
+                ) : (
+                    <div className="bg-white shadow-lg rounded-lg p-4 text-stone-400">
+                        <h2 className="text-lg font-bold mb-4">
+                            Belum ada jadwal
+                        </h2>
+                        <a
+                            onClick={() => {
+                                router.get("/");
+                            }}
+                            className="bg-slate-500 py-1 px-2 rounded text-slate-50 cursor-pointer"
+                        >
+                            Kembali
+                        </a>
                     </div>
-                </div>
+                )}
             </div>
-            <Pagination
-                links={props.jadwal.links}
-                className="mt-6 fixed bottom-1"
-            />
-            <MyButton
-                href="/pilih-lapangan"
-                value="Kembali"
-                className="top-20 left-5 fixed z-40"
-            />
+            <Pagination links={links} className="mt-6 text-center" />
+
+            {chatChannel && (
+                <Draggable handle="drag-handle">
+                    <div
+                        className={`${
+                            showChat ? "block" : "hidden"
+                        } drag-handle fixed bg-sky-500 bottom-5 right-8 border border-slate-50 rounded-md py-4`}
+                    >
+                        <Chat
+                            chatChannel={chatChannel}
+                            senderId={auth.user.id}
+                            recipientId={recipientId}
+                            senderPhoto={auth.user.url_foto}
+                            recipientPhoto={recipientPhoto}
+                            senderName={auth.user.nama}
+                            recipientName={recipientName}
+                        />
+                        <button
+                            className="fixed -top-3 -right-3"
+                            onClick={() => {
+                                setShowChat(false);
+                            }}
+                        >
+                            <IoCloseCircle size="2em" />
+                        </button>
+                    </div>
+                </Draggable>
+            )}
         </div>
     );
 }

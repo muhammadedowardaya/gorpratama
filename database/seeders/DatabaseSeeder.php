@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         // \App\Models\AdminLapangan::factory(1)->create();
         \App\Models\TempatLapangan::factory(1)->create();
         \App\Models\Lapangan::factory(1)->create();
-        // \App\Models\Member::factory(1)->create();
+        \App\Models\Jadwal::factory(15)->create();
         // \App\Models\User::factory(1)->create();
 
         // \App\Models\User::factory()->create([
