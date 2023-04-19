@@ -1,12 +1,8 @@
 <?php
 
-use App\Http\Controllers\BookingController;
-use App\Http\Controllers\BookingScheduleController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\LapanganImageController;
 use App\Http\Controllers\TempatLapanganImage;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserImageController;
 use App\Models\Jadwal;
 use App\Models\TempatLapangan;
@@ -74,6 +70,7 @@ Route::get('/payment/Pending', function () {
 
 Route::put('/chat/mark-as-read/{chat_channel}', [ChatController::class, 'markAsRead']);
 Route::get('/chat/unread-conversations', [ChatController::class, 'getUnreadConversations']);
+Route::get('/chat/read-conversations', [ChatController::class, 'getReadConversations']);
 Route::get('/chat/unread-messages', [ChatController::class, 'getUnreadMessages']);
 Route::get('/chat/conversation/{user1Id}/{user2Id}', [ChatController::class, 'showConversation']);
 Route::post('chat/send-message', [ChatController::class, 'sendMessage']);

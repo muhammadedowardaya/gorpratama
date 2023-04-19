@@ -13,6 +13,7 @@ class Conversation extends Model
         'user_id',
         'recipient_id',
         'message',
+        'chat_channel',
     ];
 
     public function send($userId, $recipientId, $message)

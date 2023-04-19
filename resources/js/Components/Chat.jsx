@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { debounce } from "lodash";
 import { MdSend } from "react-icons/md";
+import moment from "moment";
+import "moment/locale/id";
 
 function Chat({
     chatChannel,
@@ -19,6 +21,7 @@ function Chat({
     const [user, setUser] = useState("");
 
     useEffect(() => {
+        console.info(chatChannel);
         // Inisialisasi Pusher
         const pusher = new Pusher("bda224757a06c9269de3", {
             cluster: "ap1",
@@ -51,7 +54,6 @@ function Chat({
                             conversation.user_id === senderId
                                 ? senderPhoto
                                 : recipientPhoto;
-
                         return {
                             ...conversation,
                             sender_id,
@@ -77,8 +79,6 @@ function Chat({
 
         getUser(senderId);
 
-        console.info(senderPhoto);
-
         return () => {
             // Unsubscribe dari channel dan matikan Pusher
             channel.unbind();
@@ -100,96 +100,163 @@ function Chat({
             axios.post("/api/chat/send-message", data).then((response) => {
                 setNewMessage("");
                 setSending(false);
+                console.info(response);
             });
         }
     }, 500);
 
-    return (
-        <div className="flex flex-col h-80 w-72 relative p-2">
-            <div className="flex flex-col h-full overflow-y-auto">
-                {messages.length > 0 ? (
-                    messages.map((message, index) => (
-                        <div
-                            className={`flex ${
-                                message.sender_id === senderId
-                                    ? " justify-start "
-                                    : " justify-end "
-                            } items-start mb-2`}
-                            key={index}
-                        >
-                            {message.sender_id === senderId && (
-                                <>
-                                    {message.sender_photo ? (
-                                        <img
-                                            className="w-8 h-8 rounded-full mr-2 object-cover"
-                                            src={message.sender_photo}
-                                            alt={`${message.sender_name}'s profile`}
-                                        />
-                                    ) : (
-                                        <div className="w-8 h-8 rounded-full mr-2 bg-gray-300" />
-                                    )}
-                                </>
-                            )}
-                            <div
-                                className={`${
-                                    message.sender_id === recipientId
-                                        ? "bg-green-500"
-                                        : "bg-gray-100"
-                                } rounded-md px-4 py-2 text-stone-600 max-w-xs break-all`}
-                                style={{
-                                    borderTopLeftRadius:
-                                        message.sender_id === recipientId
-                                            ? "20px"
-                                            : "0",
-                                    borderTopRightRadius:
-                                        message.sender_id === recipientId
-                                            ? "0"
-                                            : "10px",
-                                    borderBottomLeftRadius: "15px",
-                                    borderBottomRightRadius: "10px",
-                                }}
-                            >
-                                {message.message}
-                            </div>
+    const getDayLabel = (messageCreatedAt) => {
+        const now = moment().startOf("day");
+        const messageTime = moment(messageCreatedAt).startOf("day");
+        const differenceInDays = now.diff(messageTime, "days");
 
-                            {message.sender_id === recipientId && (
-                                <>
-                                    {recipientPhoto ? (
-                                        <img
-                                            className="w-8 h-8 rounded-full ml-2 object-cover"
-                                            src={recipientPhoto}
-                                            alt={`${recipientName}'s profile`}
-                                        />
-                                    ) : (
-                                        <div className="w-8 h-8 rounded-full ml-2 bg-gray-300" />
+        if (differenceInDays === 0) {
+            return "Hari ini";
+        } else if (differenceInDays === 1) {
+            return "Kemarin";
+        } else {
+            return messageTime.format("dddd");
+        }
+    };
+
+    return (
+        <div className="flex flex-col h-80 w-72 relative p-2 pb-10">
+            <div className="flex flex-col overflow-y-auto scrollbar-hide">
+                {messages.length > 0 ? (
+                    messages.map((message, index) => {
+                        const createdAt = moment(message.created_at).locale(
+                            "id"
+                        );
+                        const dayLabel = getDayLabel(message.created_at);
+                        let showDayLabel = true;
+
+                        if (index > 0) {
+                            const prevCreatedAt = moment(
+                                messages[index - 1].created_at
+                            ).startOf("day");
+                            const curCreatedAt = moment(
+                                message.created_at
+                            ).startOf("day");
+                            const dayDiff = curCreatedAt.diff(
+                                prevCreatedAt,
+                                "days"
+                            );
+
+                            if (dayDiff === 0) {
+                                showDayLabel = false;
+                            } else if (dayDiff === 1) {
+                                if (index > 1) {
+                                    const prevPrevCreatedAt = moment(
+                                        messages[index - 2].createdAt
+                                    ).startOf("day");
+                                    const prevDayDiff = prevCreatedAt.diff(
+                                        prevPrevCreatedAt,
+                                        "days"
+                                    );
+
+                                    if (prevDayDiff === 0) {
+                                        showDayLabel = false;
+                                    }
+                                }
+                            }
+                        }
+
+                        const time = createdAt.format("LT");
+
+                        return (
+                            <div key={index}>
+                                <div className="bg-sky-200 text-gray-600 w-max mx-auto rounded px-2 text-[0.7em] mb-2">
+                                    {showDayLabel ? dayLabel : null}
+                                </div>
+                                <div
+                                    className={`flex ${
+                                        message.sender_id === senderId
+                                            ? "justify-start "
+                                            : "justify-end "
+                                    } items-start mb-2`}
+                                >
+                                    {message.sender_id === senderId && (
+                                        <div className="flex-shrink-0 mr-2">
+                                            {message.sender_photo ? (
+                                                <img
+                                                    className="w-8 h-8 rounded-full object-cover border"
+                                                    src={message.sender_photo}
+                                                    alt={`${message.sender_name}'s profile`}
+                                                />
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-gray-300" />
+                                            )}
+                                        </div>
                                     )}
-                                </>
-                            )}
-                        </div>
-                    ))
+                                    <div
+                                        className={`${
+                                            message.sender_id === recipientId
+                                                ? "bg-green-500 text-gray-50"
+                                                : "bg-white text-stone-600"
+                                        } rounded-md px-4 py-2 max-w-md break-all shadow-md`}
+                                        style={{
+                                            borderTopLeftRadius:
+                                                message.sender_id ===
+                                                recipientId
+                                                    ? "20px"
+                                                    : "0",
+                                            borderTopRightRadius:
+                                                message.sender_id ===
+                                                recipientId
+                                                    ? "0"
+                                                    : "20px",
+                                            borderBottomLeftRadius: "20px",
+                                            borderBottomRightRadius: "20px",
+                                            wordBreak: "break-word",
+                                        }}
+                                    >
+                                        <div className="text-sm leading-4">
+                                            {message.message}
+                                        </div>
+                                        <div className="text-[0.6em] ml-auto mt-1">
+                                            {time}
+                                        </div>
+                                    </div>
+                                    {message.sender_id === recipientId && (
+                                        <div className="flex-shrink-0 ml-2">
+                                            {recipientPhoto ? (
+                                                <img
+                                                    className="w-8 h-8 rounded-full object-cover border"
+                                                    src={recipientPhoto}
+                                                    alt={`${recipientName}'s profile`}
+                                                />
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-gray-300" />
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })
                 ) : (
                     <p className="text-center my-auto">Belum ada percakapan</p>
                 )}
             </div>
 
-            <div className="flex fixed bottom-4 left-5">
+            <div className="flex fixed bottom-2 left-2">
                 <input
                     type="text"
-                    className="w-44 rounded border-gray-300 py-2 px-4 inline-block text-stone-600"
+                    className="w-52 rounded-full border-gray-300 py-0 my-0 px-4 inline-block text-stone-600"
                     placeholder="Type your message here"
                     value={newMessage}
                     onChange={(event) => setNewMessage(event.target.value)}
                     disabled={sending} // tambahkan prop disabled
                 />
                 <button
-                    className="ml-2 bg-green-500 rounded px-4 py-1 text-white inline-block"
+                    className="ml-2 bg-green-600 rounded-full w-10 h-10 text-white inline-block"
                     onClick={sendMessage}
                     disabled={sending}
                 >
                     {sending ? (
-                        <div className="loader ease-linear rounded-full border-2 border-t-2 border-gray-200 h-5 w-5"></div>
+                        <span className="animate-ping">...</span>
                     ) : (
-                        <MdSend size="2em" />
+                        <MdSend className="w-full" size="1.4em" />
                     )}
                 </button>
             </div>

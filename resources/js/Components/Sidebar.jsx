@@ -36,19 +36,24 @@ export default function Sidebar({ className, items }) {
         <div
             className={`navigation ${
                 className ?? ""
-            } z-10 hidden md:block border-l-[10px] border-sky-500 bg-sky-500 w-[40px] md:w-[80px]`}
+            } z-10 hidden md:block border-l-[10px] border-sky-500 bg-sky-500 w-[40px] md:w-[80px] max-h-[85vh]`}
         >
-            <ul>
+            <ul className=" overflow-y-auto scrollbar-hide">
                 {items.map((item, index) => (
                     <li key={index} className={`${requestIs(item.path)}`}>
                         <a onClick={item.onClick}>
-                            <span className="icon">{item.icon}</span>
-                            <span className="title">{item.title}</span>
+                            {item.custom_icon && item.custom_icon}
+                            {item.icon && (
+                                <span className="icon">{item.icon}</span>
+                            )}
+                            {item.title && (
+                                <span className="title">{item.title}</span>
+                            )}
                         </a>
                     </li>
                 ))}
             </ul>
-            <div className="sidebar-toggle"></div>
+            <div className="sidebar-toggle z-10"></div>
         </div>
     );
 }

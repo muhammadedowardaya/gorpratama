@@ -7,7 +7,7 @@ import Sidebar from "@/Components/Sidebar";
 import { IoClose, IoHome } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import Navbar from "@/Components/Navbar";
-import { FiLogOut, FiSkipForward } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 import { GiFootyField, GiSoccerField } from "react-icons/gi";
 import {
     AiFillSetting,
@@ -27,6 +27,8 @@ export default function Layout({ children, header, title }) {
     const [showModal, setShowModal] = useState(false);
     const [showCaraBooking, setShowCaraBooking] = useState(false);
     const [showCaraTemukanTeman, setCaraTemukanTeman] = useState(false);
+    // pesan belum terbaca
+    const [jumlahPesan, setJumlahPesan] = useState(0);
 
     async function getUser() {
         try {
@@ -54,7 +56,18 @@ export default function Layout({ children, header, title }) {
         setShow(false);
     }
 
+    async function getUnreadMessage() {
+        try {
+            const response = await axios.get("/api/chat/unread-conversations");
+            setJumlahPesan(response.data.jumlah_pesan);
+        } catch (error) {
+            console.info(error);
+        }
+    }
+
     useEffect(() => {
+        getUnreadMessage();
+
         const mode = localStorage.getItem("mode");
         if (mode === "dark") {
             if (!document.documentElement.classList.contains("dark")) {
@@ -78,6 +91,7 @@ export default function Layout({ children, header, title }) {
                 loader.classList.remove("!hidden");
                 pyramidLoader.classList.remove("hidden");
             }
+            getUnreadMessage();
         });
 
         router.on("finish", () => {
@@ -99,6 +113,7 @@ export default function Layout({ children, header, title }) {
             {user != null ? (
                 user.type == "admin" ? (
                     <Navbar
+                        jumlahPesan={jumlahPesan}
                         items={[
                             {
                                 path: "/",
@@ -124,6 +139,7 @@ export default function Layout({ children, header, title }) {
                     />
                 ) : (
                     <Navbar
+                        jumlahPesan={jumlahPesan}
                         items={[
                             {
                                 path: "/",
@@ -134,7 +150,25 @@ export default function Layout({ children, header, title }) {
                             {
                                 path: "/dashboard/pesan",
                                 onClick: () => router.get("/dashboard/pesan"),
-                                icon: <AiOutlineMessage size="1.5em" />,
+                                custom_icon: (
+                                    <div className="relative">
+                                        <AiOutlineMessage
+                                            className="text-md inline-block mr-4"
+                                            size="1.5em"
+                                        />
+                                        <span>Pesan</span>
+
+                                        <div
+                                            className={`${
+                                                jumlahPesan == 0
+                                                    ? "hidden"
+                                                    : "block"
+                                            } absolute -top-2 -right-8  bg-yellow-500 rounded-full w-6 h-6 text-white p-1 text-[0.8em] font-bold text-center`}
+                                        >
+                                            {jumlahPesan}
+                                        </div>
+                                    </div>
+                                ),
                                 title: "Pesan",
                             },
                             {
@@ -233,8 +267,23 @@ export default function Layout({ children, header, title }) {
                                     path: "/dashboard/pesan",
                                     onClick: () =>
                                         router.get("/dashboard/pesan"),
-                                    icon: <AiOutlineMessage className="mt-4" />,
-                                    title: "Pesan",
+                                    custom_icon: (
+                                        <div className="relative">
+                                            <AiOutlineMessage
+                                                className="m-4"
+                                                size="2em"
+                                            />
+                                            <div
+                                                className={`${
+                                                    jumlahPesan == 0
+                                                        ? "hidden"
+                                                        : "block"
+                                                } absolute top-2 right-1 bg-yellow-400 rounded-full w-5 h-5 text-white p-0 text-[0.9em] font-bold text-center`}
+                                            >
+                                                {jumlahPesan}
+                                            </div>
+                                        </div>
+                                    ),
                                 },
                                 {
                                     path: "/dashboard/pesanan",

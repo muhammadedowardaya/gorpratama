@@ -4,11 +4,13 @@ use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TempatLapanganController;
 use App\Http\Controllers\TransaksiController;
+use App\Models\Conversation;
 use App\Models\Jadwal;
 use App\Models\Lapangan;
 use App\Models\TempatLapangan;
 use App\Models\Transaksi;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -86,6 +88,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
     })->name('dashboard');
 
+    Route::get('/dashboard/pesan', function () {
+        return  Inertia::render('Dashboard/User/Pesan');
+    });
 
     // Dashboard pesanan
     Route::get('/dashboard/pesanan', function () {

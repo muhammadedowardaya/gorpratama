@@ -4,7 +4,7 @@ import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import { router } from "@inertiajs/react";
 
-export default function Navbar({ className, items }) {
+export default function Navbar({ className, items, jumlahPesan }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const [user, setUser] = useState({
@@ -197,9 +197,16 @@ export default function Navbar({ className, items }) {
                             </div>
                             <div className="-mr-2 flex md:hidden">
                                 <button
-                                    className="inline-flex items-center justify-center p-2 text-slate-50 rounded-md hover:border focus:outline-none focus:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                                    className="inline-flex relative items-center justify-center p-2 text-slate-50 rounded-md hover:border focus:outline-none focus:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                                     onClick={() => setIsOpen(!isOpen)}
                                 >
+                                    {jumlahPesan !== 0 ? (
+                                        <span className="absolute -top-1 -right-1 text-[0.7em] bg-yellow-500 w-4 h-4 rounded-full">
+                                            {jumlahPesan}
+                                        </span>
+                                    ) : (
+                                        ""
+                                    )}
                                     <span className="sr-only">
                                         Open main menu
                                     </span>
@@ -310,14 +317,20 @@ export default function Navbar({ className, items }) {
                                                                           item.path
                                                                       )}`}
                                                                   >
-                                                                      {
-                                                                          item.icon
-                                                                      }
-                                                                      <span className="text-base font-medium hover:text-white">
-                                                                          {
-                                                                              item.title
-                                                                          }
-                                                                      </span>
+                                                                      {item.custom_icon &&
+                                                                          item.custom_icon}
+                                                                      {item.icon && (
+                                                                          <>
+                                                                              {
+                                                                                  item.icon
+                                                                              }
+                                                                              <span className="text-base font-medium hover:text-white">
+                                                                                  {
+                                                                                      item.title
+                                                                                  }
+                                                                              </span>
+                                                                          </>
+                                                                      )}
                                                                   </button>
                                                               );
                                                           }

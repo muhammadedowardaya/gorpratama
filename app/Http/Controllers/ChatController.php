@@ -8,6 +8,7 @@ use App\Models\Chat;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Pusher\Pusher;
 
 class ChatController extends Controller
@@ -15,22 +16,23 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $message = $request->message;
+        // $message = $request->message;
 
-        // Simpan pesan ke database
-        $conversation = Conversation::create([
-            'user_id' => $request->sender_id,
-            'recipient_id' => $request->recipient_id,
-            'message' => $message,
-        ]);
+        // // Simpan pesan ke database
+        // $conversation = Conversation::create([
+        //     'user_id' => $request->sender_id,
+        //     'recipient_id' => $request->recipient_id,
+        //     'message' => $message,
+        //     'chat_channel' => $request->channel
+        // ]);
 
-        // Kirim pesan ke Pusher
-        event(new ChatEvent($message, $request->channel, $request->sender_id));
+        // // Kirim pesan ke Pusher
+        // event(new ChatEvent($message, $request->channel, $request->sender_id));
 
-        // Kirim balasan ke pengguna lain di channel yang sama
-        broadcast(new ChatEvent($message, $request->channel, $request->recipient_id))->toOthers();
+        // // Kirim balasan ke pengguna lain di channel yang sama
+        // broadcast(new ChatEvent($message, $request->channel, $request->recipient_id))->toOthers();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => $request->channel]);
     }
 
     public function showConversation($userId, $recipientId)
@@ -51,12 +53,30 @@ class ChatController extends Controller
 
     public function getUnreadConversations(Request $request)
     {
-        $unreadConversations = Conversation::where('recipient_id', $request->user()->id)
+        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
             ->whereNull('read_at')
-            ->groupBy('chat_channel')
+            ->orderBy('created_at', 'desc')
             ->get();
+        $groupByChatChannel = $unreadConversations->groupBy('chat_channel');
+        $jumlahPesan = $unreadConversations->count();
 
-        return response()->json(['unread_conversations' => $unreadConversations]);
+        return response()->json([
+            'pesan_group' => $groupByChatChannel,
+            'jumlah_pesan' => $jumlahPesan,
+        ]);
+    }
+
+    public function getReadConversations(Request $request)
+    {
+        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
+            ->whereNotNull('read_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $groupByChatChannel = $unreadConversations->groupBy('chat_channel');
+
+        return response()->json([
+            'pesan_group' => $groupByChatChannel,
+        ]);
     }
 
     public function getUnreadMessages(Request $request, $chatChannel)

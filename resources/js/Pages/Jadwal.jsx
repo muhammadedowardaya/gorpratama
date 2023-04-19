@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Layout from "@/Layouts/Layout";
+import Loading from "@/Components/Loading";
 import Pagination from "@/Components/Pagination";
 import Chat from "@/Components/Chat";
 import moment from "moment";
@@ -17,9 +18,9 @@ export default function Jadwal(props) {
     const [recipientId, setRecipientId] = useState("");
     const [recipientName, setRecipientName] = useState("");
     const [recipientPhoto, setRecipientPhoto] = useState("");
-    const [showLoading, setShowLoading] = useState(true);
-
     const { auth } = usePage().props;
+
+    const [showLoading, setShowLoading] = useState(true);
 
     async function getJadwal() {
         try {
@@ -54,6 +55,14 @@ export default function Jadwal(props) {
 
     return (
         <div className="flex flex-col items-center">
+            <div className="text-sm breadcrumbs">
+                <ul>
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>Temukan Teman</li>
+                </ul>
+            </div>
             <h1 className="text-2xl font-bold md:mt-2 text-center mb-4">
                 Jadwal Bermain
             </h1>

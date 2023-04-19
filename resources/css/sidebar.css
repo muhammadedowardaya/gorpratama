@@ -10,7 +10,6 @@
     overflow: hidden;
     box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.5);
     transition: 0.5s;
-    height: 80vh;
 }
 
 .navigation.active {

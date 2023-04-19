@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('recipient_id');
+            $table->string('chat_channel');
             $table->text('message');
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
