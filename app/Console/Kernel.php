@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cache:prune-stale-tags')->hourly();
         $schedule->call('App\Http\Controllers\JadwalController@hapusJadwalSewaLewatWaktu')
             ->daily();
+        $schedule->command('jadwal:remove-expired')->hourly();
     }
 
     /**

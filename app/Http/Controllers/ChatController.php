@@ -16,23 +16,25 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request)
     {
-        // $message = $request->message;
+        $message = $request->message;
 
-        // // Simpan pesan ke database
-        // $conversation = Conversation::create([
-        //     'user_id' => $request->sender_id,
-        //     'recipient_id' => $request->recipient_id,
-        //     'message' => $message,
-        //     'chat_channel' => $request->channel
-        // ]);
+        // Simpan pesan ke database
+        $conversation = Conversation::create([
+            'message' => $message,
+            'chat_channel' => $request->channel,
+            'user_id' => $request->sender_id,
+
+            'recipient_id' => $request->recipient_id,
+            'tanggal' => $request->tanggal
+        ]);
 
         // // Kirim pesan ke Pusher
-        // event(new ChatEvent($message, $request->channel, $request->sender_id));
+        event(new ChatEvent($message, $request->channel, $request->sender_id));
 
         // // Kirim balasan ke pengguna lain di channel yang sama
-        // broadcast(new ChatEvent($message, $request->channel, $request->recipient_id))->toOthers();
+        broadcast(new ChatEvent($message, $request->channel, $request->recipient_id))->toOthers();
 
-        return response()->json(['success' => $request->channel]);
+        return response()->json(['success' => true]);
     }
 
     public function showConversation($userId, $recipientId)

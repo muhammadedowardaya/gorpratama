@@ -9,6 +9,7 @@ import { IoChatboxEllipses, IoCloseCircle } from "react-icons/io5";
 import { router, usePage } from "@inertiajs/react";
 import { debounce } from "lodash";
 import Draggable from "react-draggable";
+import axios from "axios";
 
 export default function Jadwal(props) {
     const [chatChannel, setChatChannel] = useState("");
@@ -18,9 +19,11 @@ export default function Jadwal(props) {
     const [recipientId, setRecipientId] = useState("");
     const [recipientName, setRecipientName] = useState("");
     const [recipientPhoto, setRecipientPhoto] = useState("");
+    const [tanggal, setTanggal] = useState("");
     const { auth } = usePage().props;
 
     const [showLoading, setShowLoading] = useState(true);
+    const [showLoadingChat, setShowLoadingChat] = useState(true);
 
     async function getJadwal() {
         try {
@@ -30,6 +33,8 @@ export default function Jadwal(props) {
                 response.data.jadwal.data.length > 0
             ) {
                 setJadwal(response.data.jadwal.data);
+                setShowLoading(false);
+            } else {
                 setShowLoading(false);
             }
             if (
@@ -51,11 +56,11 @@ export default function Jadwal(props) {
         }
 
         debouncedGetJadwal();
-    }, [showChat]);
+    }, [recipientId]);
 
     return (
         <div className="flex flex-col items-center">
-            <div className="text-sm breadcrumbs">
+            <div className="text-sm md:text-lg breadcrumbs self-start">
                 <ul>
                     <li>
                         <a href="/">Home</a>
@@ -120,6 +125,7 @@ export default function Jadwal(props) {
                                         <button
                                             onClick={() => {
                                                 setShowChat(true);
+                                                setTanggal(item.tanggal);
                                                 setChatChannel(
                                                     item.chat_channel
                                                 );
@@ -164,9 +170,14 @@ export default function Jadwal(props) {
             {chatChannel && (
                 <Draggable handle="drag-handle">
                     <div
-                        className={`${
-                            showChat ? "block" : "hidden"
-                        } drag-handle fixed bg-sky-500 bottom-5 right-8 border border-slate-50 rounded-md py-4`}
+                        className={`block drag-handle fixed border-r  bottom-5 right-8 border border-slate-50 rounded-md py-4 bg-opacity-20`}
+                        style={{
+                            backgroundImage: `url(${
+                                import.meta.env.BASE_URL
+                            }assets/background/bg-chat-3-min.jpg)`,
+                            backgroundRepeat: "repeat",
+                            backgroundSize: "contain",
+                        }}
                     >
                         <Chat
                             chatChannel={chatChannel}
@@ -176,14 +187,18 @@ export default function Jadwal(props) {
                             recipientPhoto={recipientPhoto}
                             senderName={auth.user.nama}
                             recipientName={recipientName}
+                            tanggal={tanggal}
                         />
                         <button
-                            className="fixed -top-3 -right-3"
+                            className="fixed -top-3 -right-3 z-50"
                             onClick={() => {
                                 setShowChat(false);
                             }}
                         >
-                            <IoCloseCircle size="2em" />
+                            <IoCloseCircle
+                                size="2em"
+                                className="fill-gray-800 bg-gray-50 rounded-full p-0"
+                            />
                         </button>
                     </div>
                 </Draggable>

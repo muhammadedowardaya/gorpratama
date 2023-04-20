@@ -17,7 +17,7 @@ class Jadwal extends Model
 
     protected $table = 'jadwal';
 
-    protected $fillable = ['user_id', 'lapangan_id', 'status_transaksi', 'tanggal', 'jam_mulai', 'jam_selesai', 'izinkan_permintaan_bergabung'];
+    protected $fillable = ['user_id', 'lapangan_id', 'chat_channel', 'status_transaksi', 'tanggal', 'jam_mulai', 'jam_selesai', 'izinkan_permintaan_bergabung'];
 
     protected $attributes = [
         'status_transaksi' => self::PENDING,

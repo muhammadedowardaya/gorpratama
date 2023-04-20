@@ -10,6 +10,7 @@ import Navbar from "@/Components/Navbar";
 import { FiLogOut } from "react-icons/fi";
 import { GiFootyField, GiSoccerField } from "react-icons/gi";
 import {
+    AiFillFacebook,
     AiFillSetting,
     AiOutlineCalendar,
     AiOutlineMessage,
@@ -29,6 +30,12 @@ export default function Layout({ children, header, title }) {
     const [showCaraTemukanTeman, setCaraTemukanTeman] = useState(false);
     // pesan belum terbaca
     const [jumlahPesan, setJumlahPesan] = useState(0);
+    // untuk profile gor
+    const [gor, setGor] = useState({
+        nama: "",
+        url_logo: "",
+        deskripsi: "",
+    });
 
     async function getUser() {
         try {
@@ -65,6 +72,18 @@ export default function Layout({ children, header, title }) {
         }
     }
 
+    async function getDataGor() {
+        const response = await axios.get("/api/get-profile-gor");
+        if (response.data["tempat-lapangan"] != null) {
+            setGor((prevData) => ({
+                ...prevData,
+                nama: response.data["tempat-lapangan"].nama,
+                url_logo: response.data["tempat-lapangan"].url_logo,
+                deskripsi: response.data["tempat-lapangan"].deskripsi,
+            }));
+        }
+    }
+
     useEffect(() => {
         getUnreadMessage();
 
@@ -78,6 +97,7 @@ export default function Layout({ children, header, title }) {
         }
 
         fetchData();
+        getDataGor();
 
         // -------------------
         const loader = window.document.getElementById("loader");
@@ -100,7 +120,7 @@ export default function Layout({ children, header, title }) {
                 pyramidLoader.classList.add("hidden");
             }
         });
-    }, []);
+    }, [gor.deskripsi]);
 
     return (
         <div className="relative min-h-screen bg-fixed bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
@@ -270,9 +290,10 @@ export default function Layout({ children, header, title }) {
                                     custom_icon: (
                                         <div className="relative">
                                             <AiOutlineMessage
-                                                className="m-4"
+                                                className="m-4 inline-block"
                                                 size="2em"
                                             />
+                                            <span className="ml-1">Pesan</span>
                                             <div
                                                 className={`${
                                                     jumlahPesan == 0
@@ -367,14 +388,20 @@ export default function Layout({ children, header, title }) {
                                 <div className="flex w-full md:w-1/2">
                                     <div className="px-8">
                                         <h3 className="font-bold ">About</h3>
-                                        <p className="py-4  text-sm">
-                                            Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit.
-                                            Maecenas vel mi ut felis tempus
-                                            commodo nec id erat. Suspendisse
-                                            consectetur dapibus velit ut
-                                            lacinia.
-                                        </p>
+                                        {gor.deskripsi != "" ? (
+                                            <p className="py-4  text-sm">
+                                                {gor.deskripsi}
+                                            </p>
+                                        ) : (
+                                            <p className="py-4  text-sm">
+                                                Lorem ipsum dolor sit amet,
+                                                consectetur adipiscing elit.
+                                                Maecenas vel mi ut felis tempus
+                                                commodo nec id erat. Suspendisse
+                                                consectetur dapibus velit ut
+                                                lacinia.
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -385,25 +412,14 @@ export default function Layout({ children, header, title }) {
                                             <li>
                                                 <a
                                                     className="inline-block  no-underline hover:underline py-1"
-                                                    href="#"
+                                                    href="https://m.facebook.com/people/GOR-Pratama-situdaun/100077457724522/"
+                                                    target="_blank"
                                                 >
-                                                    Add social link
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a
-                                                    className="inline-block  no-underline hover:underline py-1"
-                                                    href="#"
-                                                >
-                                                    Add social link
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a
-                                                    className="inline-block  no-underline hover:underline py-1"
-                                                    href="#"
-                                                >
-                                                    Add social link
+                                                    <AiFillFacebook
+                                                        className="inline-block"
+                                                        size="1.8em"
+                                                    />
+                                                    Facebook
                                                 </a>
                                             </li>
                                         </ul>

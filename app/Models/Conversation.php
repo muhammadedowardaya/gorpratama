@@ -12,18 +12,10 @@ class Conversation extends Model
     protected $fillable = [
         'user_id',
         'recipient_id',
+        'tanggal',
         'message',
         'chat_channel',
     ];
-
-    public function send($userId, $recipientId, $message)
-    {
-        return $this->create([
-            'user_id' => $userId,
-            'recipient_id' => $recipientId,
-            'message' => $message,
-        ]);
-    }
 
     public function sender()
     {
@@ -33,21 +25,5 @@ class Conversation extends Model
     public function recipient()
     {
         return $this->belongsTo(User::class, 'recipient_id');
-    }
-
-    public static function unreadMessages($userId)
-    {
-        return Conversation::where('recipient_id', $userId)->whereNull('read_at')->count();
-    }
-
-    public static function getUnreadConversations($userId)
-    {
-        return Conversation::where('recipient_id', $userId)->whereNull('read_at')->get();
-    }
-
-    public function markAsRead()
-    {
-        $this->read_at = now();
-        $this->save();
     }
 }

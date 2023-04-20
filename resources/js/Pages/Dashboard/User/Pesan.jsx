@@ -14,6 +14,18 @@ function Pesan() {
     const [chatChannel, setChatChannel] = useState("");
     const [showChat, setShowChat] = useState(false);
     const [showLoading, setShowLoading] = useState(true);
+    const [tanggal, setTanggal] = useState("");
+
+    function delay() {
+        return new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    async function synchronousDelayShowChat() {
+        setShowChat(false);
+        await delay();
+        setShowChat(true);
+    }
+
     // untuk isi properti komponen chat
     const [recipientId, setRecipientId] = useState("");
     const [recipientName, setRecipientName] = useState("");
@@ -48,9 +60,9 @@ function Pesan() {
     }, [recipientId]);
 
     return (
-        <div className="p-4 text-gray-800">
+        <div className="p-4 text-gray-800 body-pesan">
             <div className="flex items-center justify-between mb-4">
-                <h1 className="text-lg font-bold text-white">Pesan</h1>
+                <h1 className="text-2xl font-bold text-white">Pesan</h1>
             </div>
             <h2
                 className={`text-gray-50 text-center border-b border-1 border-white mb-4 ${
@@ -66,7 +78,7 @@ function Pesan() {
                           <div
                               key={index}
                               onClick={() => {
-                                  setShowChat(true);
+                                  synchronousDelayShowChat();
                                   setShowLoading(true);
                                   axios
                                       .put(
@@ -148,8 +160,9 @@ function Pesan() {
                     ? pesanGroupDibaca.map((pesan, index) => (
                           <div
                               key={index}
-                              onClick={() => {
-                                  setShowChat(true);
+                              onClick={(e) => {
+                                  e.preventDefault();
+                                  synchronousDelayShowChat();
                                   setShowLoading(true);
                                   axios
                                       .put(
@@ -158,6 +171,7 @@ function Pesan() {
                                       .then((response) => {
                                           setShowLoading(false);
                                           setChatChannel(pesan[0].chat_channel);
+                                          setTanggal(pesan[0].tanggal);
                                           setRecipientId(pesan[0].sender.id);
                                           setRecipientName(
                                               pesan[0].sender.nama
@@ -220,9 +234,9 @@ function Pesan() {
                     : ""}
             </ul>
             {showChat && (
-                <Draggable handle="drag-handle">
+                <Draggable handle=".drag">
                     <div
-                        className={`block drag-handle fixed border-r  bottom-5 right-8 border border-slate-50 rounded-md py-4 bg-opacity-20`}
+                        className={`block drag fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
                         style={{
                             backgroundImage: `url(${
                                 import.meta.env.BASE_URL
@@ -233,6 +247,7 @@ function Pesan() {
                     >
                         <Chat
                             chatChannel={chatChannel}
+                            tanggal={tanggal}
                             senderId={auth.user.id}
                             recipientId={recipientId}
                             senderPhoto={auth.user.url_foto}
@@ -243,7 +258,8 @@ function Pesan() {
 
                         <button
                             className="fixed -top-3 -right-3 z-50"
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.preventDefault();
                                 setShowChat(false);
                             }}
                         >
@@ -253,7 +269,7 @@ function Pesan() {
                             />
                         </button>
                         <div
-                            className={`absolute top-0 bottom-0 left-0 right-0 bg-gray-800 text-gray-50 ${
+                            className={`absolute z-20 top-0 bottom-0 left-0 right-0 bg-gray-800 text-gray-50 ${
                                 showLoading ? "flex" : "hidden"
                             } justify-center items-center`}
                         >

@@ -14,14 +14,17 @@ function Chat({
     senderPhoto,
     recipientName,
     senderName,
+    tanggal,
 }) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [sending, setSending] = useState(false);
     const [user, setUser] = useState("");
 
+    const [today, setToday] = useState(moment());
+    const [date, setDate] = useState(moment(tanggal));
+
     useEffect(() => {
-        console.info(chatChannel);
         // Inisialisasi Pusher
         const pusher = new Pusher("bda224757a06c9269de3", {
             cluster: "ap1",
@@ -95,12 +98,12 @@ function Chat({
                 channel: chatChannel,
                 sender_id: senderId,
                 recipient_id: recipientId,
+                tanggal: tanggal,
             };
 
             axios.post("/api/chat/send-message", data).then((response) => {
                 setNewMessage("");
                 setSending(false);
-                console.info(response);
             });
         }
     }, 500);
@@ -120,7 +123,11 @@ function Chat({
     };
 
     return (
-        <div className="flex flex-col h-80 w-72 relative p-2 pb-10">
+        <div
+            className={`flex flex-col h-80 sm:h-96 sm:w-72 w-60 relative p-2 sm:pb-12 pb-[3.2rem] ${
+                date.isSameOrAfter(today, "day") ? "" : "pt-14"
+            }`}
+        >
             <div className="flex flex-col overflow-y-auto scrollbar-hide">
                 {messages.length > 0 ? (
                     messages.map((message, index) => {
@@ -242,7 +249,7 @@ function Chat({
             <div className="flex fixed bottom-2 left-2">
                 <input
                     type="text"
-                    className="w-52 rounded-full border-gray-300 py-0 my-0 px-4 inline-block text-stone-600"
+                    className="sm:w-52 w-44 rounded-full border-gray-300 py-0 my-0 px-4 inline-block text-stone-600"
                     placeholder="Type your message here"
                     value={newMessage}
                     onChange={(event) => setNewMessage(event.target.value)}
@@ -260,6 +267,16 @@ function Chat({
                     )}
                 </button>
             </div>
+            {date.isSameOrAfter(today, "day") ? (
+                ""
+            ) : (
+                <div className="absolute top-0 left-0 right-0 h-14 bg-gray-900 flex justify-center items-center rounded-md">
+                    <p className="text-gray-400 leading-4 text-sm text-center p-2">
+                        Jadwal Booking sudah terlewat, kalau kamu masih mau
+                        chattan ya silahkan wkwk
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

@@ -46,20 +46,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('bookings')->group(function () {
-        Route::get('', [BookingController::class, 'index'])->name('bookings.index');
-        Route::get('{id}', [BookingController::class, 'show'])->name('bookings.show');
-        Route::post('{id}/join', [BookingController::class, 'join'])->name('bookings.join');
-        Route::post('{id}/leave', [BookingController::class, 'leave'])->name('bookings.leave');
-        Route::post('{id}/messages', [BookingController::class, 'sendMessage'])->name('bookings.sendMessage');
-    });
-});
-
-Route::get('/booking-schedules', [BookingScheduleController::class, 'index'])->name('booking-schedules.index');
-Route::post('/booking-schedules', [BookingScheduleController::class, 'store'])->name('booking-schedules.store');
-Route::post('/booking-schedules/{schedule}/messages', [BookingScheduleMessageController::class, 'store'])->name('booking-schedules.messages.store');
-Route::post('/booking-schedules/{schedule}/join', [BookingScheduleController::class, 'join'])->name('booking-schedules.join');
 
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('/find', function () {
