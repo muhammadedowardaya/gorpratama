@@ -68,7 +68,7 @@ export default function Layout({ children, header, title }) {
             const response = await axios.get("/api/chat/unread-conversations");
             setJumlahPesan(response.data.jumlah_pesan);
         } catch (error) {
-            console.info(error);
+            // console.info(error);
         }
     }
 

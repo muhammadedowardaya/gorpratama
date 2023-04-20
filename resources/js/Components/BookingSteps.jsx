@@ -13,10 +13,7 @@ export default function BookingSteps() {
                 <div>
                     <p className="py-4">Tekan tombol "Booking"</p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/1.png"
-                        }
+                        src={`assets/images/cara_booking_lapangan/1.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -24,10 +21,7 @@ export default function BookingSteps() {
                         Setelah itu pilih lapangan yang akan di booking
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/2.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/2.png"}
                         alt="cara booking lapangan"
                     />
                 </div>
@@ -43,10 +37,7 @@ export default function BookingSteps() {
                         selesai
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/3.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/3.png"}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -55,10 +46,7 @@ export default function BookingSteps() {
                         sekarang"
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/5.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/5.png"}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -80,10 +68,7 @@ export default function BookingSteps() {
                         ini jika dirasa tidak dibutuhkan.
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/4.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/4.png"}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -103,10 +88,7 @@ export default function BookingSteps() {
                         anda dapat menekan tombol "konfirmasi"
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/6.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/6.png"}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -118,10 +100,7 @@ export default function BookingSteps() {
                         Pembayaran"
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/7.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/7.png"}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -132,10 +111,7 @@ export default function BookingSteps() {
                         pembayaran, anda dapat menekan "Lihat jadwal saya".
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/8.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/8.png"}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -145,10 +121,7 @@ export default function BookingSteps() {
                         melakukan booking lapangan badminton
                     </p>
                     <img
-                        src={
-                            import.meta.env.BASE_URL +
-                            "assets/images/cara_booking_lapangan/9.png"
-                        }
+                        src={"assets/images/cara_booking_lapangan/9.png"}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
