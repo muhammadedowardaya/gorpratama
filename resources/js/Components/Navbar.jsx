@@ -67,13 +67,15 @@ export default function Navbar({ className, items, jumlahPesan }) {
                             <div className="flex items-center">
                                 <div className="flex-shrink-0">
                                     <img
-                                        className="w-10 h-10 object-cover border border-slate-100 inline-block"
+                                        className="w-10 h-10 rounded-full object-cover border-2 border-slate-100 inline-block"
                                         src={gor.url_logo}
-                                        alt="Workflow"
+                                        alt="Logo Gor"
                                     />
-                                    <span className="ml-4">{gor.nama}</span>
+                                    <h1 className="ml-4 font-bold inline-block">
+                                        {gor.nama}
+                                    </h1>
                                 </div>
-                                <div className="hidden md:block">
+                                {/* <div className="hidden md:block">
                                     <div className="flex items-baseline ml-10 space-x-4">
                                         <a
                                             href="#"
@@ -103,9 +105,9 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                             Contact
                                         </a>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
-                            <div className="hidden md:block">
+                            {/* <div className="hidden md:block">
                                 <div className="flex items-center ml-4 md:ml-6">
                                     <button className="p-1 text-gray-400 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                         <span className="sr-only">
@@ -194,7 +196,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                         </Menu>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="-mr-2 flex md:hidden">
                                 <button
                                     className="inline-flex relative items-center justify-center p-2 text-slate-50 rounded-md hover:border focus:outline-none focus:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -262,13 +264,13 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                         <div className="flex items-center justify-between">
                                             <div className="whitespace-normal">
                                                 <img
-                                                    className="w-10 h-10 object-cover inline-block"
+                                                    className="w-10 h-10 object-cover inline-block rounded-full  border-2 border-white"
                                                     src={gor.url_logo}
                                                     alt="Logo"
                                                 />
-                                                <span className="ml-2 break-all inline-block">
+                                                <h1 className="ml-2 break-all inline-block font-extrabold">
                                                     {gor.nama}
-                                                </span>
+                                                </h1>
                                             </div>
                                             <div className="-mr-2">
                                                 <button

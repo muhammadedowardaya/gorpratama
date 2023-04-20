@@ -288,12 +288,14 @@ export default function Layout({ children, header, title }) {
                                     onClick: () =>
                                         router.get("/dashboard/pesan"),
                                     custom_icon: (
-                                        <div className="relative">
+                                        <div className="relative inline-block whitespace-nowrap">
                                             <AiOutlineMessage
                                                 className="m-4 inline-block"
                                                 size="2em"
                                             />
-                                            <span className="ml-1">Pesan</span>
+                                            <span className="ml-1 whitespace-nowrap">
+                                                Pesan
+                                            </span>
                                             <div
                                                 className={`${
                                                     jumlahPesan == 0

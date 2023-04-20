@@ -168,9 +168,11 @@ export default function Booking(props) {
         if (Array.isArray(jadwal) && jadwal.length > 0) {
             for (let i = 0; i < jadwal.length; i++) {
                 if (
-                    (jadwal[i].tanggal == data.tanggal &&
+                    (moment(jadwal[i].tanggal).format("DD-MM-Y") ==
+                        data.tanggal_main &&
                         jadwal[i].jam_mulai == data.jam_mulai) ||
-                    (jadwal[i].tanggal == data.tanggal &&
+                    (moment(jadwal[i].tanggal).format("DD-MM-Y") ==
+                        data.tanggal_main &&
                         jadwal[i].jam_selesai == data.jam_selesai)
                 ) {
                     ada_jadwal = true;
@@ -231,6 +233,7 @@ export default function Booking(props) {
                 });
             }
         } else {
+            setShow(false);
             Swal.fire(
                 "Ada Jadwal!",
                 "Silahkan pilih 'lihat jadwal' untuk melihatnya",
