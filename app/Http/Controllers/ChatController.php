@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ChatEvent;
 use App\Events\ChatSent;
+use App\Events\ChatUpdated;
 use App\Models\Chat;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
@@ -99,5 +100,14 @@ class ChatController extends Controller
             ->update(['read_at' => now()]);
 
         return response()->json(['success' => true]);
+    }
+
+    public function update(Request $request, Conversation $chat)
+    {
+        $chat->update($request->all());
+
+        event(new ChatUpdated($chat));
+
+        return response()->json($chat);
     }
 }

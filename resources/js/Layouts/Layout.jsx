@@ -20,6 +20,8 @@ import Loading from "@/Components/Loading";
 import { MdFindInPage, MdLocalGroceryStore } from "react-icons/md";
 import { FaCalendarAlt, FaQuestionCircle } from "react-icons/fa";
 import BookingSteps from "@/Components/BookingSteps";
+import runOneSignal from "@/utils/runOneSignal";
+import OneSignal from "react-onesignal";
 
 export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
@@ -67,6 +69,17 @@ export default function Layout({ children, header, title }) {
         try {
             const response = await axios.get("/api/chat/unread-conversations");
             setJumlahPesan(response.data.jumlah_pesan);
+            if (response.data.jumlah_pesan > 0) {
+                OneSignal.sendNotification({
+                    headings: {
+                        en: "Pesan Baru",
+                    },
+                    contents: {
+                        en: `Anda memiliki ${jumlahPesan} pesan baru`,
+                    },
+                    url: "https://gorpratama.site/dashboard/pesan",
+                });
+            }
         } catch (error) {
             // console.info(error);
         }
@@ -85,7 +98,29 @@ export default function Layout({ children, header, title }) {
     }
 
     useEffect(() => {
-        getUnreadMessage();
+        // Inisialisasi Pusher
+        const pusher = new Pusher("bda224757a06c9269de3", {
+            cluster: "ap1",
+            encrypted: true,
+        });
+
+        // Subscribe ke channel chat
+        const channel = pusher.subscribe("chat");
+
+        channel.bind("App\\Events\\ChatUpdated", () => {
+            axios
+                .get("/api/chat/unread-conversations")
+                .then((response) => {
+                    // console.log(response.data);
+                    // Lakukan sesuatu dengan data yang diterima dari server
+                    getUnreadMessage();
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        });
+
+        runOneSignal();
 
         const mode = localStorage.getItem("mode");
         if (mode === "dark") {

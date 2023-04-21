@@ -156,7 +156,6 @@ export default function Booking(props) {
         table.addEventListener("touchstart", (event) => {
             isDragging = true;
             lastX = event.touches[0].clientX;
-            event.preventDefault();
         });
 
         table.addEventListener("touchend", () => {

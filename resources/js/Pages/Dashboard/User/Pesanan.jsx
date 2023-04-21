@@ -51,7 +51,6 @@ export default function Pesanan(props) {
         table.addEventListener("touchstart", (event) => {
             isDragging = true;
             lastX = event.touches[0].clientX;
-            event.preventDefault();
         });
 
         table.addEventListener("touchend", () => {
@@ -128,7 +127,7 @@ export default function Pesanan(props) {
                                               "EXPIRED" ? (
                                                 <a
                                                     href="/dashboard/jadwal"
-                                                    className="border-b border-spacing-1 border-slate-700 relative  p-1 pr-3"
+                                                    className="border-b border-spacing-1 border-slate-700 relative  p-1 pr-3 z-10"
                                                 >
                                                     <AiFillSchedule
                                                         className="inline-block mr-1 relative top-0"
