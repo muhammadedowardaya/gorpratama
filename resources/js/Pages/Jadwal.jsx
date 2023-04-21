@@ -172,9 +172,7 @@ export default function Jadwal(props) {
                     <div
                         className={`block drag-handle fixed border-r  bottom-5 right-8 border border-slate-50 rounded-md py-4 bg-opacity-20`}
                         style={{
-                            backgroundImage: `url(${
-                                import.meta.env.BASE_URL
-                            }assets/background/bg-chat-3-min.jpg)`,
+                            backgroundImage: `assets/background/bg-chat-3-min.jpg)`,
                             backgroundRepeat: "repeat",
                             backgroundSize: "contain",
                         }}

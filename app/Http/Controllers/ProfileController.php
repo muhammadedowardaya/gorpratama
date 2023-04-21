@@ -82,10 +82,10 @@ class ProfileController extends Controller
 
         if ($foto = request()->file('foto')) {
             $nama_foto = Str::random(5) . "_" . $request->slug . "." . $foto->getClientOriginalExtension();
-            $foto->storePubliclyAs('tempat-lapangan', $nama_foto, 'public');
-            $url_foto = '/api/tempat-lapangan/image/' . $nama_foto;
+            $foto->storePubliclyAs('user', $nama_foto, 'public');
+            $url_foto = '/api/user/image/' . $nama_foto;
 
-            Storage::delete(public_path('\storage\tempat-lapangan\\' . $user->foto));
+            Storage::delete(public_path('\storage\user\\' . $user->foto));
         } else {
             $nama_foto = $user->foto;
             $url_foto = $user->url_foto;
