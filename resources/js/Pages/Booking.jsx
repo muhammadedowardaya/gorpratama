@@ -153,6 +153,25 @@ export default function Booking(props) {
             lastX = event.clientX;
         });
 
+        table.addEventListener("touchstart", (event) => {
+            isDragging = true;
+            lastX = event.touches[0].clientX;
+            event.preventDefault();
+        });
+
+        table.addEventListener("touchend", () => {
+            isDragging = false;
+        });
+
+        table.addEventListener("touchmove", (event) => {
+            if (isDragging) {
+                const deltaX = event.touches[0].clientX - lastX;
+                const containerScrollLeft = table.parentElement.scrollLeft;
+                table.parentElement.scrollLeft = containerScrollLeft - deltaX;
+            }
+            lastX = event.touches[0].clientX;
+        });
+
         updateData();
     }, [
         data.jam_mulai,

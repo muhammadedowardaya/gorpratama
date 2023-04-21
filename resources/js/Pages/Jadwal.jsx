@@ -59,7 +59,7 @@ export default function Jadwal(props) {
     }, [recipientId]);
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
             <div className="text-sm md:text-lg breadcrumbs self-start">
                 <ul>
                     <li>
@@ -92,7 +92,7 @@ export default function Jadwal(props) {
                                             className="object-cover object-center w-10 h-10 inline-block rounded-full mt-1"
                                         />
                                         <div className="ml-2">
-                                            <h2 className="text-lg font-bold inline-block p-0">
+                                            <h2 className="text-sm font-bold inline-block p-0">
                                                 {item.user.nama}
                                             </h2>
                                             <p className="text-sm">

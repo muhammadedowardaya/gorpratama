@@ -89,11 +89,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 $invoice = null;
                 $transaksi = null;
             } else {
-                $invoice_id = $transaksi[0]['invoice_id'];
+                $external_id = $transaksi[0]['external_id'];
                 $secret_key = 'Basic ' . config('xendit.key_auth');
                 $response = Http::withHeaders([
                     'Authorization' => $secret_key
-                ])->get("https://api.xendit.co/v2/invoices?user_id=$invoice_id");
+                ])->get("https://api.xendit.co/v2/invoices?user_id=$external_id");
                 $invoice =  $response->object();
             }
 

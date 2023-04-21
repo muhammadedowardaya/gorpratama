@@ -35,6 +35,25 @@ export default function Jadwal(props) {
             }
             lastX = event.clientX;
         });
+
+        table.addEventListener("touchstart", (event) => {
+            isDragging = true;
+            lastX = event.touches[0].clientX;
+            event.preventDefault();
+        });
+
+        table.addEventListener("touchend", () => {
+            isDragging = false;
+        });
+
+        table.addEventListener("touchmove", (event) => {
+            if (isDragging) {
+                const deltaX = event.touches[0].clientX - lastX;
+                const containerScrollLeft = table.parentElement.scrollLeft;
+                table.parentElement.scrollLeft = containerScrollLeft - deltaX;
+            }
+            lastX = event.touches[0].clientX;
+        });
     }, []);
 
     return (
@@ -55,7 +74,7 @@ export default function Jadwal(props) {
                             <th>Jam Selesai</th>
                         </tr>
                     </thead>
-                    <tbody className="overflow-hidden">
+                    <tbody className="overflow-auto scrollbar-hide">
                         {props.jadwal.length !== 0 ? (
                             props.jadwal.map((item, index) => {
                                 // const tanggal_booking = moment(
