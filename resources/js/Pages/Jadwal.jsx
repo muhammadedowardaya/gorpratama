@@ -167,12 +167,12 @@ export default function Jadwal(props) {
             </div>
             <Pagination links={links} className="mt-6 text-center" />
 
-            {chatChannel && (
-                <Draggable handle="drag-handle">
+            {showChat && (
+                <Draggable handle=".drag">
                     <div
-                        className={`block drag-handle fixed border-r  bottom-5 right-8 border border-slate-50 rounded-md py-4 bg-opacity-20`}
+                        className={`block drag fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
                         style={{
-                            backgroundImage: `assets/background/bg-chat-3-min.jpg)`,
+                            backgroundImage: `url(/assets/background/bg-chat-3-min.jpg)`,
                             backgroundRepeat: "repeat",
                             backgroundSize: "contain",
                         }}

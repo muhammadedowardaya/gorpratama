@@ -5,8 +5,8 @@ window.Pusher = Pusher;
 
 export default new Echo({
     broadcaster: "pusher",
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    key: "bda224757a06c9269de3",
+    cluster: "ap1",
     forceTLS: true,
     authEndpoint: "/broadcasting/auth",
     auth: {

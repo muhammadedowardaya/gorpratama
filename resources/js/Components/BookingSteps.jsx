@@ -13,7 +13,9 @@ export default function BookingSteps() {
                 <div>
                     <p className="py-4">Tekan tombol "Booking"</p>
                     <img
-                        src={`assets/images/cara_booking_lapangan/1.png`}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/1.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -21,7 +23,9 @@ export default function BookingSteps() {
                         Setelah itu pilih lapangan yang akan di booking
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/2.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/2.png`}
                         alt="cara booking lapangan"
                     />
                 </div>
@@ -37,7 +41,9 @@ export default function BookingSteps() {
                         selesai
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/3.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/3.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -46,7 +52,9 @@ export default function BookingSteps() {
                         sekarang"
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/5.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/5.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -68,7 +76,9 @@ export default function BookingSteps() {
                         ini jika dirasa tidak dibutuhkan.
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/4.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/4.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -88,7 +98,9 @@ export default function BookingSteps() {
                         anda dapat menekan tombol "konfirmasi"
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/6.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/6.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -100,7 +112,9 @@ export default function BookingSteps() {
                         Pembayaran"
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/7.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/7.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -111,7 +125,9 @@ export default function BookingSteps() {
                         pembayaran, anda dapat menekan "Lihat jadwal saya".
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/8.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/8.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -121,7 +137,9 @@ export default function BookingSteps() {
                         melakukan booking lapangan badminton
                     </p>
                     <img
-                        src={"assets/images/cara_booking_lapangan/9.png"}
+                        src={`${
+                            import.meta.env.VITE_APP_URL
+                        }/assets/images/cara_booking_lapangan/9.png`}
                         alt="cara booking lapangan"
                         className="mb-4"
                     />
@@ -167,7 +185,7 @@ export default function BookingSteps() {
     }, [currentStep, showArrow]);
 
     return (
-        <div className="flex container-content flex-col flex-wrap h-[80vh] md:w-[90vw] w-[80vw] select-none">
+        <div className="flex container-content flex-col flex-wrap h-[70vh] md:w-[90vw] w-[80vw] select-none">
             <div className="flex flex-col md:flex-row justify-between md:items-center items-start">
                 {steps.map((step, index) => (
                     <div
