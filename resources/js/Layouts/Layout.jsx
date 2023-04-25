@@ -45,9 +45,10 @@ export default function Layout({ children, header, title }) {
             if (response.ok) {
                 const data = await response.json();
                 return data.user;
-            } else {
-                throw new Error("Terjadi kesalahan dalam mengambil data user");
             }
+            // else {
+            //     // throw new Error("Terjadi kesalahan dalam mengambil data user");
+            // }
         } catch (error) {
             if (error instanceof Error && error.status === 500) {
                 // Tindakan yang diambil ketika terjadi Internal Server Error

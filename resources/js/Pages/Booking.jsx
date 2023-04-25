@@ -407,7 +407,7 @@ export default function Booking(props) {
                             </div>
 
                             <div className="mt-4">
-                                <div className="grid grid-cols-2 gap-2 max-w-[200px]">
+                                <div className="grid grid-cols-2 gap-2 max-w-[300px]">
                                     <Label
                                         className="text-slate-700"
                                         forInput="jam"
@@ -437,8 +437,12 @@ export default function Booking(props) {
                                                 : false
                                         }
                                         minuteStep={5}
-                                        value={data.jam_mulai_value}
+                                        value={
+                                            data.jam_mulai_value ??
+                                            moment(new Date()).format()
+                                        }
                                         size="large"
+                                        tabIndex="0"
                                     />
                                     <TimePicker
                                         format="HH:mm"
@@ -460,6 +464,8 @@ export default function Booking(props) {
                                         minuteStep={5}
                                         value={data.jam_selesai_value}
                                         size="large"
+                                        tabIndex="0"
+                                        autoFocus={true}
                                     />
                                 </div>
                             </div>

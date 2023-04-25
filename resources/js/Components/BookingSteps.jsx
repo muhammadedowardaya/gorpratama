@@ -17,7 +17,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/1.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                     <p className="py-4">
                         Setelah itu pilih lapangan yang akan di booking
@@ -27,6 +27,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/2.png`}
                         alt="cara booking lapangan"
+                        className="md:w-2/3"
                     />
                 </div>
             ),
@@ -45,7 +46,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/3.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                     <p className="py-4">
                         Jika sudah seleai, anda dapat menekan tombol "pesan
@@ -56,7 +57,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/5.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                 </div>
             ),
@@ -80,7 +81,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/4.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                 </div>
             ),
@@ -102,7 +103,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/6.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                     <p className="pb-4">
                         Setelah anda menekan "konfirmasi", anda akan diarahkan
@@ -116,7 +117,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/7.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                     <p className="pb-4">
                         Setelah anda menekan tombol "Selesaikan Pembayaran",
@@ -129,7 +130,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/8.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                     <p className="pb-4">
                         Pada halaman "Jadwal saya" akan terdapat jadwal yang
@@ -141,7 +142,7 @@ export default function BookingSteps() {
                             import.meta.env.VITE_APP_URL
                         }/assets/images/cara_booking_lapangan/9.png`}
                         alt="cara booking lapangan"
-                        className="mb-4"
+                        className="mb-4 md:w-2/3"
                     />
                 </div>
             ),
@@ -185,7 +186,7 @@ export default function BookingSteps() {
     }, [currentStep, showArrow]);
 
     return (
-        <div className="flex container-content flex-col flex-wrap h-[70vh] md:w-[90vw] w-[80vw] select-none">
+        <div className="flex container-content flex-col flex-wrap h-[70vh] md:w-[70vw] w-[80vw] select-none">
             <div className="flex flex-col md:flex-row justify-between md:items-center items-start">
                 {steps.map((step, index) => (
                     <div
@@ -222,7 +223,7 @@ export default function BookingSteps() {
             </div>
             <div
                 id="step-content"
-                className="w-full scrollbar-hide md:w-1/2 text-gray-800 p-4 flex-1 overflow-y-scroll"
+                className="w-full scrollbar-hide self-center text-gray-800 p-4 flex-1 overflow-y-scroll"
             >
                 {steps[currentStep - 1].content}
             </div>

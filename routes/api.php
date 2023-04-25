@@ -29,7 +29,7 @@ use Inertia\Inertia;
 // });
 
 Route::apiResource('tempat-lapangan/image', TempatLapanganImage::class);
-Route::apiResource('lapangan/image', LapanganImageController::class);
+Route::get('lapangan/image/{nama_file}', [LapanganImageController::class, 'show']);
 
 
 Route::get('/user/image/{image}', [UserImageController::class, 'showImage'])->name('user.image.show');
@@ -52,12 +52,12 @@ Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
     return response()->json([
         'jadwal' => $jadwal
     ]);
-})->name('jadwal.show');
+});
 
 Route::get('/image/{lapangan}', function ($nama_file) {
     $image =   public_path('\storage\images\\' . $nama_file);
     return Response::file($image);
-})->name('jadwal.show');
+});
 
 
 Route::get('/payment/success', function () {

@@ -10,6 +10,7 @@ import { router, usePage } from "@inertiajs/react";
 import { debounce } from "lodash";
 import Draggable from "react-draggable";
 import axios from "axios";
+import { GiMove } from "react-icons/gi";
 
 export default function Jadwal(props) {
     const [chatChannel, setChatChannel] = useState("");
@@ -137,6 +138,20 @@ export default function Jadwal(props) {
                                                     item.user.url_foto
                                                 );
                                             }}
+                                            onTouchStart={() => {
+                                                setShowChat(true);
+                                                setTanggal(item.tanggal);
+                                                setChatChannel(
+                                                    item.chat_channel
+                                                );
+                                                setRecipientId(item.user.id);
+                                                setRecipientName(
+                                                    item.user.nama
+                                                );
+                                                setRecipientPhoto(
+                                                    item.user.url_foto
+                                                );
+                                            }}
                                             className="bg-green-500 mt-3 text-white px-2 hover:bg-white hover:text-green-500 border border-white hover:border-green-500 py-1 rounded"
                                         >
                                             <IoChatboxEllipses className="inline-block mr-1" />
@@ -168,9 +183,9 @@ export default function Jadwal(props) {
             <Pagination links={links} className="mt-6 text-center" />
 
             {showChat && (
-                <Draggable handle=".drag">
+                <Draggable handle=".drag" cancel=".chat">
                     <div
-                        className={`block drag fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
+                        className={`block fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
                         style={{
                             backgroundImage: `url(/assets/background/bg-chat-3-min.jpg)`,
                             backgroundRepeat: "repeat",
@@ -178,6 +193,7 @@ export default function Jadwal(props) {
                         }}
                     >
                         <Chat
+                            className="chat"
                             chatChannel={chatChannel}
                             senderId={auth.user.id}
                             recipientId={recipientId}
@@ -192,8 +208,17 @@ export default function Jadwal(props) {
                             onClick={() => {
                                 setShowChat(false);
                             }}
+                            onTouchStart={() => {
+                                setShowChat(false);
+                            }}
                         >
                             <IoCloseCircle
+                                size="2em"
+                                className="fill-gray-800 bg-gray-50 rounded-full p-0"
+                            />
+                        </button>
+                        <button className="fixed -top-3 -left-3 z-50 drag">
+                            <GiMove
                                 size="2em"
                                 className="fill-gray-800 bg-gray-50 rounded-full p-0"
                             />

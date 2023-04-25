@@ -2,12 +2,13 @@ import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Draggable from "react-draggable";
-import { GiChatBubble } from "react-icons/gi";
+import { GiChatBubble, GiMove } from "react-icons/gi";
 import { IoChatboxOutline, IoCloseCircle } from "react-icons/io5";
 import moment from "moment";
 import Layout from "@/Layouts/Layout";
 import Chat from "@/Components/Chat";
 import TruncateText from "@/Components/TruncateText";
+import { FiMove } from "react-icons/fi";
 
 function Pesan() {
     // untuk komponen chat
@@ -134,7 +135,7 @@ function Pesan() {
                                   <div>
                                       <span className="text-[0.7em] mr-1 pl-2">
                                           {moment(pesan[0].created_at).format(
-                                              "HH:m"
+                                              "HH:mm"
                                           )}
                                       </span>
                                       {pesan.length > 0 && (
@@ -219,7 +220,7 @@ function Pesan() {
                                   <div>
                                       <span className="text-[0.7em] mr-1">
                                           {moment(pesan[0].created_at).format(
-                                              "HH:m"
+                                              "HH:mm"
                                           )}
                                       </span>
                                       {/* {pesan.length > 0 && (
@@ -234,9 +235,9 @@ function Pesan() {
                     : ""}
             </ul>
             {showChat && (
-                <Draggable handle=".drag">
+                <Draggable handle=".drag" cancel=".chat">
                     <div
-                        className={`block drag fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
+                        className={`block fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
                         style={{
                             backgroundImage: `url(${
                                 import.meta.env.VITE_APP_URL
@@ -246,6 +247,7 @@ function Pesan() {
                         }}
                     >
                         <Chat
+                            className="chat"
                             chatChannel={chatChannel}
                             tanggal={tanggal}
                             senderId={auth.user.id}
@@ -264,6 +266,12 @@ function Pesan() {
                             }}
                         >
                             <IoCloseCircle
+                                size="2em"
+                                className="fill-red-600 bg-gray-50 rounded-full p-0"
+                            />
+                        </button>
+                        <button className="fixed -top-3 -left-3 z-50 drag">
+                            <GiMove
                                 size="2em"
                                 className="fill-gray-800 bg-gray-50 rounded-full p-0"
                             />

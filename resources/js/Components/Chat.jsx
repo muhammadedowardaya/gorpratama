@@ -15,6 +15,8 @@ function Chat({
     recipientName,
     senderName,
     tanggal,
+    id,
+    className,
 }) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -124,7 +126,8 @@ function Chat({
 
     return (
         <div
-            className={`flex flex-col h-80 sm:h-96 sm:w-72 w-60 relative p-2 sm:pb-12 pb-[3.2rem] ${
+            id={id}
+            className={`${className} flex flex-col h-80 sm:h-96 sm:w-72 w-60 relative p-2 sm:pb-12 pb-[3.2rem] ${
                 date.isSameOrAfter(today, "day") ? "" : "pt-14"
             }`}
         >
@@ -254,10 +257,12 @@ function Chat({
                     value={newMessage}
                     onChange={(event) => setNewMessage(event.target.value)}
                     disabled={sending} // tambahkan prop disabled
+                    tabIndex="0"
                 />
                 <button
                     className="ml-2 bg-green-600 rounded-full w-10 h-10 text-white inline-block"
                     onClick={sendMessage}
+                    onTouchStart={sendMessage}
                     disabled={sending}
                 >
                     {sending ? (
