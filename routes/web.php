@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\MessageEvent;
 use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TempatLapanganController;
@@ -35,6 +36,16 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+
+Route::get('/test', function (Request $request) {
+    $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
+        ->whereNull('read_at')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    dd($unreadConversations[0]->sender);
+});
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

@@ -43,7 +43,9 @@ function Chat({
 
         // Ambil data percakapan dari server
         axios
-            .get(`/api/chat/conversation/${senderId}/${recipientId}`)
+            .get(
+                `/api/chat/conversation/${senderId}/${recipientId}/${chatChannel}`
+            )
             .then((response) => {
                 const conversations = response.data.conversations.map(
                     (conversation) => {

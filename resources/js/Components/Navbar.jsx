@@ -39,9 +39,9 @@ export default function Navbar({ className, items, jumlahPesan }) {
         const response = await axios.get("/api/get-user");
         setUser((prevData) => ({
             ...prevData,
-            nama: response.data.user.nama,
-            email: response.data.user.email,
-            url_foto: response.data.user.url_foto,
+            nama: response.data.user.nama ?? "",
+            email: response.data.user.email ?? "",
+            url_foto: response.data.user.url_foto ?? "",
         }));
     }
 

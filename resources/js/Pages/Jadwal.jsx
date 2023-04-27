@@ -5,12 +5,16 @@ import Loading from "@/Components/Loading";
 import Pagination from "@/Components/Pagination";
 import Chat from "@/Components/Chat";
 import moment from "moment";
-import { IoChatboxEllipses, IoCloseCircle } from "react-icons/io5";
+import {
+    IoChatboxEllipses,
+    IoCloseCircle,
+    IoMegaphoneOutline,
+} from "react-icons/io5";
 import { router, usePage } from "@inertiajs/react";
 import { debounce } from "lodash";
 import Draggable from "react-draggable";
 import axios from "axios";
-import { GiMove } from "react-icons/gi";
+import { GiMove, GiSpeaker } from "react-icons/gi";
 
 export default function Jadwal(props) {
     const [chatChannel, setChatChannel] = useState("");
@@ -57,6 +61,8 @@ export default function Jadwal(props) {
         }
 
         debouncedGetJadwal();
+
+        console.info(chatChannel);
     }, [recipientId]);
 
     return (
@@ -120,7 +126,22 @@ export default function Jadwal(props) {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="flex justify-end items-center">
+                                <div
+                                    className={`flex items-center ${
+                                        item.pesan != null
+                                            ? "justify-between mt-3"
+                                            : "justify-end"
+                                    }`}
+                                >
+                                    {item.pesan != null ? (
+                                        <p className="shadow-md rounded-md text-sm bg-[#B9EDDD] px-2 py-1 leading-4 w-[65%]">
+                                            <IoMegaphoneOutline className="inline-block mr-2" />
+                                            {item.pesan}
+                                        </p>
+                                    ) : (
+                                        ""
+                                    )}
+
                                     {item.izinkan_permintaan_bergabung &&
                                     item.user.id !== auth.user.id ? (
                                         <button
@@ -152,7 +173,9 @@ export default function Jadwal(props) {
                                                     item.user.url_foto
                                                 );
                                             }}
-                                            className="bg-green-500 mt-3 text-white px-2 hover:bg-white hover:text-green-500 border border-white hover:border-green-500 py-1 rounded"
+                                            className={`${
+                                                item.pesan != null ? "" : "mt-3"
+                                            } bg-green-500 text-white px-2 hover:bg-white hover:text-green-500 border border-white hover:border-green-500 py-1 rounded`}
                                         >
                                             <IoChatboxEllipses className="inline-block mr-1" />
                                             Chat
@@ -185,7 +208,7 @@ export default function Jadwal(props) {
             {showChat && (
                 <Draggable handle=".drag" cancel=".chat">
                     <div
-                        className={`block fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
+                        className={`block fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 select-none`}
                         style={{
                             backgroundImage: `url(/assets/background/bg-chat-3-min.jpg)`,
                             backgroundRepeat: "repeat",

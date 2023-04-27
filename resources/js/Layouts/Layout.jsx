@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import "../../css/layout.css";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import "../modules/csrf.js";
 import Sidebar from "@/Components/Sidebar";
-import { IoClose, IoHome } from "react-icons/io5";
+import { IoClose, IoHome, IoNotificationsSharp } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import Navbar from "@/Components/Navbar";
 import { FiLogOut } from "react-icons/fi";
@@ -23,9 +23,13 @@ import BookingSteps from "@/Components/BookingSteps";
 import runOneSignal from "@/utils/runOneSignal";
 import OneSignal from "react-onesignal";
 
+import Pusher from "pusher-js";
+import Swal from "sweetalert2";
+
 export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
     const [show, setShow] = useState(true);
+    const { auth } = usePage().props;
     // state untuk menampilkan atau menyembunyikan modal
     const [showModal, setShowModal] = useState(false);
     const [showCaraBooking, setShowCaraBooking] = useState(false);
@@ -66,25 +70,40 @@ export default function Layout({ children, header, title }) {
         setShow(false);
     }
 
-    async function getUnreadMessage() {
+    function showNotification(isi_pesan, sender_photo) {
+        if (Notification.permission === "granted") {
+            const notification = new Notification("Pesan Baru", {
+                body: isi_pesan,
+                icon: sender_photo,
+            });
+
+            notification.onclick = function () {
+                window.focus();
+            };
+        }
+    }
+
+    const getUnreadMessage = useCallback(async () => {
         try {
             const response = await axios.get("/api/chat/unread-conversations");
             setJumlahPesan(response.data.jumlah_pesan);
+
             if (response.data.jumlah_pesan > 0) {
-                OneSignal.sendNotification({
-                    headings: {
-                        en: "Pesan Baru",
-                    },
-                    contents: {
-                        en: `Anda memiliki ${jumlahPesan} pesan baru`,
-                    },
-                    url: "https://gorpratama.site/dashboard/pesan",
-                });
+                //     // OneSignal.sendNotification({
+                //     //     headings: {
+                //     //         en: "Pesan Baru",
+                //     //     },
+                //     //     contents: {
+                //     //         en: `Anda memiliki ${response.data.jumlah_pesan} pesan baru`,
+                //     //     },
+                //     //     url: "https://gorpratama.site/dashboard/pesan",
+                //     // });
+                //     runOneSignal();
             }
         } catch (error) {
-            // console.info(error);
+            console.error(error);
         }
-    }
+    }, [showNotification]);
 
     async function getDataGor() {
         const response = await axios.get("/api/get-profile-gor");
@@ -99,30 +118,31 @@ export default function Layout({ children, header, title }) {
     }
 
     useEffect(() => {
-        // Inisialisasi Pusher
-        const pusher = new Pusher("bda224757a06c9269de3", {
-            cluster: "ap1",
-            encrypted: true,
-        });
-
-        // Subscribe ke channel chat
-        const channel = pusher.subscribe("chat");
-
-        channel.bind("App\\Events\\ChatUpdated", () => {
-            axios
-                .get("/api/chat/unread-conversations")
-                .then((response) => {
-                    // console.log(response.data);
-                    // Lakukan sesuatu dengan data yang diterima dari server
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === "granted") {
+                    // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
                     getUnreadMessage();
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+                }
+            });
+        } else {
+            // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
+            getUnreadMessage();
+        }
+
+        window.Echo.channel("messages").listen("MessageEvent", (event) => {
+            // Periksa apakah pengguna saat ini adalah penerima pesan
+            if (event.recipient_id === auth.user.id) {
+                // Tampilkan notifikasi ketika ada pesan baru
+                showNotification(
+                    `${event.sender.nama} : ${event.message}`,
+                    event.sender.url_foto
+                );
+                setJumlahPesan(event.unread_message_total);
+                runOneSignal();
+            }
         });
-
-        runOneSignal();
-
+        // console.info(`${pesan.sender.nama} : ${pesan[0].message}`);
         const mode = localStorage.getItem("mode");
         if (mode === "dark") {
             if (!document.documentElement.classList.contains("dark")) {
@@ -147,7 +167,6 @@ export default function Layout({ children, header, title }) {
                 loader.classList.remove("!hidden");
                 pyramidLoader.classList.remove("hidden");
             }
-            getUnreadMessage();
         });
 
         router.on("finish", () => {

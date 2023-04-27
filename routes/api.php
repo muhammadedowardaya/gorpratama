@@ -4,6 +4,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LapanganImageController;
 use App\Http\Controllers\TempatLapanganImage;
 use App\Http\Controllers\UserImageController;
+use App\Models\Conversation;
 use App\Models\Jadwal;
 use App\Models\TempatLapangan;
 use App\Models\User;
@@ -28,6 +29,7 @@ use Inertia\Inertia;
 //     return $request->user();
 // });
 
+
 Route::apiResource('tempat-lapangan/image', TempatLapanganImage::class);
 Route::get('lapangan/image/{nama_file}', [LapanganImageController::class, 'show']);
 
@@ -46,7 +48,10 @@ Route::get('/jadwal', function () {
 });
 
 Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
-    $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+    $jadwal = Jadwal::with('user')
+        ->where('status_transaksi', 0)
+        ->where('lapangan_id', $lapangan_id)
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
         ->paginate(8);;
     return response()->json([
@@ -75,6 +80,7 @@ Route::get('/chat/unread-conversations', [ChatController::class, 'getUnreadConve
 Route::get('/chat/read-conversations', [ChatController::class, 'getReadConversations']);
 Route::get('/chat/unread-messages', [ChatController::class, 'getUnreadMessages']);
 Route::get('/chat/conversation/{user1Id}/{user2Id}', [ChatController::class, 'showConversation']);
+Route::get('/chat/conversation/{user1Id}/{user2Id}/{channel}', [ChatController::class, 'showConversationByChannel']);
 Route::post('chat/send-message', [ChatController::class, 'sendMessage']);
 
 Route::get('/get-user', function () {

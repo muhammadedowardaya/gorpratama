@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ChatEvent;
 use App\Events\ChatSent;
 use App\Events\ChatUpdated;
+use App\Events\MessageEvent;
 use App\Models\Chat;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
@@ -35,6 +36,12 @@ class ChatController extends Controller
         // // Kirim balasan ke pengguna lain di channel yang sama
         broadcast(new ChatEvent($message, $request->channel, $request->recipient_id))->toOthers();
 
+        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
+            ->whereNull('read_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        MessageEvent::dispatch($request->recipient_id, $unreadConversations[0]->sender, $unreadConversations[0]->message, $unreadConversations->count());
+
         return response()->json(['success' => true]);
     }
 
@@ -44,6 +51,22 @@ class ChatController extends Controller
             $query->where('user_id', $userId)->where('recipient_id', $recipientId);
         })->orWhere(function ($query) use ($userId, $recipientId) {
             $query->where('user_id', $recipientId)->where('recipient_id', $userId);
+        })->orderBy('created_at', 'asc')->get();
+
+        foreach ($conversations as $conversation) {
+            $conversation->sender = $conversation->sender;
+            $conversation->recipient = $conversation->recipient;
+        }
+
+        return response()->json(['conversations' => $conversations]);
+    }
+
+    public function showConversationByChannel($userId, $recipientId, $chatChannel)
+    {
+        $conversations = Conversation::where(function ($query) use ($userId, $recipientId, $chatChannel) {
+            $query->where('user_id', $userId)->where('recipient_id', $recipientId)->where('chat_channel', $chatChannel);
+        })->orWhere(function ($query) use ($userId, $recipientId, $chatChannel) {
+            $query->where('user_id', $recipientId)->where('recipient_id', $userId)->where('chat_channel', $chatChannel);
         })->orderBy('created_at', 'asc')->get();
 
         foreach ($conversations as $conversation) {
@@ -66,16 +89,17 @@ class ChatController extends Controller
         return response()->json([
             'pesan_group' => $groupByChatChannel,
             'jumlah_pesan' => $jumlahPesan,
+            'pesan' => $unreadConversations
         ]);
     }
 
     public function getReadConversations(Request $request)
     {
-        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
+        $readConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
             ->whereNotNull('read_at')
             ->orderBy('created_at', 'desc')
             ->get();
-        $groupByChatChannel = $unreadConversations->groupBy('chat_channel');
+        $groupByChatChannel = $readConversations->groupBy('chat_channel');
 
         return response()->json([
             'pesan_group' => $groupByChatChannel,
@@ -100,14 +124,5 @@ class ChatController extends Controller
             ->update(['read_at' => now()]);
 
         return response()->json(['success' => true]);
-    }
-
-    public function update(Request $request, Conversation $chat)
-    {
-        $chat->update($request->all());
-
-        event(new ChatUpdated($chat));
-
-        return response()->json($chat);
     }
 }

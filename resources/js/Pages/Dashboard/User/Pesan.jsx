@@ -58,182 +58,212 @@ function Pesan() {
     useEffect(() => {
         getUnreadMessage();
         getReadMessage();
+        window.Echo.channel("messages").listen("MessageEvent", (event) => {
+            getUnreadMessage();
+            getReadMessage();
+        });
     }, [recipientId]);
 
     return (
-        <div className="p-4 text-gray-800 body-pesan">
+        <div className="p-4 text-gray-800 w-max">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold text-white">Pesan</h1>
             </div>
-            <h2
-                className={`text-gray-50 text-center border-b border-1 border-white mb-4 ${
+            <div
+                className={`bg-[#B9EDDD] p-4 rounded ${
                     pesanGroupBelumDibaca.length > 0 ? "" : "hidden"
                 }`}
             >
-                Pesan belum dibaca
-            </h2>
-            <ul>
-                {Array.isArray(pesanGroupBelumDibaca) &&
-                pesanGroupBelumDibaca.length > 0
-                    ? pesanGroupBelumDibaca.map((pesan, index) => (
-                          <div
-                              key={index}
-                              onClick={() => {
-                                  synchronousDelayShowChat();
-                                  setShowLoading(true);
-                                  axios
-                                      .put(
-                                          `/api/chat/mark-as-read/${pesan[0].chat_channel}`
-                                      )
-                                      .then((response) => {
-                                          setShowLoading(false);
-                                          setChatChannel(pesan[0].chat_channel);
-                                          setRecipientId(pesan[0].sender.id);
-                                          setRecipientName(
-                                              pesan[0].sender.nama
-                                          );
-                                          setRecipientPhoto(
-                                              pesan[0].sender.url_foto
-                                          );
-                                      })
-                                      .catch((error) => {
-                                          console.info(error);
-                                      });
-                              }}
-                          >
-                              <div className="text-gray-50">
-                                  Channel :{" "}
-                                  <span className="bg-yellow-400 text-gray-800 px-1">
-                                      {pesan[0].chat_channel}
-                                  </span>
-                              </div>
-                              <div className="flex justify-between md:w-[500px] items-center bg-gray-100 hover:bg-gray-200 shadow px-2 py-1 rounded cursor-pointer select-none">
-                                  <div className="flex items-center">
-                                      <img
-                                          src={pesan[0].sender.url_foto}
-                                          alt="sender photo"
-                                          className="w-10 h-10 rounded-full border border-gray-300 mr-2 object-cover object-center"
-                                      />
+                <h2 className={` text-center mb-4`}>Pesan belum dibaca</h2>
+                <hr className="border-slate-700" />
+                <ul>
+                    {Array.isArray(pesanGroupBelumDibaca) &&
+                    pesanGroupBelumDibaca.length > 0
+                        ? pesanGroupBelumDibaca.map((pesan, index) => (
+                              <div
+                                  key={index}
+                                  onClick={() => {
+                                      synchronousDelayShowChat();
+                                      setShowLoading(true);
+                                      axios
+                                          .put(
+                                              `/api/chat/mark-as-read/${pesan[0].chat_channel}`
+                                          )
+                                          .then((response) => {
+                                              setShowLoading(false);
+                                              setChatChannel(
+                                                  pesan[0].chat_channel
+                                              );
+                                              setRecipientId(
+                                                  pesan[0].sender.id
+                                              );
+                                              setRecipientName(
+                                                  pesan[0].sender.nama
+                                              );
+                                              setRecipientPhoto(
+                                                  pesan[0].sender.url_foto
+                                              );
+                                          })
+                                          .catch((error) => {
+                                              console.info(error);
+                                          });
+                                  }}
+                              >
+                                  <div className="mt-4">
+                                      Channel :{" "}
+                                      <span className="bg-yellow-400 text-gray-800 px-1">
+                                          {pesan[0].chat_channel}
+                                      </span>
+                                  </div>
+                                  <div className="flex justify-between w-[80vw] md:w-[500px] items-center bg-gray-100 hover:bg-gray-200 shadow px-2 py-1 rounded cursor-pointer select-none">
+                                      <div className="flex items-center">
+                                          <img
+                                              src={pesan[0].sender.url_foto}
+                                              alt="sender photo"
+                                              className="w-10 h-10 rounded-full border border-gray-300 mr-2 object-cover object-center"
+                                          />
+                                          <div>
+                                              <p className="font-extrabold text-[0.8em] sm:text-base">
+                                                  {pesan[0].sender.nama}
+                                              </p>
+                                              <span className="text-slate-500 text-sm sm:text-base sm:hidden">
+                                                  <TruncateText
+                                                      text={pesan[0].message}
+                                                      limit={15}
+                                                  />
+                                              </span>
+                                              <span className="text-slate-500 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
+                                                  <TruncateText
+                                                      text={pesan[0].message}
+                                                      limit={50}
+                                                  />
+                                              </span>
+                                          </div>
+                                      </div>
                                       <div>
-                                          <p className="font-extrabold text-[0.8em] sm:text-base">
-                                              {pesan[0].sender.nama}
-                                          </p>
-                                          <span className="text-slate-500 text-sm sm:text-base sm:hidden">
-                                              <TruncateText
-                                                  text={pesan[0].message}
-                                                  limit={15}
-                                              />
+                                          <span className="text-[0.7em] mr-1 pl-2">
+                                              {moment(
+                                                  pesan[0].created_at
+                                              ).format("HH:mm")}
                                           </span>
-                                          <span className="text-slate-500 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
-                                              <TruncateText
-                                                  text={pesan[0].message}
-                                                  limit={50}
-                                              />
-                                          </span>
+                                          {pesan.length > 0 && (
+                                              <div className="ml-3 font-bold bg-sky-500 text-sm w-5 h-5 text-center text-white rounded-full">
+                                                  {pesan.length}
+                                              </div>
+                                          )}
                                       </div>
                                   </div>
-                                  <div>
-                                      <span className="text-[0.7em] mr-1 pl-2">
-                                          {moment(pesan[0].created_at).format(
-                                              "HH:mm"
-                                          )}
-                                      </span>
-                                      {pesan.length > 0 && (
-                                          <div className="ml-3 font-bold bg-sky-500 text-sm w-5 h-5 text-center text-white rounded-full">
-                                              {pesan.length}
-                                          </div>
-                                      )}
-                                  </div>
                               </div>
-                          </div>
-                      ))
-                    : ""}
-            </ul>
-            <h2
-                className={`text-gray-50 text-center border-b border-1 border-white mb-4 mt-8 ${
+                          ))
+                        : ""}
+                </ul>
+            </div>
+            <div
+                className={`bg-[#B9EDDD] p-4 rounded  mt-8 ${
                     pesanGroupDibaca.length > 0 ? "" : "hidden"
                 }`}
             >
-                Pesan dibaca
-            </h2>
-            <ul>
-                {Array.isArray(pesanGroupDibaca) && pesanGroupDibaca.length > 0
-                    ? pesanGroupDibaca.map((pesan, index) => (
-                          <div
-                              key={index}
-                              onClick={(e) => {
-                                  e.preventDefault();
-                                  synchronousDelayShowChat();
-                                  setShowLoading(true);
-                                  axios
-                                      .put(
-                                          `/api/chat/mark-as-read/${pesan[0].chat_channel}`
-                                      )
-                                      .then((response) => {
-                                          setShowLoading(false);
-                                          setChatChannel(pesan[0].chat_channel);
-                                          setTanggal(pesan[0].tanggal);
-                                          setRecipientId(pesan[0].sender.id);
-                                          setRecipientName(
-                                              pesan[0].sender.nama
-                                          );
-                                          setRecipientPhoto(
-                                              pesan[0].sender.url_foto
-                                          );
-                                      })
-                                      .catch((error) => {
-                                          console.info(error);
-                                      });
-                              }}
-                          >
-                              <div className="text-gray-50">
-                                  Channel :{" "}
-                                  <span className="bg-yellow-400 text-gray-800 px-1">
-                                      {pesan[0].chat_channel}
-                                  </span>
-                              </div>
-                              <div className="flex justify-between md:w-[500px] items-center bg-gray-100 hover:bg-gray-200 shadow px-2 py-1 rounded cursor-pointer select-none">
-                                  <div className="flex items-center">
-                                      <img
-                                          src={pesan[0].sender.url_foto}
-                                          alt="sender photo"
-                                          className="w-10 h-10 rounded-full border border-gray-300 mr-2 object-cover object-center"
-                                      />
-                                      <div>
-                                          <p className="font-extrabold text-[0.8em] sm:text-base">
-                                              {pesan[0].sender.nama}
-                                          </p>
-                                          <span className="text-slate-500 text-sm sm:text-base sm:hidden">
-                                              <TruncateText
-                                                  text={pesan[0].message}
-                                                  limit={15}
-                                              />
-                                          </span>
-                                          <span className="text-slate-500 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
-                                              <TruncateText
-                                                  text={pesan[0].message}
-                                                  limit={50}
-                                              />
-                                          </span>
-                                      </div>
-                                  </div>
-                                  <div>
-                                      <span className="text-[0.7em] mr-1">
-                                          {moment(pesan[0].created_at).format(
-                                              "HH:mm"
-                                          )}
+                <h2
+                    className={`text-center  mb-4 ${
+                        pesanGroupDibaca.length > 0 ? "" : "hidden"
+                    }`}
+                >
+                    Pesan dibaca
+                </h2>
+                <hr className="border-slate-700" />
+                <ul>
+                    {Array.isArray(pesanGroupDibaca) &&
+                    pesanGroupDibaca.length > 0
+                        ? pesanGroupDibaca.map((pesan, index) => (
+                              <div
+                                  key={index}
+                                  onClick={(e) => {
+                                      e.preventDefault();
+                                      synchronousDelayShowChat();
+                                      setShowLoading(true);
+                                      axios
+                                          .put(
+                                              `/api/chat/mark-as-read/${pesan[0].chat_channel}`
+                                          )
+                                          .then((response) => {
+                                              setShowLoading(false);
+                                              setChatChannel(
+                                                  pesan[0].chat_channel
+                                              );
+                                              setTanggal(pesan[0].tanggal);
+                                              setRecipientId(
+                                                  pesan[0].sender.id
+                                              );
+                                              setRecipientName(
+                                                  pesan[0].sender.nama
+                                              );
+                                              setRecipientPhoto(
+                                                  pesan[0].sender.url_foto
+                                              );
+                                          })
+                                          .catch((error) => {
+                                              console.info(error);
+                                          });
+                                  }}
+                              >
+                                  <div className="mt-4">
+                                      Channel :{" "}
+                                      <span className="bg-yellow-400 text-gray-800 px-1">
+                                          {pesan[0].chat_channel}
                                       </span>
-                                      {/* {pesan.length > 0 && (
+                                  </div>
+                                  <div className="flex justify-between w-[80vw] md:w-[500px] items-center bg-gray-100 hover:bg-gray-200 shadow px-2 py-1 rounded cursor-pointer select-none">
+                                      <div className="flex items-center">
+                                          <img
+                                              src={pesan[0].sender.url_foto}
+                                              alt="sender photo"
+                                              className="w-10 h-10 rounded-full border border-gray-300 mr-2 object-cover object-center"
+                                          />
+                                          <div>
+                                              <p className="font-extrabold text-[0.8em] sm:text-base">
+                                                  {pesan[0].sender.nama}
+                                              </p>
+                                              <span className="text-slate-500 text-sm sm:text-base sm:hidden">
+                                                  <TruncateText
+                                                      text={pesan[0].message}
+                                                      limit={15}
+                                                  />
+                                              </span>
+                                              <span className="text-slate-500 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
+                                                  <TruncateText
+                                                      text={pesan[0].message}
+                                                      limit={50}
+                                                  />
+                                              </span>
+                                          </div>
+                                      </div>
+                                      <div>
+                                          <span className="text-[0.7em] mr-1">
+                                              {moment(
+                                                  pesan[0].created_at
+                                              ).format("HH:mm")}
+                                          </span>
+                                          {/* {pesan.length > 0 && (
                                         <div className="ml-1 font-bold bg-gray-300 text-sm w-5 h-5 text-center text-white rounded-full">
                                             {pesan.length}
                                         </div>
                                     )} */}
+                                      </div>
                                   </div>
                               </div>
-                          </div>
-                      ))
-                    : ""}
-            </ul>
+                          ))
+                        : ""}
+                </ul>
+            </div>
+            {pesanGroupBelumDibaca.length == 0 &&
+            pesanGroupDibaca.length == 0 ? (
+                <>
+                    <h2 className={` text-center mb-4`}>Belum ada pesan</h2>
+                    <hr className="border-slate-700" />
+                </>
+            ) : (
+                ""
+            )}
             {showChat && (
                 <Draggable handle=".drag" cancel=".chat">
                     <div
