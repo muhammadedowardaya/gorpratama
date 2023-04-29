@@ -23,10 +23,15 @@ function Chat({
     const [sending, setSending] = useState(false);
     const [user, setUser] = useState("");
 
+    const [showLoading, setShowLoading] = useState(true);
+
     const [today, setToday] = useState(moment());
     const [date, setDate] = useState(moment(tanggal));
 
     useEffect(() => {
+        console.info(
+            `/api/chat/conversation/${senderId}/${recipientId}/${chatChannel}`
+        );
         // Inisialisasi Pusher
         const pusher = new Pusher("bda224757a06c9269de3", {
             cluster: "ap1",
@@ -70,6 +75,7 @@ function Chat({
                     }
                 );
                 setMessages(conversations);
+                setShowLoading(false);
             })
             .catch((error) => {
                 console.error(error);
@@ -284,6 +290,13 @@ function Chat({
                     </p>
                 </div>
             )}
+            <div
+                className={`absolute z-20 top-0 bottom-0 left-0 right-0 bg-gray-800 text-gray-50 ${
+                    showLoading ? "flex" : "hidden"
+                } justify-center items-center`}
+            >
+                <span>Loading...</span>
+            </div>
         </div>
     );
 }

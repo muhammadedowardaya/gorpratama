@@ -20,7 +20,7 @@ class MessageEvent implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct($recipient_id, $sender, $message, $unread_message_total)
+    public function __construct($recipient_id = "", $sender = "", $message = "", $unread_message_total = "")
     {
         $this->recipient_id = $recipient_id;
         $this->sender = $sender;

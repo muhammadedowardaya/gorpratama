@@ -40,10 +40,19 @@ class ChatController extends Controller
             ->whereNull('read_at')
             ->orderBy('created_at', 'desc')
             ->get();
-        MessageEvent::dispatch($request->recipient_id, $unreadConversations[0]->sender, $unreadConversations[0]->message, $unreadConversations->count());
+
+        $firstMessage = "";
+        $sender = "";
+        if ($unreadConversations->isNotEmpty()) {
+            $firstMessage = $unreadConversations[0]->message;
+            $sender = $unreadConversations[0]->sender;
+        }
+
+        MessageEvent::dispatch($request->recipient_id, $sender, $firstMessage, $unreadConversations->count());
 
         return response()->json(['success' => true]);
     }
+
 
     public function showConversation($userId, $recipientId)
     {
@@ -122,6 +131,12 @@ class ChatController extends Controller
             ->where('chat_channel', $chatChannel)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
+
+        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
+            ->whereNull('read_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        MessageEvent::dispatch($unreadConversations->count());
 
         return response()->json(['success' => true]);
     }

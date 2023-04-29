@@ -118,28 +118,36 @@ export default function Layout({ children, header, title }) {
     }
 
     useEffect(() => {
-        if (Notification.permission !== "granted") {
-            Notification.requestPermission().then(function (permission) {
-                if (permission === "granted") {
-                    // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
-                    getUnreadMessage();
-                }
-            });
-        } else {
-            // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
-            getUnreadMessage();
-        }
+        getUnreadMessage();
+        // if (Notification.permission !== "granted") {
+        //     Notification.requestPermission().then(function (permission) {
+        //         if (permission === "granted") {
+        //             // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
+        //             getUnreadMessage();
+        //         }
+        //     });
+        // } else {
+        //     // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
+        //     getUnreadMessage();
+        // }
 
         window.Echo.channel("messages").listen("MessageEvent", (event) => {
             // Periksa apakah pengguna saat ini adalah penerima pesan
-            if (event.recipient_id === auth.user.id) {
-                // Tampilkan notifikasi ketika ada pesan baru
-                showNotification(
-                    `${event.sender.nama} : ${event.message}`,
-                    event.sender.url_foto
-                );
+            if (event.recipient_id != "") {
+                if (event.recipient_id === auth.user.id) {
+                    // Tampilkan notifikasi ketika ada pesan baru
+                    if (event.message != "") {
+                        showNotification(
+                            `${event.sender.nama} : ${event.message}`,
+                            event.sender.url_foto
+                        );
+                    }
+                    setJumlahPesan(event.unread_message_total);
+                    // runOneSignal();
+                }
+            }
+            if (event.unread_message_total != "") {
                 setJumlahPesan(event.unread_message_total);
-                runOneSignal();
             }
         });
         // console.info(`${pesan.sender.nama} : ${pesan[0].message}`);
@@ -356,7 +364,7 @@ export default function Layout({ children, header, title }) {
                                                     jumlahPesan == 0
                                                         ? "hidden"
                                                         : "block"
-                                                } absolute top-2 right-1 bg-yellow-400 rounded-full w-5 h-5 text-white p-0 text-[0.9em] font-bold text-center`}
+                                                } absolute top-2 left-9 bg-yellow-400 rounded-full w-5 h-5 text-white p-[1px] text-[0.7em] font-bold text-center`}
                                             >
                                                 {jumlahPesan}
                                             </div>
@@ -433,7 +441,7 @@ export default function Layout({ children, header, title }) {
 
                 <section
                     id="content"
-                    className={`z-10 overflow-y-scroll scrollbar-hide md:ml-8 md:pt-1 pt-16 col-span-2 ${
+                    className={`z-10 overflow-y-scroll scrollbar-hide ml-0 md:ml-8 md:pt-1 pt-16 col-span-2 ${
                         user != null ? "md:col-span-1" : "md:col-span-2"
                     }`}
                 >
@@ -506,22 +514,22 @@ export default function Layout({ children, header, title }) {
                                             setShowModal(false);
                                             setShowCaraBooking(true);
                                         }}
-                                        className="cursor-pointer flex flex-wrap items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4"
+                                        className="cursor-pointer flex items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4"
                                     >
                                         <FaCalendarAlt
                                             size="0.8em"
                                             className="text-4xl mr-2"
                                         />
-                                        <span className="px-2">
+                                        <span className="px-2 text-sm sm:text-md">
                                             Step by Step Booking Lapangan
                                         </span>
                                     </div>
-                                    <div className="cursor-pointer flex flex-wrap items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4">
+                                    <div className="cursor-pointer flex items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4">
                                         <MdFindInPage
                                             size="0.8em"
                                             className="text-4xl mr-2"
                                         />
-                                        <span className="px-2">
+                                        <span className="px-2 text-sm sm:text-md">
                                             Step by Step Temukan Teman
                                         </span>
                                     </div>

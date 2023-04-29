@@ -105,11 +105,8 @@ export default function Pesanan(props) {
                                         <td>Rp. {invoice[index].amount}</td>
                                         <td>{invoice[index].status}</td>
                                         <td>
-                                            {invoice[index].status !=
-                                                "SUCCESS" &&
-                                            invoice[index].status != "PAID" &&
-                                            invoice[index].status !==
-                                                "EXPIRED" ? (
+                                            {invoice[index].status ==
+                                            "PENDING" ? (
                                                 <a
                                                     href={
                                                         invoice[index]
@@ -123,8 +120,8 @@ export default function Pesanan(props) {
                                                     />
                                                     Selesaikan Pembayaran
                                                 </a>
-                                            ) : invoice[index].status !==
-                                              "EXPIRED" ? (
+                                            ) : invoice[index].status ==
+                                              "PAID" ? (
                                                 <a
                                                     href="/dashboard/jadwal"
                                                     className="border-b border-spacing-1 border-slate-700 relative  p-1 pr-3 z-10"

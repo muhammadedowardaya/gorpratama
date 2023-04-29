@@ -14,7 +14,7 @@ function Pesan() {
     // untuk komponen chat
     const [chatChannel, setChatChannel] = useState("");
     const [showChat, setShowChat] = useState(false);
-    const [showLoading, setShowLoading] = useState(true);
+    const [showLoading, setShowLoading] = useState(false);
     const [tanggal, setTanggal] = useState("");
 
     function delay() {
@@ -62,11 +62,14 @@ function Pesan() {
             getUnreadMessage();
             getReadMessage();
         });
-    }, [recipientId]);
+        console.info(`chat_channel = ${chatChannel}`);
+        console.info(`recipient_id = ${recipientId}`);
+        console.info(`sender_id = ${auth.user.id}`);
+    }, [recipientId, chatChannel]);
 
     return (
-        <div className="p-4 text-gray-800 w-max">
-            <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col items-center text-gray-800 w-full">
+            <div className="flex items-center justify-between mt-6 mb-2">
                 <h1 className="text-2xl font-bold text-white">Pesan</h1>
             </div>
             <div
@@ -102,6 +105,41 @@ function Pesan() {
                                               );
                                               setRecipientPhoto(
                                                   pesan[0].sender.url_foto
+                                              );
+                                          })
+                                          .catch((error) => {
+                                              console.info(error);
+                                          });
+                                  }}
+                                  onTouchStart={() => {
+                                      synchronousDelayShowChat();
+                                      setShowLoading(true);
+                                      axios
+                                          .put(
+                                              `/api/chat/mark-as-read/${pesan[0].chat_channel}`
+                                          )
+                                          .then((response) => {
+                                              setShowLoading(false);
+                                              setChatChannel(
+                                                  pesan[0].chat_channel
+                                              );
+                                              setRecipientId(
+                                                  pesan[0].sender.id
+                                              );
+                                              setRecipientName(
+                                                  pesan[0].sender.nama
+                                              );
+                                              setRecipientPhoto(
+                                                  pesan[0].sender.url_foto
+                                              );
+                                              console.info(
+                                                  `chat_channel = ${chatChannel}`
+                                              );
+                                              console.info(
+                                                  `recipient_id = ${recipientId}`
+                                              );
+                                              console.info(
+                                                  `sender_id = ${auth.user.id}`
                                               );
                                           })
                                           .catch((error) => {
@@ -178,32 +216,24 @@ function Pesan() {
                               <div
                                   key={index}
                                   onClick={(e) => {
-                                      e.preventDefault();
-                                      synchronousDelayShowChat();
-                                      setShowLoading(true);
-                                      axios
-                                          .put(
-                                              `/api/chat/mark-as-read/${pesan[0].chat_channel}`
-                                          )
-                                          .then((response) => {
-                                              setShowLoading(false);
-                                              setChatChannel(
-                                                  pesan[0].chat_channel
-                                              );
-                                              setTanggal(pesan[0].tanggal);
-                                              setRecipientId(
-                                                  pesan[0].sender.id
-                                              );
-                                              setRecipientName(
-                                                  pesan[0].sender.nama
-                                              );
-                                              setRecipientPhoto(
-                                                  pesan[0].sender.url_foto
-                                              );
-                                          })
-                                          .catch((error) => {
-                                              console.info(error);
-                                          });
+                                      setShowChat(true);
+                                      setChatChannel(pesan[0].chat_channel);
+                                      setTanggal(pesan[0].tanggal);
+                                      setRecipientId(pesan[0].sender.id);
+                                      setRecipientName(pesan[0].sender.nama);
+                                      setRecipientPhoto(
+                                          pesan[0].sender.url_foto
+                                      );
+                                  }}
+                                  onTouchStart={(e) => {
+                                      setShowChat(true);
+                                      setChatChannel(pesan[0].chat_channel);
+                                      setTanggal(pesan[0].tanggal);
+                                      setRecipientId(pesan[0].sender.id);
+                                      setRecipientName(pesan[0].sender.nama);
+                                      setRecipientPhoto(
+                                          pesan[0].sender.url_foto
+                                      );
                                   }}
                               >
                                   <div className="mt-4">
@@ -267,7 +297,7 @@ function Pesan() {
             {showChat && (
                 <Draggable handle=".drag" cancel=".chat">
                     <div
-                        className={`block fixed border-r  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
+                        className={`block fixed border-r z-50  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
                         style={{
                             backgroundImage: `url(${
                                 import.meta.env.VITE_APP_URL
@@ -291,7 +321,9 @@ function Pesan() {
                         <button
                             className="fixed -top-3 -right-3 z-50"
                             onClick={(e) => {
-                                e.preventDefault();
+                                setShowChat(false);
+                            }}
+                            onTouchStart={(e) => {
                                 setShowChat(false);
                             }}
                         >

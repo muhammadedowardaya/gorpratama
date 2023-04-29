@@ -41,9 +41,8 @@ Route::get('/', function () {
 Route::get('/test', function (Request $request) {
     $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
         ->whereNull('read_at')
-        ->orderBy('created_at', 'desc')
-        ->get();
-    dd($unreadConversations[0]->sender);
+        ->orderBy('created_at', 'desc')->get();
+    dd($unreadConversations);
 });
 
 
