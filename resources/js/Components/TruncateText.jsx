@@ -1,6 +1,6 @@
 import React from "react";
 
-function TruncateText({ text, limit }) {
+function TruncateText({ text = "", limit }) {
     if (text.length <= limit) {
         return <span>{text}</span>;
     }

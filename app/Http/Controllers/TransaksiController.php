@@ -117,6 +117,7 @@ class TransaksiController extends Controller
         $transaksi->lapangan_id = request('lapangan_id');
         $transaksi->invoice_id = $response->user_id;
         $transaksi->external_id = $external_id;
+        $transaksi->amount = request('amount');
         $transaksi->tanggal_main = $tanggal_main;
         $transaksi->save();
 
@@ -129,13 +130,53 @@ class TransaksiController extends Controller
         $jadwal->tanggal = $tanggal_main;
         $jadwal->jam_mulai = $request->jam_mulai;
         $jadwal->jam_selesai = $request->jam_selesai;
-        $jadwal->chat_channel = "channel_" . Str::random(5);
+        $jadwal->chat_channel = $request->pesan == "" ? "" : "channel_" . Str::random(5);
         $jadwal->pesan = $request->pesan == "" ? null : $request->pesan;
         $jadwal->izinkan_permintaan_bergabung = $request->izinkan_permintaan_bergabung;
         $jadwal->save();
 
         // return Inertia::location($response->invoice_url);
         return Redirect()->to("/dashboard/pesanan");
+    }
+
+    public function bayarDitempat(Request $request)
+    {
+        $external_id = Str::random(10);
+
+        // jadikan tanggal dengan format d m Y dapat diterima database
+        $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
+        $transaksi = new Transaksi();
+        $transaksi->user_id = auth()->user()->id;
+        $transaksi->lapangan_id = request('lapangan_id');
+        $transaksi->amount = request('amount');
+        $transaksi->external_id = $external_id;
+        $transaksi->tanggal_main = $tanggal_main;
+        $transaksi->status_transaksi = 4;
+        $transaksi->save();
+
+        // buat jadwal baru
+        // buat jadwal baru
+        $jadwal = new Jadwal;
+        $jadwal->user_id = $request->user_id;
+        $jadwal->lapangan_id = $request->lapangan_id;
+        $jadwal->external_id = $external_id;
+        $jadwal->tanggal = $tanggal_main;
+        $jadwal->status_transaksi = 4;
+        $jadwal->jam_mulai = $request->jam_mulai;
+        $jadwal->jam_selesai = $request->jam_selesai;
+        $jadwal->chat_channel = $request->pesan == "" ? "" : "channel_" . Str::random(5);
+        $jadwal->pesan = $request->pesan == "" ? null : $request->pesan;
+        $jadwal->izinkan_permintaan_bergabung = $request->izinkan_permintaan_bergabung;
+        $jadwal->save();
+
+        // return Inertia::location($response->invoice_url);
+        return response()->json([
+            'nama' => $request->nama,
+            'lapangan' => $request->nama_lapangan,
+            'tanggal_main' => $request->tanggal_main,
+            'lama_bermain' => $request->lama_bermain,
+            'total_harga' => $request->total_harga
+        ]);
     }
 
     /**

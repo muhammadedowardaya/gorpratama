@@ -88,7 +88,7 @@ export default function Pesanan(props) {
                         </tr>
                     </thead>
                     <tbody className="overflow-auto scrollbar-hide">
-                        {props.transaksi != null ? (
+                        {props.transaksi != null || props.invoice != null ? (
                             props.transaksi.map((item, index) => {
                                 const tanggal_booking = moment(
                                     item.created_at

@@ -2,8 +2,8 @@ import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Draggable from "react-draggable";
-import { GiChatBubble, GiMove } from "react-icons/gi";
-import { IoChatboxOutline, IoCloseCircle } from "react-icons/io5";
+import { GiMove } from "react-icons/gi";
+import { IoCloseCircle } from "react-icons/io5";
 import moment from "moment";
 import Layout from "@/Layouts/Layout";
 import Chat from "@/Components/Chat";
@@ -73,11 +73,13 @@ function Pesan() {
                 <h1 className="text-2xl font-bold text-white">Pesan</h1>
             </div>
             <div
-                className={`bg-[#B9EDDD] p-4 rounded ${
+                className={`bg-[#B9EDDD] dark:bg-gray-800 p-4 rounded ${
                     pesanGroupBelumDibaca.length > 0 ? "" : "hidden"
                 }`}
             >
-                <h2 className={` text-center mb-4`}>Pesan belum dibaca</h2>
+                <h2 className={` text-center mb-4 dark:text-gray-100`}>
+                    Pesan belum dibaca
+                </h2>
                 <hr className="border-slate-700" />
                 <ul>
                     {Array.isArray(pesanGroupBelumDibaca) &&
@@ -88,24 +90,27 @@ function Pesan() {
                                   onClick={() => {
                                       synchronousDelayShowChat();
                                       setShowLoading(true);
+                                      setChatChannel(pesan[0].chat_channel);
+                                      setRecipientId(pesan[0].sender.id);
+                                      setRecipientName(pesan[0].sender.nama);
+                                      setRecipientPhoto(
+                                          pesan[0].sender.url_foto
+                                      );
+                                      console.info(
+                                          `chat_channel = ${chatChannel}`
+                                      );
+                                      console.info(
+                                          `recipient_id = ${recipientId}`
+                                      );
+                                      console.info(
+                                          `sender_id = ${auth.user.id}`
+                                      );
                                       axios
                                           .put(
                                               `/api/chat/mark-as-read/${pesan[0].chat_channel}`
                                           )
                                           .then((response) => {
                                               setShowLoading(false);
-                                              setChatChannel(
-                                                  pesan[0].chat_channel
-                                              );
-                                              setRecipientId(
-                                                  pesan[0].sender.id
-                                              );
-                                              setRecipientName(
-                                                  pesan[0].sender.nama
-                                              );
-                                              setRecipientPhoto(
-                                                  pesan[0].sender.url_foto
-                                              );
                                           })
                                           .catch((error) => {
                                               console.info(error);
@@ -114,40 +119,25 @@ function Pesan() {
                                   onTouchStart={() => {
                                       synchronousDelayShowChat();
                                       setShowLoading(true);
+                                      setChatChannel(pesan[0].chat_channel);
+                                      setRecipientId(pesan[0].sender.id);
+                                      setRecipientName(pesan[0].sender.nama);
+                                      setRecipientPhoto(
+                                          pesan[0].sender.url_foto
+                                      );
                                       axios
                                           .put(
                                               `/api/chat/mark-as-read/${pesan[0].chat_channel}`
                                           )
                                           .then((response) => {
                                               setShowLoading(false);
-                                              setChatChannel(
-                                                  pesan[0].chat_channel
-                                              );
-                                              setRecipientId(
-                                                  pesan[0].sender.id
-                                              );
-                                              setRecipientName(
-                                                  pesan[0].sender.nama
-                                              );
-                                              setRecipientPhoto(
-                                                  pesan[0].sender.url_foto
-                                              );
-                                              console.info(
-                                                  `chat_channel = ${chatChannel}`
-                                              );
-                                              console.info(
-                                                  `recipient_id = ${recipientId}`
-                                              );
-                                              console.info(
-                                                  `sender_id = ${auth.user.id}`
-                                              );
                                           })
                                           .catch((error) => {
                                               console.info(error);
                                           });
                                   }}
                               >
-                                  <div className="mt-4">
+                                  <div className="mt-4 dark:text-gray-100">
                                       Channel :{" "}
                                       <span className="bg-yellow-400 text-gray-800 px-1">
                                           {pesan[0].chat_channel}
@@ -164,13 +154,13 @@ function Pesan() {
                                               <p className="font-extrabold text-[0.8em] sm:text-base">
                                                   {pesan[0].sender.nama}
                                               </p>
-                                              <span className="text-slate-500 text-sm sm:text-base sm:hidden">
+                                              <span className="text-slate-500 dark:text-slate-700 text-sm sm:text-base sm:hidden">
                                                   <TruncateText
                                                       text={pesan[0].message}
                                                       limit={15}
                                                   />
                                               </span>
-                                              <span className="text-slate-500 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
+                                              <span className="text-slate-500 dark:text-slate-700 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
                                                   <TruncateText
                                                       text={pesan[0].message}
                                                       limit={50}
@@ -197,12 +187,13 @@ function Pesan() {
                 </ul>
             </div>
             <div
-                className={`bg-[#B9EDDD] p-4 rounded  mt-8 ${
+                dark:text-slate-700
+                className={`bg-[#B9EDDD] dark:bg-gray-800 p-4 rounded  mt-8 ${
                     pesanGroupDibaca.length > 0 ? "" : "hidden"
                 }`}
             >
                 <h2
-                    className={`text-center  mb-4 ${
+                    className={`text-center  mb-4 dark:text-gray-100 ${
                         pesanGroupDibaca.length > 0 ? "" : "hidden"
                     }`}
                 >
@@ -236,7 +227,7 @@ function Pesan() {
                                       );
                                   }}
                               >
-                                  <div className="mt-4">
+                                  <div className="mt-4 dark:text-gray-100">
                                       Channel :{" "}
                                       <span className="bg-yellow-400 text-gray-800 px-1">
                                           {pesan[0].chat_channel}
@@ -253,13 +244,13 @@ function Pesan() {
                                               <p className="font-extrabold text-[0.8em] sm:text-base">
                                                   {pesan[0].sender.nama}
                                               </p>
-                                              <span className="text-slate-500 text-sm sm:text-base sm:hidden">
+                                              <span className="text-slate-500 dark:text-slate-700 text-sm sm:text-base sm:hidden">
                                                   <TruncateText
                                                       text={pesan[0].message}
                                                       limit={15}
                                                   />
                                               </span>
-                                              <span className="text-slate-500 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
+                                              <span className="text-slate-500 dark:text-slate-700 text-sm sm:text-base hidden sm:inline-block overflow-hidden">
                                                   <TruncateText
                                                       text={pesan[0].message}
                                                       limit={50}
@@ -297,7 +288,7 @@ function Pesan() {
             {showChat && (
                 <Draggable handle=".drag" cancel=".chat">
                     <div
-                        className={`block fixed border-r z-50  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 cursor-move select-none`}
+                        className={`block fixed border-r z-50  bottom-16 sm:bottom-5 right-8 border border-slate-50 rounded-md bg-opacity-20 select-none`}
                         style={{
                             backgroundImage: `url(${
                                 import.meta.env.VITE_APP_URL

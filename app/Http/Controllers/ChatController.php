@@ -30,25 +30,20 @@ class ChatController extends Controller
             'tanggal' => $request->tanggal
         ]);
 
+        $unreadConversations = Conversation::with('sender')->where('recipient_id', auth()->user()->id)
+            ->whereNull('read_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+
+        MessageEvent::dispatch($request->recipient_id, $request->sender_name, $request->sender_photo, $request->channel, $message, $unreadConversations->count());
+
         // // Kirim pesan ke Pusher
         event(new ChatEvent($message, $request->channel, $request->sender_id));
 
         // // Kirim balasan ke pengguna lain di channel yang sama
         broadcast(new ChatEvent($message, $request->channel, $request->recipient_id))->toOthers();
 
-        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
-            ->whereNull('read_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $firstMessage = "";
-        $sender = "";
-        if ($unreadConversations->isNotEmpty()) {
-            $firstMessage = $unreadConversations[0]->message;
-            $sender = $unreadConversations[0]->sender;
-        }
-
-        MessageEvent::dispatch($request->recipient_id, $sender, $firstMessage, $unreadConversations->count());
 
         return response()->json(['success' => true]);
     }
@@ -137,6 +132,21 @@ class ChatController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         MessageEvent::dispatch($unreadConversations->count());
+
+        return response()->json(['success' => true]);
+    }
+
+    public function tandaiBaca(Request $request, $chatChannel)
+    {
+        Conversation::where('recipient_id', $request->user()->id)
+            ->where('chat_channel', $chatChannel)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
+            ->whereNull('read_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json(['success' => true]);
     }

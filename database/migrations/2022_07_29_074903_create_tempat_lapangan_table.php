@@ -24,8 +24,8 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->string('jam_buka');
             $table->string('jam_tutup');
-            $table->string('jam_buka_value');
-            $table->string('jam_tutup_value');
+            $table->string('jam_buka_value')->nullable();
+            $table->string('jam_tutup_value')->nullable();
             $table->integer('harga_persewa');
             $table->string('logo')->nullable();
             $table->string('url_logo')->nullable();

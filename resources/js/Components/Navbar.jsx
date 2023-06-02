@@ -20,7 +20,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
 
     function requestIs(path) {
         const currentPath = window.location.pathname;
-        const pattern = new RegExp("^" + path + "$", "gi");
+        const pattern = new RegExp("^" + path.replace("*", ".*") + "$", "gi");
         return pattern.test(currentPath) ? "active" : "";
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\MessageEvent;
+use App\Http\Controllers\KonfirmasiWhatsAppController;
 use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TempatLapanganController;
@@ -10,12 +11,15 @@ use App\Models\Jadwal;
 use App\Models\Lapangan;
 use App\Models\TempatLapangan;
 use App\Models\Transaksi;
+use Carbon\Carbon;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Xendit\Xendit;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -99,15 +103,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 $invoice = null;
                 $transaksi = null;
             } else {
-                $external_id = $transaksi[0]['external_id'];
-                $secret_key = 'Basic ' . config('xendit.key_auth');
-                $response = Http::withHeaders([
-                    'Authorization' => $secret_key
-                ])->get("https://api.xendit.co/v2/invoices?user_id=$external_id");
-                $invoice =  $response->object();
+                try {
+                    $external_id = $transaksi[0]['external_id'];
+                    $secret_key = 'Basic ' . config('xendit.key_auth');
+                    $response = Http::withHeaders([
+                        'Authorization' => $secret_key
+                    ])->get("https://api.xendit.co/v2/invoices?user_id=$external_id");
+                    $invoice =  $response->object();
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    return Inertia::render('NoInternet');
+                }
             }
-
-
 
             return Inertia::render('Dashboard/User/Pesanan', [
                 'invoice' => $invoice,
@@ -120,7 +127,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard Jadwal
     Route::get('/dashboard/jadwal', function () {
         if (auth()->user()->type == 'admin') {
-            return Inertia::render('Dashboard/Admin/Jadwal');
+            $jadwals = Jadwal::with(['user', 'lapangan'])->get();
+            $data = $jadwals->groupBy('lapangan_id');
+            return Inertia::render('Dashboard/Admin/Jadwal/List', [
+                'jadwal' => $data
+            ]);
         } else if (auth()->user()->type == 'user') {
             $jadwal = Jadwal::with('lapangan')
                 ->where('user_id', auth()->user()->id)
@@ -134,13 +145,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ]);
         }
     });
-
-
-    Route::get('/dashboard/pengaturan', function () {
-        return Inertia::render('Dashboard/Pengaturan');
-    });
 });
-
 /*------------------------------------------
 --------------------------------------------
 All Normal Users Routes List
@@ -171,6 +176,17 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     });
 
     Route::post('/booking', [TransaksiController::class, 'store']);
+    Route::post('/booking-bayar-ditempat', [TransaksiController::class, 'bayarDitempat']);
+    Route::post('/konfirmasi-whatsapp', function (Request $request) {
+        if ($request->isMethod('get')) {
+            return redirect()->route('/');
+        }
+        $data = $request->all();
+        return Inertia::render('Dashboard/KonfirmasiWhatsapp', [
+            'data' => $data
+        ]);
+    });
+    Route::post('/kirim-konfirmasi-whatsapp', [KonfirmasiWhatsAppController::class, 'store']);
 
     Route::get('/jadwal', function () {
         return Inertia::render('Jadwal');
@@ -196,8 +212,10 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
         $invoice = $response->object();
         if ($invoice[0]->status == 'PAID') {
             $jadwal = Jadwal::where('external_id', $external_id)->first();
+            $transaksi = Transaksi::where('external_id', $external_id)->first();
             if ($jadwal) {
                 $jadwal->status_transaksi = 0;
+                $transaksi->status_transaksi = 0;
                 $jadwal->save();
             }
             return Inertia::render('Payment/Success', [
@@ -205,8 +223,10 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
             ]);
         } else if ($invoice[0]->status == 'PENDING') {
             $jadwal = Jadwal::where('external_id', $external_id)->first();
+            $transaksi = Transaksi::where('external_id', $external_id)->first();
             if ($jadwal) {
                 $jadwal->status_transaksi = 1;
+                $transaksi->status_transaksi = 1;
                 $jadwal->save();
             }
             return Inertia::render('Payment/Pending', [
@@ -214,8 +234,10 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
             ]);
         } else if ($invoice[0]->status == 'EXPIRED') {
             $jadwal = Jadwal::where('external_id', $external_id)->first();
+            $transaksi = Transaksi::where('external_id', $external_id)->first();
             if ($jadwal) {
-                $jadwal->status_transaksi = 0;
+                $jadwal->status_transaksi = 3;
+                $transaksi->status_transaksi = 3;
                 $jadwal->save();
             }
             return Inertia::render('Payment/Expired', [
@@ -223,8 +245,10 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
             ]);
         } else {
             $jadwal = Jadwal::where('external_id', $external_id)->first();
+            $transaksi = Transaksi::where('external_id', $external_id)->first();
             if ($jadwal) {
-                $jadwal->status_transaksi = 0;
+                $jadwal->status_transaksi = 2;
+                $transaksi->status_transaksi = 2;
                 $jadwal->save();
             }
             return Inertia::render('Payment/Failed', [
@@ -263,6 +287,93 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/dashboard/lapangan-edit/{lapangan:slug}', [LapanganController::class, 'edit']);
     Route::post('/dashboard/lapangan-update', [LapanganController::class, 'updateLapangan']);
     Route::delete('/dashboard/lapangan-delete/{lapangan:slug}', [LapanganController::class, 'destroy']);
+
+    // Dashboard Laporan keuangan
+    Route::get('/dashboard/laporan-keuangan', function () {
+        // Ambil semua data transaksi dari database
+        $transaksis = Transaksi::all();
+        // Hitung total pendapatan
+        $totalPendapatan = $transaksis->sum('amount');
+
+        // Tampilkan laporan keuangan
+        return Inertia::render('Dashboard/Admin/LaporanKeuangan', [
+            'transaksis' => $transaksis,
+            'totalPendapatan' => $totalPendapatan,
+        ]);
+    });
+
+
+
+    // jadwal pending atau cod
+    Route::get('/dashboard/jadwal-pending', function () {
+        // $jadwal berisi data
+        return Inertia::render('Dashboard/Admin/Jadwal/JadwalPending');
+    });
+
+    // show jadwal
+    Route::get('/dashboard/jadwal/{lapangan_id}', function ($lapangan_id) {
+        $tempat_lapangan = TempatLapangan::all()->first();
+        return Inertia::render('Dashboard/Admin/Jadwal/ShowJadwal', [
+            'lapangan_id' => $lapangan_id,
+            'tempat_lapangan' => $tempat_lapangan,
+        ]);
+    });
+
+    Route::get('/dashboard/jadwal/{lapangan_id}/{id}', function ($lapangan_id, $id) {
+        $jadwal = Jadwal::where('lapangan_id', $lapangan_id)->where('id', $id)->with('user')->get();
+        return response()->json([
+            'jadwal' => $jadwal
+        ]);
+    });
+
+    // tambah jadwal
+    Route::post('/jadwal', function (Request $request) {
+
+        // $validator = Validator::make($request->all(), [
+        //     'tanggal' => 'required',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     throw new \Illuminate\Validation\ValidationException($validator);
+        // }
+
+        // jadikan tanggal dengan format d m Y dapat diterima database
+        $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
+        // buat jadwal baru
+        $jadwal = new Jadwal;
+        $jadwal->user_id = $request->user_id;
+        $jadwal->lapangan_id = $request->lapangan_id;
+        $jadwal->status_transaksi = $request->status_transaksi;
+        $jadwal->tanggal = $tanggal_main;
+        $jadwal->jam_mulai = $request->jam_mulai;
+        $jadwal->jam_selesai = $request->jam_selesai;
+        $jadwal->save();
+
+        // Kirim notifikasi ke Pusher
+        $pusher = new Pusher\Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            array('cluster' => env('PUSHER_APP_CLUSTER'))
+        );
+        $pusher->trigger('schedule', 'update', ['message' => 'Jadwal telah diperbarui']);
+
+
+        return response()->json(['message' => 'Data berhasil disimpan'], 200);
+        // return response()->json([
+        //     'user_id' => $request->user_id,
+        //     'lapangan_id' => $request->lapangan_id,
+        //     'status_transaksi' => $request->status_transaksi,
+        //     'tanggal' => $request->tanggal_main,
+        //     'jam_mulai' => $request->jam_mulai,
+        //     'jam_selesai' => $request->jam_selesai,
+        // ]);
+    });
+
+
+    Route::get('/dashboard/pengaturan', function () {
+        return Inertia::render('Dashboard/Pengaturan');
+    });
 });
 
 /*------------------------------------------

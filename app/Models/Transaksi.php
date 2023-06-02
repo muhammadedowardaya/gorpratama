@@ -13,7 +13,7 @@ class Transaksi extends Model
     use HasFactory;
 
     protected $table = 'transaksi';
-    protected $fillable = ['user_id', 'lapangan_id', 'invoice_id', 'tanggal_main', 'amount', 'description', 'status', 'invoice_url'];
+    protected $fillable = ['user_id', 'lapangan_id', 'invoice_id', 'tanggal_main', 'amount', 'status_transaksi'];
 
     public function lapangan()
     {
@@ -37,35 +37,10 @@ class Transaksi extends Model
         return $this->belongsTo(Jadwal::class, 'kode_jadwal');
     }
 
-    // protected $dateFormat = 'd-m-Y';
-    // protected $date = 'd-m-Y';
-
-    // protected $casts = [
-    //     'tanggal' => 'date:d/m/Y',
-    //     'tanggal_main' => 'date:d/m/Y',
-    //     'created_at' => 'date:d/m/Y', // Change your format
-    //     'updated_at' => 'date:d/m/Y',
-    // ];
-
-    // protected $casts = [
-    //     'tanggal' => 'date:d-m-Y',
-    // ];
-
-    // protected function serializeDate(DateTimeInterface $date)
-    // {
-    //     return $date->format('Y-m-d');
-    // }
-
-    // public function setDateAttribute($value)
-    // {
-    //     $this->attributes['tanggal'] = (new Carbon($value))->format('d/m/y');
-    //     // $this->attributes['tanggal_main'] = (new Carbon($value))->format('d/m/y');
-    // }
-
-    protected function status_transaksi(): Attribute
+    protected function statusTransaksi(): Attribute
     {
         return new Attribute(
-            get: fn ($value) =>  ["pending", "terkonfirmasi", "batal"][$value],
+            get: fn ($value) =>  ["PAID", "PENDING", "FAILED", "EXPIRED", "COD"][$value],
         );
     }
 }

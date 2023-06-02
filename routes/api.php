@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\MessageEvent;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LapanganImageController;
 use App\Http\Controllers\TempatLapanganImage;
@@ -7,6 +8,7 @@ use App\Http\Controllers\UserImageController;
 use App\Models\Conversation;
 use App\Models\Jadwal;
 use App\Models\TempatLapangan;
+use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Wisata;
 use Illuminate\Http\Request;
@@ -47,6 +49,33 @@ Route::get('/jadwal', function () {
     ]);
 });
 
+Route::get('/jadwal-pending', function () {
+    $jadwal = Jadwal::with(['user', 'lapangan'])
+        ->whereIn('status_transaksi', [1, 4])
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->paginate(8);
+
+    return response()->json([
+        'jadwal' => $jadwal
+    ]);
+});
+
+$jadwal = Jadwal::with(['user', 'lapangan'])
+    ->whereIn('status_transaksi', [1, 4])
+    ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+    ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+    ->get();
+if ($jadwal->isEmpty()) {
+    // $jadwal kosong
+    $jadwal = "";
+}
+
+// $jadwal berisi data
+return Inertia::render('Dashboard/Admin/Jadwal/JadwalPending', [
+    'jadwal' => $jadwal
+]);
+
 Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
     $jadwal = Jadwal::with('user')
         ->where('status_transaksi', 0)
@@ -76,16 +105,28 @@ Route::get('/payment/Pending', function () {
 });
 
 Route::put('/chat/mark-as-read/{chat_channel}', [ChatController::class, 'markAsRead']);
+Route::put('/chat/tandai_baca/{chat_channel}', [ChatController::class, 'tandaiBaca']);
 Route::get('/chat/unread-conversations', [ChatController::class, 'getUnreadConversations']);
 Route::get('/chat/read-conversations', [ChatController::class, 'getReadConversations']);
 Route::get('/chat/unread-messages', [ChatController::class, 'getUnreadMessages']);
 Route::get('/chat/conversation/{user1Id}/{user2Id}', [ChatController::class, 'showConversation']);
 Route::get('/chat/conversation/{user1Id}/{user2Id}/{channel}', [ChatController::class, 'showConversationByChannel']);
-Route::post('chat/send-message', [ChatController::class, 'sendMessage']);
+Route::post('/chat/send-message', [ChatController::class, 'sendMessage']);
+Route::get('/message-event', function () {
+    MessageEvent::dispatch();
+});
+
 
 Route::get('/get-user', function () {
     return response()->json([
         'user' => auth()->user()
+    ]);
+});
+
+Route::get('/get-users-type-user', function () {
+    $users = User::where('type', 'user')->get();
+    return response()->json([
+        'users' => $users
     ]);
 });
 
@@ -104,5 +145,19 @@ Route::get('/get-profile-gor', function () {
     }
     return response()->json([
         'tempat-lapangan' => $tempat_lapangan
+    ]);
+});
+
+Route::get('/laporan-keuangan', function () {
+    // Ambil semua data transaksi dari database
+    $transaksis = Transaksi::all();
+
+    // Hitung total pendapatan
+    $totalPendapatan = $transaksis->sum('amount');
+
+    // Kirim data sebagai response JSON
+    return response()->json([
+        'transaksis' => $transaksis,
+        'totalPendapatan' => $totalPendapatan,
     ]);
 });

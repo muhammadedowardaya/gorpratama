@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Label from "@/Components/Label";
-import Pagination from "@/Components/Pagination";
+import "../modules/csrf.js";
 import Swal from "sweetalert2";
 import FormatRupiah from "@/Components/FormatRupiah";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -50,6 +50,23 @@ export default function Booking(props) {
         total_harga: "",
         amount: "",
     });
+
+    const compareDates = (date1, date2) => {
+        // Ubah format tanggal dari DD-MM-YYYY menjadi YYYY-MM-DD
+        let date1Formatted = date1.split("-").reverse().join("-");
+        let date2Formatted = date2.split("-").reverse().join("-");
+
+        // Buat objek Date untuk kedua tanggal
+        let date1Obj = new Date(date1Formatted);
+        let date2Obj = new Date(date2Formatted);
+
+        // Bandingkan kedua objek Date
+        if (date1Obj < date2Obj) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     async function getJadwal() {
         try {
@@ -181,6 +198,7 @@ export default function Booking(props) {
 
     const submit = (e) => {
         e.preventDefault();
+
         setShow(true);
         let ada_jadwal = false;
         if (Array.isArray(jadwal) && jadwal.length > 0) {
@@ -207,7 +225,11 @@ export default function Booking(props) {
         const formattedDate = day + "-" + month + "-" + year;
 
         if (ada_jadwal == false) {
-            if (data.tanggal_main < formattedDate) {
+            const cekTanggal = compareDates(
+                data.tanggal_main.toString(),
+                formattedDate.toString()
+            );
+            if (cekTanggal) {
                 setShow(false);
                 Swal.fire(
                     "Hmm..",
@@ -230,9 +252,12 @@ export default function Booking(props) {
                     text: `Anda memesan lapangan untuk tanggal ${data.tanggal_main} selama ${data.lama_bermain} jam seharga ${data.total_harga}`,
                     icon: "info",
                     showCancelButton: true,
+                    showDenyButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Konfirmasi",
+                    denyButtonColor: "#1B9C85",
+                    confirmButtonText: "Bayar Transfer",
+                    denyButtonText: "Bayar di tempat",
                 }).then((result) => {
                     if (result.isConfirmed) {
                         setShow(true);
@@ -247,6 +272,21 @@ export default function Booking(props) {
                                 console.info(response);
                             },
                         });
+                    } else if (result.isDenied) {
+                        // Tambahkan kode di sini yang akan dijalankan ketika tombol "deny" diklik
+                        setShow(true);
+                        axios
+                            .post("/booking-bayar-ditempat", data)
+                            .then((response) => {
+                                setShow(false);
+                                router.visit("/konfirmasi-whatsapp", {
+                                    data: response.data,
+                                    method: "post",
+                                });
+                            })
+                            .catch((error) => {
+                                setShow(false);
+                            });
                     }
                 });
             }
@@ -446,6 +486,7 @@ export default function Booking(props) {
                                     />
                                     <TimePicker
                                         format="HH:mm"
+                                        disabledTime={disabledTime}
                                         onSelect={(time) => {
                                             setData({
                                                 ...data,

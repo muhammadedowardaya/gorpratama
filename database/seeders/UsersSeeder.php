@@ -19,8 +19,8 @@ class UsersSeeder extends Seeder
             [
                 'nama' => 'Admin',
                 'slug' => 'admin',
-                'telp' => '083808165171',
-                'email' => 'admin@gmail.com',
+                'telp' => '083808165175',
+                'email' => 'muhammadedowardaya@gmail.com',
                 'alamat' => 'Bogor',
                 'type' => 1,
                 'password' => bcrypt('admin'),

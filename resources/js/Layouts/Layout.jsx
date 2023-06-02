@@ -4,12 +4,13 @@ import "../../css/layout.css";
 import { router, usePage } from "@inertiajs/react";
 import "../modules/csrf.js";
 import Sidebar from "@/Components/Sidebar";
-import { IoClose, IoHome, IoNotificationsSharp } from "react-icons/io5";
+import { IoClose, IoHome } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import Navbar from "@/Components/Navbar";
 import { FiLogOut } from "react-icons/fi";
 import { GiFootyField, GiSoccerField } from "react-icons/gi";
 import {
+    AiFillCloseCircle,
     AiFillFacebook,
     AiFillSetting,
     AiOutlineCalendar,
@@ -17,14 +18,17 @@ import {
 } from "react-icons/ai";
 import axios from "axios";
 import Loading from "@/Components/Loading";
-import { MdFindInPage, MdLocalGroceryStore } from "react-icons/md";
+import {
+    MdAttachMoney,
+    MdDateRange,
+    MdFindInPage,
+    MdLocalGroceryStore,
+    MdPendingActions,
+} from "react-icons/md";
 import { FaCalendarAlt, FaQuestionCircle } from "react-icons/fa";
 import BookingSteps from "@/Components/BookingSteps";
-import runOneSignal from "@/utils/runOneSignal";
-import OneSignal from "react-onesignal";
 
-import Pusher from "pusher-js";
-import Swal from "sweetalert2";
+import MessageAlert from "@/Components/MessageAlert";
 
 export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
@@ -41,6 +45,13 @@ export default function Layout({ children, header, title }) {
         nama: "",
         url_logo: "",
         deskripsi: "",
+    });
+    // show alert message
+    const [showAlertMessage, setShowAlertMessage] = useState(false);
+    const [message, setMessage] = useState({
+        sender_name: "",
+        sender_photo: "",
+        value: "",
     });
 
     async function getUser() {
@@ -101,7 +112,7 @@ export default function Layout({ children, header, title }) {
                 //     runOneSignal();
             }
         } catch (error) {
-            console.error(error);
+            // console.error(error);
         }
     }, [showNotification]);
 
@@ -119,38 +130,34 @@ export default function Layout({ children, header, title }) {
 
     useEffect(() => {
         getUnreadMessage();
-        // if (Notification.permission !== "granted") {
-        //     Notification.requestPermission().then(function (permission) {
-        //         if (permission === "granted") {
-        //             // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
-        //             getUnreadMessage();
-        //         }
-        //     });
-        // } else {
-        //     // Panggil fungsi getUnreadMessage untuk mengecek pesan yang belum dibaca
-        //     getUnreadMessage();
-        // }
 
         window.Echo.channel("messages").listen("MessageEvent", (event) => {
+            getUnreadMessage();
             // Periksa apakah pengguna saat ini adalah penerima pesan
             if (event.recipient_id != "") {
                 if (event.recipient_id === auth.user.id) {
                     // Tampilkan notifikasi ketika ada pesan baru
                     if (event.message != "") {
                         showNotification(
-                            `${event.sender.nama} : ${event.message}`,
-                            event.sender.url_foto
+                            `${event.sender_name} : ${event.message}`,
+                            event.sender_photo
                         );
+
+                        setTimeout(() => {
+                            setShowAlertMessage(true);
+                            setMessage((prevData) => ({
+                                ...prevData,
+                                sender_name: event.sender_name,
+                                sender_photo: event.sender_photo,
+                                value: event.message,
+                            }));
+                        }, 1000);
                     }
-                    setJumlahPesan(event.unread_message_total);
+                    // setJumlahPesan(event.unread_message_total);
                     // runOneSignal();
                 }
             }
-            if (event.unread_message_total != "") {
-                setJumlahPesan(event.unread_message_total);
-            }
         });
-        // console.info(`${pesan.sender.nama} : ${pesan[0].message}`);
         const mode = localStorage.getItem("mode");
         if (mode === "dark") {
             if (!document.documentElement.classList.contains("dark")) {
@@ -183,7 +190,7 @@ export default function Layout({ children, header, title }) {
                 pyramidLoader.classList.add("hidden");
             }
         });
-    }, [gor.deskripsi]);
+    }, []);
 
     return (
         <div className="relative min-h-screen bg-fixed bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
@@ -217,6 +224,26 @@ export default function Layout({ children, header, title }) {
                                     router.get("/dashboard/lapangan"),
                                 icon: <GiSoccerField size="1.5em" />,
                                 title: "Lapangan",
+                            },
+                            {
+                                path: "/dashboard/jadwal*",
+                                onClick: () => router.get("/dashboard/jadwal"),
+                                icon: <MdDateRange size="1.5em" />,
+                                title: "Jadwal",
+                            },
+                            {
+                                path: "/dashboard/jadwal-pending*",
+                                onClick: () =>
+                                    router.get("/dashboard/jadwal-pending"),
+                                icon: <MdPendingActions size="1.5em" />,
+                                title: "Jadwal Pending",
+                            },
+                            {
+                                path: "/dashboard/laporan-keuangan*",
+                                onClick: () =>
+                                    router.get("/dashboard/laporan-keuangan"),
+                                icon: <MdAttachMoney size="1.5em" />,
+                                title: "Laporan",
                             },
                         ]}
                     />
@@ -290,6 +317,20 @@ export default function Layout({ children, header, title }) {
                                     title: "My Profile",
                                 },
                                 {
+                                    path: "/dashboard/jadwal*",
+                                    onClick: () =>
+                                        router.get("/dashboard/jadwal"),
+                                    icon: <MdDateRange className="mt-4" />,
+                                    title: "Jadwal",
+                                },
+                                {
+                                    path: "/dashboard/jadwal-pending*",
+                                    onClick: () =>
+                                        router.get("/dashboard/jadwal-pending"),
+                                    icon: <MdPendingActions className="mt-4" />,
+                                    title: "Jadwal Pending",
+                                },
+                                {
                                     path: "/dashboard/tempat-lapangan",
                                     onClick: () =>
                                         router.get(
@@ -305,6 +346,16 @@ export default function Layout({ children, header, title }) {
                                     icon: <GiSoccerField className="mt-4" />,
                                     title: "Lapangan",
                                 },
+                                {
+                                    path: "/dashboard/laporan-keuangan*",
+                                    onClick: () =>
+                                        router.get(
+                                            "/dashboard/laporan-keuangan"
+                                        ),
+                                    icon: <MdAttachMoney className="mt-4" />,
+                                    title: "Laporan",
+                                },
+
                                 {
                                     path: "/logout",
                                     onClick: () => {
@@ -446,7 +497,42 @@ export default function Layout({ children, header, title }) {
                     }`}
                 >
                     <main className="p-4">{children}</main>
-
+                    <div
+                        className={`${
+                            showAlertMessage ? "fixed" : "hidden"
+                        } sm:top-2 top-20 right-2`}
+                    >
+                        <p className="bg-gray-800 text-white px-2 rounded-t">
+                            Pesan baru
+                        </p>
+                        <div className="relative">
+                            <MessageAlert
+                                nama={message.sender_name}
+                                pesan={message.value}
+                                url_foto={message.sender_photo}
+                                onClick={() => {
+                                    router.get("/dashboard/pesan");
+                                    setTimeout(() => {
+                                        setShowAlertMessage(false);
+                                    }, 1000);
+                                }}
+                            />
+                            <div
+                                onClick={() => {
+                                    setShowAlertMessage(false);
+                                }}
+                                onTouchStart={() => {
+                                    setShowAlertMessage(false);
+                                }}
+                                className="absolute top-1/3 right-2 bg-red-500  rounded-full cursor-pointer"
+                            >
+                                <AiFillCloseCircle
+                                    size="1.5em"
+                                    className="hover:fill-red-500 hover:bg-white"
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <footer>
                         <div className="max-w-md mx-auto flex py-8">
                             <div className="w-full mx-auto flex flex-wrap">

@@ -1,5 +1,5 @@
 import Pusher from "pusher-js";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { debounce } from "lodash";
 import { MdSend } from "react-icons/md";
@@ -18,6 +18,12 @@ function Chat({
     id,
     className,
 }) {
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+    const handleConnectionChange = () => {
+        setIsOnline(navigator.onLine);
+    };
+
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [sending, setSending] = useState(false);
@@ -27,11 +33,32 @@ function Chat({
 
     const [today, setToday] = useState(moment());
     const [date, setDate] = useState(moment(tanggal));
+    const messageRef = useRef(null);
+
+    const getUnreadMessage = async () => {
+        try {
+            const response = await axios.get("/api/chat/unread-conversations");
+
+            if (response.data.jumlah_pesan > 0) {
+                // tandai sudah dibaca
+                axios
+                    .put(`/api/chat/mark-as-read/${chatChannel}`)
+                    .then((response) => {
+                        //
+                        console.info("mark as read");
+                    })
+                    .catch((error) => {
+                        console.info(error);
+                    });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
-        console.info(
-            `/api/chat/conversation/${senderId}/${recipientId}/${chatChannel}`
-        );
+        window.addEventListener("online", handleConnectionChange);
+        window.addEventListener("offline", handleConnectionChange);
         // Inisialisasi Pusher
         const pusher = new Pusher("bda224757a06c9269de3", {
             cluster: "ap1",
@@ -46,40 +73,95 @@ function Chat({
             setMessages((prevMessages) => [...prevMessages, data]);
         });
 
-        // Ambil data percakapan dari server
-        axios
-            .get(
-                `/api/chat/conversation/${senderId}/${recipientId}/${chatChannel}`
-            )
-            .then((response) => {
-                const conversations = response.data.conversations.map(
-                    (conversation) => {
-                        const sender_id =
-                            conversation.user_id === senderId
-                                ? senderId
-                                : recipientId;
-                        const sender_name =
-                            conversation.user_id === senderId
-                                ? senderName
-                                : recipientName;
-                        const sender_photo =
-                            conversation.user_id === senderId
-                                ? senderPhoto
-                                : recipientPhoto;
-                        return {
-                            ...conversation,
-                            sender_id,
-                            sender_name,
-                            sender_photo,
-                        };
-                    }
-                );
-                setMessages(conversations);
-                setShowLoading(false);
-            })
-            .catch((error) => {
-                console.error(error);
+        if (chatChannel != "" && senderId != "" && recipientId != "") {
+            // Ambil data percakapan dari server
+            axios
+                .get(
+                    `/api/chat/conversation/${senderId}/${recipientId}/${chatChannel}`
+                )
+                .then((response) => {
+                    const conversations = response.data.conversations.map(
+                        (conversation) => {
+                            const sender_id =
+                                conversation.user_id === senderId
+                                    ? senderId
+                                    : recipientId;
+                            const sender_name =
+                                conversation.user_id === senderId
+                                    ? senderName
+                                    : recipientName;
+                            const sender_photo =
+                                conversation.user_id === senderId
+                                    ? senderPhoto
+                                    : recipientPhoto;
+                            return {
+                                ...conversation,
+                                sender_id,
+                                sender_name,
+                                sender_photo,
+                            };
+                        }
+                    );
+                    setMessages(conversations);
+                    setShowLoading(false);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            // geser ke percakapan paling bawah
+            if (messageRef.current) {
+                messageRef.current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "end",
+                    inline: "nearest",
+                });
+            }
+
+            window.Echo.channel("messages").listen("MessageEvent", (event) => {
+                // Ambil data percakapan dari server
+                axios
+                    .get(
+                        `/api/chat/conversation/${senderId}/${recipientId}/${chatChannel}`
+                    )
+                    .then((response) => {
+                        const conversations = response.data.conversations.map(
+                            (conversation) => {
+                                const sender_id =
+                                    conversation.user_id === senderId
+                                        ? senderId
+                                        : recipientId;
+                                const sender_name =
+                                    conversation.user_id === senderId
+                                        ? senderName
+                                        : recipientName;
+                                const sender_photo =
+                                    conversation.user_id === senderId
+                                        ? senderPhoto
+                                        : recipientPhoto;
+                                return {
+                                    ...conversation,
+                                    sender_id,
+                                    sender_name,
+                                    sender_photo,
+                                };
+                            }
+                        );
+                        setMessages(conversations);
+                        if (messageRef.current) {
+                            messageRef.current.scrollIntoView({
+                                behavior: "smooth",
+                                block: "end",
+                                inline: "nearest",
+                            });
+                            setShowLoading(false);
+                            getUnreadMessage();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
             });
+        }
 
         const getUser = async (userId) => {
             try {
@@ -92,12 +174,21 @@ function Chat({
 
         getUser(senderId);
 
+        console.info("senderId : " + senderId);
+        console.info("recipientId : " + recipientId);
+        console.info("message");
+        console.info(messages);
+        console.info(senderName);
+        console.info("tanggal : " + tanggal);
+
         return () => {
+            window.removeEventListener("online", handleConnectionChange);
+            window.removeEventListener("offline", handleConnectionChange);
             // Unsubscribe dari channel dan matikan Pusher
             channel.unbind();
             pusher.disconnect();
         };
-    }, [chatChannel, senderId, recipientId, newMessage]);
+    }, [chatChannel, senderId, recipientId, messageRef]);
 
     // Kirim pesan ke server dengan debounce
     const sendMessage = debounce(() => {
@@ -109,6 +200,8 @@ function Chat({
                 sender_id: senderId,
                 recipient_id: recipientId,
                 tanggal: tanggal,
+                sender_name: senderName,
+                sender_photo: senderPhoto,
             };
 
             axios.post("/api/chat/send-message", data).then((response) => {
@@ -207,6 +300,7 @@ function Chat({
                                         </div>
                                     )}
                                     <div
+                                        ref={messageRef}
                                         className={`${
                                             message.sender_id === recipientId
                                                 ? "bg-green-500 text-gray-50"
@@ -296,6 +390,13 @@ function Chat({
                 } justify-center items-center`}
             >
                 <span>Loading...</span>
+            </div>
+            <div
+                className={`absolute z-20 top-0 bottom-0 left-0 right-0 bg-gray-800 text-gray-50 ${
+                    isOnline ? "hidden" : "flex"
+                } justify-center items-center`}
+            >
+                <span>Tidak ada koneksi internet...</span>
             </div>
         </div>
     );
