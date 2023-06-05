@@ -305,22 +305,26 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
 
 
     // jadwal pending atau cod
-    Route::get('/dashboard/jadwal-pending', function () {
-        // $jadwal berisi data
-        return Inertia::render('Dashboard/Admin/Jadwal/JadwalPending');
+    Route::get('/dashboard/pending-jadwal', function () {
+        $tempat_lapangan = TempatLapangan::all()->first();
+        return Inertia::render('Dashboard/Admin/Jadwal/JadwalPending', [
+            'tempat_lapangan' => $tempat_lapangan
+        ]);
     });
 
     // show jadwal
     Route::get('/dashboard/jadwal/{lapangan_id}', function ($lapangan_id) {
         $tempat_lapangan = TempatLapangan::all()->first();
+        $lapangan = Lapangan::all();
         return Inertia::render('Dashboard/Admin/Jadwal/ShowJadwal', [
             'lapangan_id' => $lapangan_id,
+            'list_lapangan' => $lapangan,
             'tempat_lapangan' => $tempat_lapangan,
         ]);
     });
 
     Route::get('/dashboard/jadwal/{lapangan_id}/{id}', function ($lapangan_id, $id) {
-        $jadwal = Jadwal::where('lapangan_id', $lapangan_id)->where('id', $id)->with('user')->get();
+        $jadwal = Jadwal::where('lapangan_id', $lapangan_id)->where('id', $id)->with(['user', 'lapangan'])->get();
         return response()->json([
             'jadwal' => $jadwal
         ]);
@@ -337,9 +341,10 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         //     throw new \Illuminate\Validation\ValidationException($validator);
         // }
 
-        // jadikan tanggal dengan format d m Y dapat diterima database
+        // // jadikan tanggal dengan format d m Y dapat diterima database
         $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
-        // buat jadwal baru
+        $external_id = Str::random(10);
+        // // buat jadwal baru
         $jadwal = new Jadwal;
         $jadwal->user_id = $request->user_id;
         $jadwal->lapangan_id = $request->lapangan_id;
@@ -349,25 +354,51 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         $jadwal->jam_selesai = $request->jam_selesai;
         $jadwal->save();
 
-        // Kirim notifikasi ke Pusher
-        $pusher = new Pusher\Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            array('cluster' => env('PUSHER_APP_CLUSTER'))
-        );
-        $pusher->trigger('schedule', 'update', ['message' => 'Jadwal telah diperbarui']);
+        $transaksi = new Transaksi();
+        $transaksi->user_id = $request->user_id;
+        $transaksi->lapangan_id = $request->lapangan_id;
+        $transaksi->external_id = $external_id;
+        $transaksi->amount = $request->amount;
+        $transaksi->tanggal_main = $tanggal_main;
+        $transaksi->save();
 
+        return response()->json(['message' => 'Data berhasil ditambahkan'], 200);
+    });
 
-        return response()->json(['message' => 'Data berhasil disimpan'], 200);
-        // return response()->json([
-        //     'user_id' => $request->user_id,
-        //     'lapangan_id' => $request->lapangan_id,
-        //     'status_transaksi' => $request->status_transaksi,
-        //     'tanggal' => $request->tanggal_main,
-        //     'jam_mulai' => $request->jam_mulai,
-        //     'jam_selesai' => $request->jam_selesai,
-        // ]);
+    // update jadwal
+    Route::patch('/jadwal/{id}', function (Request $request, $id) {
+        $jadwal = Jadwal::find($id);
+        $transaksis = Transaksi::where('external_id', $jadwal->external_id)->get();
+        $transaksi = $transaksis->first();
+        // jadikan tanggal dengan format d m Y dapat diterima database
+        // $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
+        // // buat jadwal baru
+        $jadwal->lapangan_id = $request->lapangan_id;
+        $jadwal->tanggal = $request->tanggal_main;
+        $jadwal->status_transaksi = $request->status_transaksi;
+        $jadwal->jam_mulai = $request->jam_mulai;
+        $jadwal->jam_selesai = $request->jam_selesai;
+        $jadwal->save();
+
+        $transaksi->user_id = auth()->user()->id;
+        $transaksi->lapangan_id = request('lapangan_id');
+        $transaksi->amount = request('amount');
+        $transaksi->tanggal_main = $request->tanggal_main;
+        $transaksi->status_transaksi = $request->status_transaksi;
+        $transaksi->save();
+
+        // // Kirim notifikasi ke Pusher
+        // $pusher = new Pusher\Pusher(
+        //     env('PUSHER_APP_KEY'),
+        //     env('PUSHER_APP_SECRET'),
+        //     env('PUSHER_APP_ID'),
+        //     array('cluster' => env('PUSHER_APP_CLUSTER'))
+        // );
+        // $pusher->trigger('schedule', 'update', ['message' => 'Jadwal telah diperbarui']);
+
+        return response()->json([
+            'message' => 'Data berhasil diupdate'
+        ], 200);
     });
 
 

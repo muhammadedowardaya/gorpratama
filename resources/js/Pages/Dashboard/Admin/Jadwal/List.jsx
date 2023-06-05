@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import Layout from "@/Layouts/Layout";
 import { router } from "@inertiajs/react";
 import { AiFillMeh } from "react-icons/ai";
+import { MdPendingActions } from "react-icons/md";
 
 export default function List(props) {
     const [jadwal, setJadwal] = useState(Object.values(props.jadwal));
@@ -15,8 +16,11 @@ export default function List(props) {
 
     return (
         <>
-            <h1 className="md:text-2xl font-bold mt-8">Kelola Jadwal</h1>
-            <div className="flex flex-wrap justify-center w-full mt-8">
+            <h1 className="md:text-2xl font-bold mt-8 text-center">
+                Kelola Jadwal
+            </h1>
+
+            <div className="flex flex-wrap justify-center w-full mt-8 gap-4">
                 {Array.isArray(jadwal) && jadwal.length > 0 ? (
                     jadwal.map((item, index) => {
                         return (

@@ -1,32 +1,51 @@
-import React, { useState, useEffect } from "react";
-import Swal from "sweetalert2";
 import Layout from "@/Layouts/Layout";
-import { router } from "@inertiajs/react";
-import { AiFillMeh } from "react-icons/ai";
+import { useForm } from "@inertiajs/react";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { IoAddCircleSharp } from "react-icons/io5";
 
-export default function JadwalPending(props) {
+import "../../../../../css/formStyle.css";
+import Label from "@/Components/Label";
+import { DatePicker, TimePicker } from "antd";
+import Loading from "@/Components/Loading";
+import Swal from "sweetalert2";
+import FormatRupiah from "@/Components/FormatRupiah";
+import axios from "axios";
+import { AiFillCloseCircle } from "react-icons/ai";
+
+export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
     const [jadwal, setJadwal] = useState([]);
-    const [editJadwal, setEditJadwal] = useState("");
+
+    const [externalId, setExternalId] = useState("");
 
     const [users, setUsers] = useState([]);
     const [user, setUser] = useState("");
+
+    const [listLapangan, setListLapangan] = useState([]);
+    const [lapangan, setLapangan] = useState("");
+
     const [showLoading, setShowLoading] = useState(false);
+    const [searchLoading, setSearchLoading] = useState(false);
 
     const [showTambahJadwal, setShowTambahJadwal] = useState(false);
     const [showEditJadwal, setShowEditJadwal] = useState(false);
     const [editJamBertanding, setEditJamBertanding] = useState(false);
+    const [editTanggalMain, setEditTanggalMain] = useState(false);
+    const [editLapangan, setEditLapangan] = useState(false);
+
     const [statusTransaksiOptions, setStatusTransaksiOptions] = useState([
         { value: 1, label: "PENDING" },
         { value: 2, label: "FAILED" },
         { value: 3, label: "EXPIRED" },
-        { value: 4, label: "COD" },
+        { value: 4, label: "COD (belum konfirmasi)" },
+        { value: 5, label: "COD (terkonfirmasi)" },
         { value: 0, label: "PAID" },
     ]);
 
     const { data, setData, reset, errors } = useForm({
         user_id: "",
-        lapangan_id: lapangan_id,
+        lapangan_id: "",
+        nama_lapangan: "",
         status_transaksi: "",
         tanggal_main: "",
         jam_mulai: "",
@@ -34,6 +53,7 @@ export default function JadwalPending(props) {
 
         nama: "",
         jadwal: "",
+        jadwal_id: "",
 
         jam_mulai_value: "",
         jam_selesai_value: "",
@@ -48,16 +68,40 @@ export default function JadwalPending(props) {
 
     async function getJadwal() {
         try {
-            const response = await axios.get(`/api/jadwal-pending`);
-            if (
-                Array.isArray(response.data.jadwal.data) &&
-                response.data.jadwal.data.length > 0
-            ) {
-                setJadwal(response.data.jadwal.data);
+            if (externalId != "") {
+                setSearchLoading(true);
+                const response = await axios.get(
+                    `/api/pending-jadwal/${externalId}`
+                );
+                if (response.data.jadwal.length > 0) {
+                    setSearchLoading(false);
+                    setJadwal(response.data.jadwal);
+                } else {
+                    setSearchLoading(false);
+                    setJadwal([]);
+                }
+            } else {
+                setSearchLoading(true);
+                const response = await axios.get(`/api/pending-jadwal`);
+                if (
+                    Array.isArray(response.data.jadwal.data) &&
+                    response.data.jadwal.data.length > 0
+                ) {
+                    setSearchLoading(false);
+                    setJadwal(response.data.jadwal.data);
+                } else {
+                    setSearchLoading(false);
+                    setJadwal([]);
+                }
             }
         } catch (error) {
             console.error(error);
         }
+    }
+
+    function handleSearch(e) {
+        e.preventDefault();
+        setExternalId(e.target.value);
     }
 
     async function getUsers() {
@@ -68,6 +112,20 @@ export default function JadwalPending(props) {
                 response.data.users.length > 0
             ) {
                 setUsers(response.data.users);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getListLapangan() {
+        try {
+            const response = await axios.get(`/api/get-list-lapangan`);
+            if (
+                Array.isArray(response.data.lapangan) &&
+                response.data.lapangan.length > 0
+            ) {
+                setListLapangan(response.data.lapangan);
             }
         } catch (error) {
             console.error(error);
@@ -126,16 +184,31 @@ export default function JadwalPending(props) {
 
         setData((prevData) => ({
             ...prevData,
-            user_id: user.id ? user.id : editJadwal.user_id,
             lama_bermain: lama_bermain,
             total_harga: FormatRupiah(total.toString(), "Rp. "),
             amount: total,
         }));
+
+        if (lapangan != "default" && lapangan != "") {
+            setData((prevData) => ({
+                ...prevData,
+                lapangan_id: lapangan.id,
+            }));
+        }
+
+        if (user != "default" && user != "") {
+            setData((prevData) => ({
+                ...prevData,
+                user_id: user.id,
+                nama: user.nama,
+            }));
+        }
     }
 
     const submit = (e) => {
         e.preventDefault();
         setShowLoading(true);
+
         let ada_jadwal = false;
         if (Array.isArray(jadwal) && jadwal.length > 0) {
             for (let i = 0; i < jadwal.length; i++) {
@@ -148,8 +221,7 @@ export default function JadwalPending(props) {
                         jadwal[i].jam_selesai == data.jam_selesai)
                 ) {
                     ada_jadwal = true;
-                } else {
-                    ada_jadwal = false;
+                    break;
                 }
             }
         }
@@ -161,13 +233,26 @@ export default function JadwalPending(props) {
         const formattedDate = day + "-" + month + "-" + year;
 
         if (ada_jadwal == false) {
-            if (user == "" || user == "default") {
+            if (data.nama == "" || data.nama == "default") {
                 setShowLoading(false);
                 Swal.fire(
                     "Maaf cuy",
                     "Nama pelanggan gak boleh kosong euy",
                     "warning"
                 );
+            } else if (data.lapangan_id == "") {
+                setShowLoading(false);
+                Swal.fire(
+                    "Maaf",
+                    "Mohon pilih lapangan terlebih dahulu",
+                    "warning"
+                );
+            } else if (
+                data.status_transaksi == "" ||
+                data.status_transaksi == "default"
+            ) {
+                setShowLoading(false);
+                Swal.fire("Maaf", "Status transaksi harus dipilih", "warning");
             } else if (data.tanggal_main < formattedDate) {
                 setShowLoading(false);
                 Swal.fire(
@@ -185,10 +270,16 @@ export default function JadwalPending(props) {
                 setShowLoading(false);
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
             } else {
+                setShowLoading(false);
                 //    tambah jadwal
                 axios.post("/jadwal", data).then((response) => {
-                    setShowLoading(false);
-                    axios.get("/dashboard/jadwal/" + lapangan_id);
+                    setData("status_transaksi", "");
+                    setShowTambahJadwal(false);
+                    Swal.fire(
+                        "Berhasil!",
+                        "Data berhasil ditambahkan",
+                        "success"
+                    );
                 });
                 // Swal.fire({
                 //     title: "Konfirmasi Pesanan Mu",
@@ -277,9 +368,17 @@ export default function JadwalPending(props) {
             } else {
                 //    tambah jadwal
                 setShowLoading(false);
-
-                console.info("ter update");
-                console.info(data);
+                axios
+                    .patch(`/jadwal/${data.jadwal_id}`, data)
+                    .then((response) => {
+                        setData("status_transaksi", "");
+                        setShowEditJadwal(false);
+                        Swal.fire(
+                            "Berhasil!",
+                            "Data berhasil diupdate",
+                            "success"
+                        );
+                    });
                 // axios.post("/jadwal", data).then((response) => {
                 //     setShowLoading(false);
                 //     axios.get("/dashboard/jadwal/" + lapangan_id);
@@ -315,10 +414,10 @@ export default function JadwalPending(props) {
         }
     };
 
-    // Similar to componentDidMount and componentDidUpdate:
     useEffect(() => {
         getJadwal();
         getUsers();
+        getListLapangan();
         updateData();
 
         // Menggunakan Pusher untuk menerima notifikasi
@@ -377,11 +476,65 @@ export default function JadwalPending(props) {
             }
             lastX = event.touches[0].clientX;
         });
-    });
+
+        return () => {
+            //
+        };
+    }, [
+        user,
+        externalId,
+        data.nama,
+        data.status_transaksi,
+        data.jam_mulai,
+        data.jam_selesai,
+        data.tanggal_main,
+        data.lapangan_id,
+        data.jam_mulai,
+        data.jam_selesai,
+    ]);
 
     return (
-        <>
-            <h1 className="md:text-2xl font-bold mt-8">Kelola Jadwal</h1>
+        <div className="p-4">
+            <Loading display={showLoading} />
+
+            <div className="flex justify-between">
+                <h1 className="text-2xl font-bold md:mt-2">Jadwal Bermain</h1>
+                <button
+                    className="shadow px-2 shadow-white text-sm md:text-base"
+                    onClick={() => {
+                        setShowTambahJadwal(true);
+                    }}
+                >
+                    <IoAddCircleSharp className="inline-block" size="1.5em" />{" "}
+                    Tambah Jadwal
+                </button>
+            </div>
+            <div className="my-3">
+                <form>
+                    <label
+                        htmlFor="external_id"
+                        className="block text-md font-medium text-gray-100"
+                    >
+                        Cari jadwal berdasarkan kode unik :
+                    </label>
+                    <div className="flex items-center relative">
+                        <div
+                            className={`justify-center items-center absolute right-5 ${
+                                searchLoading ? "flex" : "hidden"
+                            }`}
+                        >
+                            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-900"></div>
+                        </div>
+                        <input
+                            onChange={handleSearch}
+                            type="text"
+                            name="external_id"
+                            id="external_id"
+                            className="block w-full text-gray-700 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                    </div>
+                </form>
+            </div>
             <div className="overflow-auto mt-7">
                 <div id="table-container">
                     <table
@@ -416,14 +569,13 @@ export default function JadwalPending(props) {
                                             <td>{item.user.nama}</td>
                                             <td>
                                                 {
-                                                    statusTransaksi.find(
+                                                    statusTransaksiOptions.find(
                                                         (option) =>
                                                             option.value ===
                                                             item.status_transaksi
                                                     )?.label
                                                 }
                                             </td>
-
                                             <td>{tanggal_bermain}</td>
                                             <td>{item.jam_mulai}</td>
                                             <td>{item.jam_selesai}</td>
@@ -433,7 +585,7 @@ export default function JadwalPending(props) {
                                                         setShowLoading(true);
                                                         axios
                                                             .get(
-                                                                `/dashboard/jadwal/${lapangan_id}/${item.id}`
+                                                                `/dashboard/jadwal/${item.lapangan.id}/${item.id}`
                                                             )
                                                             .then(
                                                                 (response) => {
@@ -442,28 +594,22 @@ export default function JadwalPending(props) {
                                                                             .data
                                                                             .jadwal[0];
 
-                                                                    const total =
-                                                                        (parseInt(
-                                                                            editJadwal.jam_selesai
-                                                                        ) -
-                                                                            parseInt(
-                                                                                editJadwal.jam_mulai
-                                                                            )) *
-                                                                        data.harga_persewa;
-
-                                                                    const lama_bermain =
-                                                                        parseInt(
-                                                                            editJadwal.jam_selesai
-                                                                        ) -
-                                                                        parseInt(
-                                                                            editJadwal.jam_mulai
-                                                                        );
-
                                                                     setData(
                                                                         (
                                                                             prevData
                                                                         ) => ({
                                                                             ...prevData,
+                                                                            nama: editJadwal
+                                                                                .user
+                                                                                .nama,
+                                                                            lapangan_id:
+                                                                                editJadwal.lapangan_id,
+                                                                            nama_lapangan:
+                                                                                editJadwal
+                                                                                    .lapangan
+                                                                                    .nama,
+                                                                            jadwal_id:
+                                                                                editJadwal.id,
                                                                             user_id:
                                                                                 editJadwal.user_id,
                                                                             status_transaksi:
@@ -474,9 +620,6 @@ export default function JadwalPending(props) {
                                                                                 editJadwal.jam_mulai,
                                                                             jam_selesai:
                                                                                 editJadwal.jam_selesai,
-                                                                            nama: editJadwal
-                                                                                .user
-                                                                                .nama,
                                                                         })
                                                                     );
 
@@ -499,8 +642,16 @@ export default function JadwalPending(props) {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center">
-                                        Belum ada jadwal bermain
+                                    <td colSpan={7} className="text-center">
+                                        {searchLoading ? (
+                                            <div
+                                                className={`flex justify-center items-center`}
+                                            >
+                                                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-900"></div>
+                                            </div>
+                                        ) : (
+                                            "Tidak ada Jadwal"
+                                        )}
                                     </td>
                                 </tr>
                             )}
@@ -508,223 +659,314 @@ export default function JadwalPending(props) {
                     </table>
                 </div>
             </div>
+            {showTambahJadwal && (
+                <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center p-4 z-20 mt-14 md:mt-0 backdrop-filter backdrop-blur-sm">
+                    <div className="relative overflow-y-auto md:overflow-y-hidden">
+                        <div className="login-box w-full md:w-[70vw]">
+                            <h1 className="text-gray-700 text-center mb-4">
+                                Tambah Jadwal
+                            </h1>
+
+                            <form onSubmit={submit}>
+                                <div>
+                                    <div className="w-full">
+                                        <label className="block text-gray-600 font-bold mb-2">
+                                            Nama Pelanggan
+                                        </label>
+
+                                        <select
+                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
+                                            defaultValue="default"
+                                            onChange={(e) => {
+                                                e.preventDefault();
+                                                if (
+                                                    e.target.value != "default"
+                                                ) {
+                                                    const user = e.target.value;
+                                                    setUser(JSON.parse(user));
+                                                } else {
+                                                    setData(
+                                                        "nama",
+                                                        e.target.value
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <option value="default">
+                                                Pilih Pelanggan
+                                            </option>
+                                            {users.map((user) => (
+                                                <option
+                                                    key={user.id}
+                                                    value={JSON.stringify(user)}
+                                                >
+                                                    {user.nama}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="w-full mt-4">
+                                        <label className="block text-gray-600 font-bold mb-2">
+                                            Lapangan
+                                        </label>
+
+                                        <select
+                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
+                                            defaultValue="default"
+                                            onChange={(e) => {
+                                                const lapangan = e.target.value;
+                                                setLapangan(
+                                                    JSON.parse(lapangan)
+                                                );
+                                            }}
+                                        >
+                                            <option value="default">
+                                                Pilih Lapangan
+                                            </option>
+                                            {listLapangan.map((item) => (
+                                                <option
+                                                    key={item.id}
+                                                    value={JSON.stringify(item)}
+                                                >
+                                                    {item.nama}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="w-full mt-4">
+                                        <label className="block text-gray-600 font-bold mb-2">
+                                            Status Transaksi
+                                        </label>
+                                        <select
+                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700 cursor-pointer"
+                                            value={
+                                                data.status_transaksi !==
+                                                    undefined &&
+                                                data.status_transaksi !== ""
+                                                    ? statusTransaksiOptions.findIndex(
+                                                          (option) =>
+                                                              option.value ===
+                                                              data.status_transaksi
+                                                      )
+                                                    : "default"
+                                            }
+                                            onChange={(e) => {
+                                                const selectedIndex = parseInt(
+                                                    e.target.value
+                                                );
+                                                const selectedValue =
+                                                    selectedIndex >= 0
+                                                        ? statusTransaksiOptions[
+                                                              selectedIndex
+                                                          ].value
+                                                        : "";
+                                                setData(
+                                                    "status_transaksi",
+                                                    selectedValue
+                                                );
+                                            }}
+                                        >
+                                            <option value="default">
+                                                Pilih Status
+                                            </option>
+                                            {statusTransaksiOptions.map(
+                                                (option, index) => (
+                                                    <option
+                                                        key={option.value}
+                                                        value={index.toString()}
+                                                    >
+                                                        {option.label}
+                                                    </option>
+                                                )
+                                            )}
+                                        </select>
+                                    </div>
+
+                                    <div className="mt-4">
+                                        <Label
+                                            className="text-slate-700"
+                                            forInput="date"
+                                            value="Tanggal"
+                                        />
+
+                                        <DatePicker
+                                            format="DD-MM-YYYY"
+                                            className="mt-2"
+                                            onChange={(day, date) => {
+                                                setData("tanggal_main", date);
+                                            }}
+                                            picker="large"
+                                            size="large"
+                                        />
+                                    </div>
+
+                                    <div className="mt-4">
+                                        <div className="grid grid-cols-2 gap-2 max-w-[300px]">
+                                            <Label
+                                                className="text-slate-700"
+                                                forInput="jam"
+                                                value="Jam mulai"
+                                            />
+                                            <Label
+                                                className="text-slate-700"
+                                                forInput="jam"
+                                                value="Jam selesai"
+                                            />
+
+                                            <TimePicker
+                                                format="HH:mm"
+                                                disabledTime={disabledTime}
+                                                onSelect={(time) => {
+                                                    setData({
+                                                        ...data,
+                                                        jam_mulai: moment(
+                                                            time["$d"]
+                                                        ).format("HH:mm"),
+                                                        jam_mulai_value: time,
+                                                    });
+                                                }}
+                                                disabled={
+                                                    data.tanggal_main == ""
+                                                        ? true
+                                                        : false
+                                                }
+                                                minuteStep={5}
+                                                value={
+                                                    data.jam_mulai_value ??
+                                                    moment(new Date()).format()
+                                                }
+                                                size="large"
+                                                tabIndex="0"
+                                            />
+                                            <TimePicker
+                                                format="HH:mm"
+                                                disabledTime={disabledTime}
+                                                onSelect={(time) => {
+                                                    setData({
+                                                        ...data,
+                                                        jam_selesai: moment(
+                                                            time["$d"]
+                                                        ).format("HH:mm"),
+                                                        jam_selesai_value: time,
+                                                    });
+                                                }}
+                                                locale="id"
+                                                disabled={
+                                                    data.tanggal_main == ""
+                                                        ? true
+                                                        : false
+                                                }
+                                                minuteStep={5}
+                                                value={data.jam_selesai_value}
+                                                size="large"
+                                                tabIndex="0"
+                                                autoFocus={true}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <center>
+                                    <button type="submit" className="w-full">
+                                        Tambah
+                                        <span></span>
+                                    </button>
+                                </center>
+                            </form>
+                            <div
+                                className="absolute top-1 right-1 cursor-pointer"
+                                onClick={() => {
+                                    setShowTambahJadwal(false);
+                                    reset();
+                                }}
+                            >
+                                <AiFillCloseCircle className="fill-red-500 text-4xl" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {showEditJadwal && (
                 <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center p-4 z-20 mt-14 md:mt-0 backdrop-filter backdrop-blur-sm">
-                    <div className="login-box w-full md:w-[70vw] relative">
-                        <h1 className="text-gray-700 text-center mb-4">
-                            Edit Jadwal
-                        </h1>
+                    <div className="relative overflow-y-auto">
+                        <div className="login-box w-full md:w-[70vw]">
+                            <h1 className="text-gray-700 text-center mb-4">
+                                Edit Jadwal
+                            </h1>
 
-                        <form onSubmit={update}>
-                            <div>
-                                <div className="w-full">
-                                    <label className="block text-gray-600 font-bold mb-2">
-                                        Nama Pelanggan
-                                    </label>
+                            <form onSubmit={update}>
+                                <div>
+                                    <div className="w-full">
+                                        <label className="block text-gray-600 font-bold mb-2">
+                                            Nama Pelanggan
+                                        </label>
 
-                                    <select
-                                        className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
-                                        value={
-                                            editJadwal.user
-                                                ? JSON.stringify(
-                                                      editJadwal.user
-                                                  )
-                                                : "default"
-                                        }
-                                        onChange={(e) => {
-                                            const user = e.target.value;
-                                            setUser(JSON.parse(user));
-                                        }}
-                                    >
-                                        <option value="default">
-                                            Pilih Pelanggan
-                                        </option>
-                                        {users.map((user) => (
-                                            <option
-                                                key={user.id}
-                                                value={JSON.stringify(user)}
-                                                hidden={
-                                                    editJadwal.user &&
-                                                    editJadwal.user.id ===
-                                                        user.id
-                                                }
+                                        <input
+                                            type="text"
+                                            value={data.nama}
+                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
+                                            disabled
+                                        />
+                                    </div>
+
+                                    <div className="w-full mt-4">
+                                        <label className="block text-gray-600 font-bold mb-2">
+                                            Lapangan
+                                        </label>
+
+                                        {editLapangan ? (
+                                            <select
+                                                className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
+                                                defaultValue="default"
+                                                onChange={(e) => {
+                                                    const lapangan =
+                                                        e.target.value;
+                                                    setLapangan(
+                                                        JSON.parse(lapangan)
+                                                    );
+                                                }}
                                             >
-                                                {user.nama}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="w-full mt-4">
-                                    <label className="block text-gray-600 font-bold mb-2">
-                                        Status Transaksi
-                                    </label>
-
-                                    <select
-                                        className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
-                                        value={
-                                            editJadwal.status_transaksi !==
-                                                undefined &&
-                                            editJadwal.status_transaksi !== ""
-                                                ? statusTransaksiOptions.findIndex(
-                                                      (option) =>
-                                                          option.label ===
-                                                          editJadwal.status_transaksi
-                                                  )
-                                                : "default"
-                                        }
-                                        onChange={(e) => {
-                                            const selectedIndex = parseInt(
-                                                e.target.value
-                                            );
-                                            const selectedValue =
-                                                selectedIndex >= 0
-                                                    ? statusTransaksiOptions[
-                                                          selectedIndex
-                                                      ].label
-                                                    : "";
-                                            setData(
-                                                "status_transaksi",
-                                                selectedValue
-                                            );
-                                        }}
-                                    >
-                                        <option value="default">
-                                            Pilih Status
-                                        </option>
-                                        {statusTransaksiOptions.map(
-                                            (option, index) => (
-                                                <option
-                                                    key={option.value}
-                                                    value={index.toString()}
-                                                >
-                                                    {option.label}
+                                                <option value="default">
+                                                    Pilih Lapangan
                                                 </option>
-                                            )
-                                        )}
-                                    </select>
-                                </div>
-
-                                <div className="mt-4">
-                                    <Label
-                                        className="text-slate-700"
-                                        forInput="date"
-                                        value="Tanggal"
-                                    />
-
-                                    <DatePicker
-                                        format="DD-MM-YYYY"
-                                        className="mt-2"
-                                        onChange={(day, date) => {
-                                            setData("tanggal_main", date);
-                                        }}
-                                        picker="large"
-                                        size="large"
-                                        value={moment(editJadwal.tanggal)}
-                                    />
-                                </div>
-
-                                <div className="mt-4">
-                                    <div className="grid grid-cols-2 gap-2 max-w-[300px]">
-                                        <Label
-                                            className="text-slate-700"
-                                            forInput="jam"
-                                            value="Jam mulai"
-                                        />
-                                        <Label
-                                            className="text-slate-700"
-                                            forInput="jam"
-                                            value="Jam selesai"
-                                        />
-
-                                        {editJamBertanding ? (
-                                            <>
-                                                <TimePicker
-                                                    format="HH:mm"
-                                                    disabledTime={disabledTime}
-                                                    onSelect={(time) => {
-                                                        setData({
-                                                            ...data,
-                                                            jam_mulai: moment(
-                                                                time["$d"]
-                                                            ).format("HH:mm"),
-                                                            jam_mulai_value:
-                                                                time,
-                                                        });
-                                                    }}
-                                                    disabled={
-                                                        editJadwal.tanggal == ""
-                                                            ? true
-                                                            : false
-                                                    }
-                                                    minuteStep={5}
-                                                    value={
-                                                        data.jam_mulai_value ??
-                                                        moment(
-                                                            new Date()
-                                                        ).format()
-                                                    }
-                                                    size="large"
-                                                    tabIndex="0"
-                                                />
-
-                                                <TimePicker
-                                                    format="HH:mm"
-                                                    onSelect={(time) => {
-                                                        setData({
-                                                            ...data,
-                                                            jam_selesai: moment(
-                                                                time["$d"]
-                                                            ).format("HH:mm"),
-                                                            jam_selesai_value:
-                                                                time,
-                                                        });
-                                                    }}
-                                                    locale="id"
-                                                    disabled={
-                                                        editJadwal.tanggal == ""
-                                                            ? true
-                                                            : false
-                                                    }
-                                                    minuteStep={5}
-                                                    value={
-                                                        data.jam_selesai_value
-                                                    }
-                                                    size="large"
-                                                    tabIndex="0"
-                                                    autoFocus={true}
-                                                />
-                                            </>
+                                                {listLapangan.map((item) => (
+                                                    <option
+                                                        key={item.id}
+                                                        value={JSON.stringify(
+                                                            item
+                                                        )}
+                                                    >
+                                                        {item.nama}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         ) : (
-                                            <>
-                                                <input
-                                                    type="text"
-                                                    disabled
-                                                    value={editJadwal.jam_mulai}
-                                                    className="rounded border-gray-300 text-gray-700"
-                                                />
-                                                <input
-                                                    type="text"
-                                                    disabled
-                                                    value={
-                                                        editJadwal.jam_selesai
-                                                    }
-                                                    className="rounded border-gray-300 text-gray-700"
-                                                />
-                                            </>
+                                            <select
+                                                className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
+                                                defaultValue="default"
+                                                disabled
+                                            >
+                                                <option value="default">
+                                                    {data.nama_lapangan}
+                                                </option>
+                                            </select>
                                         )}
                                     </div>
+
                                     <div>
-                                        {editJamBertanding ? (
+                                        {editLapangan ? (
                                             <div
                                                 className="my-2"
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    setEditJamBertanding(false);
+                                                    setEditLapangan(false);
                                                 }}
                                                 onTouchStart={(e) => {
                                                     e.preventDefault();
-                                                    setEditJamBertanding(false);
+                                                    setEditLapangan(false);
                                                 }}
                                             >
                                                 <button className="text-slate-100 rounded bg-gray-600 px-4 ">
@@ -736,32 +978,310 @@ export default function JadwalPending(props) {
                                                 className="my-2 col-span-2"
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    setEditJamBertanding(true);
+                                                    setEditLapangan(true);
                                                 }}
                                                 onTouchStart={(e) => {
                                                     e.preventDefault();
-                                                    setEditJamBertanding(true);
+                                                    setEditLapangan(true);
                                                 }}
                                             >
                                                 <button className="text-slate-100 rounded bg-orange-400 px-4 ">
-                                                    Edit Jam Bertanding
+                                                    Edit Lapangan
                                                 </button>
                                             </div>
                                         )}
                                     </div>
-                                </div>
-                            </div>
 
-                            <center>
-                                <button type="submit" className="w-full">
-                                    Update
-                                    <span></span>
-                                </button>
-                            </center>
-                        </form>
+                                    <div className="w-full mt-4">
+                                        <label className="block text-gray-600 font-bold mb-2">
+                                            Status Transaksi
+                                        </label>
+
+                                        <select
+                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700 cursor-pointer"
+                                            value={
+                                                data.status_transaksi !==
+                                                    undefined &&
+                                                data.status_transaksi !== ""
+                                                    ? statusTransaksiOptions.findIndex(
+                                                          (option) =>
+                                                              option.value ===
+                                                              data.status_transaksi
+                                                      )
+                                                    : "default"
+                                            }
+                                            onChange={(e) => {
+                                                const selectedIndex = parseInt(
+                                                    e.target.value
+                                                );
+                                                const selectedValue =
+                                                    selectedIndex >= 0
+                                                        ? statusTransaksiOptions[
+                                                              selectedIndex
+                                                          ].value
+                                                        : "";
+                                                setData(
+                                                    "status_transaksi",
+                                                    selectedValue
+                                                );
+                                            }}
+                                        >
+                                            <option value="default">
+                                                Pilih Status
+                                            </option>
+                                            {statusTransaksiOptions.map(
+                                                (option, index) => (
+                                                    <option
+                                                        key={option.value}
+                                                        value={index.toString()}
+                                                    >
+                                                        {option.label}
+                                                    </option>
+                                                )
+                                            )}
+                                        </select>
+                                    </div>
+
+                                    <div className="mt-4">
+                                        <Label
+                                            className="text-slate-700"
+                                            forInput="date"
+                                            value="Tanggal"
+                                        />
+
+                                        {editTanggalMain ? (
+                                            <DatePicker
+                                                format="DD-MM-YYYY"
+                                                className="mt-2 cursor-pointer"
+                                                onChange={(day, date) => {
+                                                    setData(
+                                                        "tanggal_main",
+                                                        date
+                                                    );
+                                                }}
+                                                picker="large"
+                                                size="large"
+                                            />
+                                        ) : (
+                                            <DatePicker
+                                                format="DD-MM-YYYY"
+                                                className="mt-2 cursor-pointer"
+                                                onChange={(day, date) => {
+                                                    setData(
+                                                        "tanggal_main",
+                                                        date
+                                                    );
+                                                }}
+                                                picker="large"
+                                                size="large"
+                                                value={moment(
+                                                    data.tanggal_main
+                                                )}
+                                                disabled
+                                            />
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        {editTanggalMain ? (
+                                            <div
+                                                className="my-2"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setEditTanggalMain(false);
+                                                }}
+                                                onTouchStart={(e) => {
+                                                    e.preventDefault();
+                                                    setEditTanggalMain(false);
+                                                }}
+                                            >
+                                                <button className="text-slate-100 rounded bg-gray-600 px-4 ">
+                                                    Batal edit
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className="my-2 col-span-2"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setEditTanggalMain(true);
+                                                }}
+                                                onTouchStart={(e) => {
+                                                    e.preventDefault();
+                                                    setEditTanggalMain(true);
+                                                }}
+                                            >
+                                                <button className="text-slate-100 rounded bg-orange-400 px-4 ">
+                                                    Edit Tanggal Main
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-4">
+                                        <div className="grid grid-cols-2 gap-2 max-w-[300px]">
+                                            <Label
+                                                className="text-slate-700"
+                                                forInput="jam"
+                                                value="Jam mulai"
+                                            />
+                                            <Label
+                                                className="text-slate-700"
+                                                forInput="jam"
+                                                value="Jam selesai"
+                                            />
+
+                                            {editJamBertanding ? (
+                                                <>
+                                                    <TimePicker
+                                                        format="HH:mm"
+                                                        disabledTime={
+                                                            disabledTime
+                                                        }
+                                                        onSelect={(time) => {
+                                                            setData({
+                                                                ...data,
+                                                                jam_mulai:
+                                                                    moment(
+                                                                        time[
+                                                                            "$d"
+                                                                        ]
+                                                                    ).format(
+                                                                        "HH:mm"
+                                                                    ),
+                                                                jam_mulai_value:
+                                                                    time,
+                                                            });
+                                                        }}
+                                                        disabled={
+                                                            data.tanggal_main ==
+                                                            ""
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        minuteStep={5}
+                                                        value={
+                                                            data.jam_mulai_value ??
+                                                            moment(
+                                                                new Date()
+                                                            ).format()
+                                                        }
+                                                        size="large"
+                                                        tabIndex="0"
+                                                    />
+
+                                                    <TimePicker
+                                                        format="HH:mm"
+                                                        onSelect={(time) => {
+                                                            setData({
+                                                                ...data,
+                                                                jam_selesai:
+                                                                    moment(
+                                                                        time[
+                                                                            "$d"
+                                                                        ]
+                                                                    ).format(
+                                                                        "HH:mm"
+                                                                    ),
+                                                                jam_selesai_value:
+                                                                    time,
+                                                            });
+                                                        }}
+                                                        locale="id"
+                                                        disabled={
+                                                            data.tanggal_main ==
+                                                            ""
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        minuteStep={5}
+                                                        value={
+                                                            data.jam_selesai_value
+                                                        }
+                                                        size="large"
+                                                        tabIndex="0"
+                                                        autoFocus={true}
+                                                    />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <input
+                                                        type="text"
+                                                        disabled
+                                                        value={data.jam_mulai}
+                                                        className="rounded border-gray-300 text-gray-700"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        disabled
+                                                        value={data.jam_selesai}
+                                                        className="rounded border-gray-300 text-gray-700"
+                                                    />
+                                                </>
+                                            )}
+                                        </div>
+                                        <div>
+                                            {editJamBertanding ? (
+                                                <div
+                                                    className="my-2"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setEditJamBertanding(
+                                                            false
+                                                        );
+                                                    }}
+                                                    onTouchStart={(e) => {
+                                                        e.preventDefault();
+                                                        setEditJamBertanding(
+                                                            false
+                                                        );
+                                                    }}
+                                                >
+                                                    <button className="text-slate-100 rounded bg-gray-600 px-4 ">
+                                                        Batal edit
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    className="my-2 col-span-2"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setEditJamBertanding(
+                                                            true
+                                                        );
+                                                    }}
+                                                    onTouchStart={(e) => {
+                                                        e.preventDefault();
+                                                        setEditJamBertanding(
+                                                            true
+                                                        );
+                                                    }}
+                                                >
+                                                    <button className="text-slate-100 rounded bg-orange-400 px-4 ">
+                                                        Edit Jam Bertanding
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <center>
+                                    <button
+                                        type="submit"
+                                        className="w-full"
+                                        disabled={searchLoading ? true : false}
+                                    >
+                                        Update
+                                        <span></span>
+                                    </button>
+                                </center>
+                            </form>
+                        </div>
                         <div
                             className="absolute top-1 right-1 cursor-pointer"
                             onClick={() => {
+                                reset();
                                 setShowEditJadwal(false);
                             }}
                         >
@@ -770,10 +1290,10 @@ export default function JadwalPending(props) {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
 
 JadwalPending.layout = (page) => (
-    <Layout children={page} title="Jadwal Pending" />
+    <Layout children={page} title="Dashboard | Jadwal Pending" />
 );

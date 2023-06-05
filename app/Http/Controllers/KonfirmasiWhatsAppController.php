@@ -22,7 +22,8 @@ class KonfirmasiWhatsAppController extends Controller
         $pesan .= "Lapangan yang dipilih : {$data['lapangan']}\n";
         $pesan .= "Tanggal main: {$data['tanggal_main']}\n";
         $pesan .= "Lama bermain: {$data['lama_bermain']} jam\n";
-        $pesan .= "Total harga: {$data['total_harga']}";
+        $pesan .= "Total harga: {$data['total_harga']} \n Kode unik: ";
+        $pesan .= "Kode unik: *{$data['external_id']}*";
 
         // Encode pesan ke format URL
         $pesan = urlencode($pesan);
@@ -32,7 +33,7 @@ class KonfirmasiWhatsAppController extends Controller
 
         // Kirim tautan sebagai response JSON
         return response()->json([
-            'url' => $url,
+            'url' => $url
         ]);
     }
 }

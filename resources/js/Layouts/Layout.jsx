@@ -67,10 +67,10 @@ export default function Layout({ children, header, title }) {
         } catch (error) {
             if (error instanceof Error && error.status === 500) {
                 // Tindakan yang diambil ketika terjadi Internal Server Error
-                console.error("Terjadi kesalahan internal server:", error);
+                // console.error("Terjadi kesalahan internal server:", error);
             } else {
                 // Tindakan yang diambil untuk jenis kesalahan yang berbeda
-                console.error("Terjadi kesalahan:", error);
+                // console.error("Terjadi kesalahan:", error);
             }
         }
     }
@@ -232,9 +232,9 @@ export default function Layout({ children, header, title }) {
                                 title: "Jadwal",
                             },
                             {
-                                path: "/dashboard/jadwal-pending*",
+                                path: "/dashboard/pending-jadwal*",
                                 onClick: () =>
-                                    router.get("/dashboard/jadwal-pending"),
+                                    router.get("/dashboard/pending-jadwal"),
                                 icon: <MdPendingActions size="1.5em" />,
                                 title: "Jadwal Pending",
                             },
@@ -324,9 +324,9 @@ export default function Layout({ children, header, title }) {
                                     title: "Jadwal",
                                 },
                                 {
-                                    path: "/dashboard/jadwal-pending*",
+                                    path: "/dashboard/pending-jadwal*",
                                     onClick: () =>
-                                        router.get("/dashboard/jadwal-pending"),
+                                        router.get("/dashboard/pending-jadwal"),
                                     icon: <MdPendingActions className="mt-4" />,
                                     title: "Jadwal Pending",
                                 },

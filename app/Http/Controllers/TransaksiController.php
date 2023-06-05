@@ -155,7 +155,6 @@ class TransaksiController extends Controller
         $transaksi->save();
 
         // buat jadwal baru
-        // buat jadwal baru
         $jadwal = new Jadwal;
         $jadwal->user_id = $request->user_id;
         $jadwal->lapangan_id = $request->lapangan_id;
@@ -172,6 +171,7 @@ class TransaksiController extends Controller
         // return Inertia::location($response->invoice_url);
         return response()->json([
             'nama' => $request->nama,
+            'external_id' => $external_id,
             'lapangan' => $request->nama_lapangan,
             'tanggal_main' => $request->tanggal_main,
             'lama_bermain' => $request->lama_bermain,

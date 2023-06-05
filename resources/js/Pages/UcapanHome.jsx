@@ -16,15 +16,15 @@ export default function UcapanHome(props) {
                 const data = await response.json();
                 return data.user;
             } else {
-                throw new Error("Terjadi kesalahan dalam mengambil data user");
+                // throw new Error("Terjadi kesalahan dalam mengambil data user");
             }
         } catch (error) {
             if (error instanceof Error && error.status === 500) {
                 // Tindakan yang diambil ketika terjadi Internal Server Error
-                console.error("Terjadi kesalahan internal server:", error);
+                // console.error("Terjadi kesalahan internal server:", error);
             } else {
                 // Tindakan yang diambil untuk jenis kesalahan yang berbeda
-                console.error("Terjadi kesalahan:", error);
+                // console.error("Terjadi kesalahan:", error);
             }
         }
     }
@@ -115,15 +115,6 @@ export default function UcapanHome(props) {
                             >
                                 {" "}
                                 Kelola Profil Gor
-                            </button>
-                        </div>
-                        <div className="flex flex-col items-center justify-evenly sm:min-h-[80px]   ">
-                            <p className="my-4 text-white text-center">
-                                Jangan lupa untuk melihat pesanan sewa lapangan
-                                dari pelanggan!
-                            </p>
-                            <button className="bg-white text-blue-500 w-[70vw] sm:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300">
-                                Pesanan
                             </button>
                         </div>
                     </div>

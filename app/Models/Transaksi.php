@@ -37,10 +37,10 @@ class Transaksi extends Model
         return $this->belongsTo(Jadwal::class, 'kode_jadwal');
     }
 
-    protected function statusTransaksi(): Attribute
+    protected function status(): Attribute
     {
         return new Attribute(
-            get: fn ($value) =>  ["PAID", "PENDING", "FAILED", "EXPIRED", "COD"][$value],
+            get: fn ($value) =>  ["PAID", "PENDING", "FAILED", "EXPIRED", "COD (belum konfirmasi)", "COD (terkonfirmasi)"][$value],
         );
     }
 }

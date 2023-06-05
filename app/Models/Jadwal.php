@@ -33,7 +33,7 @@ class Jadwal extends Model
     protected function status(): Attribute
     {
         return new Attribute(
-            get: fn ($value) =>  ["PAID", "PENDING", "FAILED", "EXPIRED", "COD"][$value],
+            get: fn ($value) =>  ["PAID", "PENDING", "FAILED", "EXPIRED", "COD (belum konfirmasi)", "COD (terkonfirmasi)"][$value],
         );
     }
 }

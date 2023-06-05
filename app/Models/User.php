@@ -54,10 +54,10 @@ class User extends Authenticatable
         return $this->belongsTo(Transaksi::class);
     }
 
-    public function tempatLapangan()
-    {
-        return $this->belongsTo(TempatLapangan::class, "tempat_lapangan_id");
-    }
+    // public function tempatLapangan()
+    // {
+    //     return $this->belongsTo(TempatLapangan::class, "tempat_lapangan_id");
+    // }
 
     protected function type(): Attribute
     {
