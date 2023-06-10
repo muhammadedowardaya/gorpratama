@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         $schedule->call('App\Http\Controllers\JadwalController@hapusJadwalSewaLewatWaktu')
             ->daily();
         $schedule->command('jadwal:remove-expired')->hourly();
+        $schedule->command('jadwal:hapus-pending')->hourly();
     }
 
     /**

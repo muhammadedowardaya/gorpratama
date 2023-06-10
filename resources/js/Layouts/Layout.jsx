@@ -212,14 +212,14 @@ export default function Layout({ children, header, title }) {
                                 title: "Home",
                             },
                             {
-                                path: "/dashboard/tempat-lapangan",
+                                path: "/dashboard/tempat-lapangan*",
                                 onClick: () =>
                                     router.get("/dashboard/tempat-lapangan"),
                                 icon: <GiFootyField size="1.5em" />,
                                 title: "Profile Gor | Tempat Lapangan",
                             },
                             {
-                                path: "/dashboard/lapangan",
+                                path: "/dashboard/lapangan*",
                                 onClick: () =>
                                     router.get("/dashboard/lapangan"),
                                 icon: <GiSoccerField size="1.5em" />,
@@ -331,7 +331,7 @@ export default function Layout({ children, header, title }) {
                                     title: "Jadwal Pending",
                                 },
                                 {
-                                    path: "/dashboard/tempat-lapangan",
+                                    path: "/dashboard/tempat-lapangan*",
                                     onClick: () =>
                                         router.get(
                                             "/dashboard/tempat-lapangan"
@@ -340,7 +340,7 @@ export default function Layout({ children, header, title }) {
                                     title: "Profile Gor | Tempat Lapangan",
                                 },
                                 {
-                                    path: "/dashboard/lapangan",
+                                    path: "/dashboard/lapangan*",
                                     onClick: () =>
                                         router.get("/dashboard/lapangan"),
                                     icon: <GiSoccerField className="mt-4" />,

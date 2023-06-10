@@ -13,7 +13,7 @@ class Transaksi extends Model
     use HasFactory;
 
     protected $table = 'transaksi';
-    protected $fillable = ['user_id', 'lapangan_id', 'invoice_id', 'tanggal_main', 'amount', 'status_transaksi'];
+    protected $fillable = ['user_id', 'lapangan_id', 'external_id', 'invoice_url', 'tanggal_main', 'amount', 'status_transaksi'];
 
     public function lapangan()
     {
@@ -37,7 +37,7 @@ class Transaksi extends Model
         return $this->belongsTo(Jadwal::class, 'kode_jadwal');
     }
 
-    protected function status(): Attribute
+    protected function statusTransaksi(): Attribute
     {
         return new Attribute(
             get: fn ($value) =>  ["PAID", "PENDING", "FAILED", "EXPIRED", "COD (belum konfirmasi)", "COD (terkonfirmasi)"][$value],

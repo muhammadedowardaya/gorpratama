@@ -1,55 +1,57 @@
 import Layout from "@/Layouts/Layout";
 import React, { useState, useEffect } from "react";
-import Swal from "sweetalert2";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+} from "recharts";
 
-const LaporanKeuangan = (props) => {
-    const [data, setData] = useState([]);
+export default function LaporanKeuangan({ transaksis }) {
+    // Hitung pendapatan per bulan
+    const pendapatanPerBulan = Array(12).fill(0);
+    transaksis.forEach((transaksi) => {
+        const bulan = new Date(transaksi.tanggal_main).getMonth();
+        pendapatanPerBulan[bulan] += transaksi.amount;
+    });
 
-    useEffect(() => {
-        // Ambil data transaksi dari API
-        axios.get("/api/laporan-keuangan").then((response) => {
-            setData(response.data);
-        });
-    }, []);
+    // Data untuk grafik
+    const data = [
+        { name: "Jan", Pendapatan: pendapatanPerBulan[0] },
+        { name: "Feb", Pendapatan: pendapatanPerBulan[1] },
+        { name: "Mar", Pendapatan: pendapatanPerBulan[2] },
+        { name: "Apr", Pendapatan: pendapatanPerBulan[3] },
+        { name: "Mei", Pendapatan: pendapatanPerBulan[4] },
+        { name: "Jun", Pendapatan: pendapatanPerBulan[5] },
+        { name: "Jul", Pendapatan: pendapatanPerBulan[6] },
+        { name: "Agu", Pendapatan: pendapatanPerBulan[7] },
+        { name: "Sep", Pendapatan: pendapatanPerBulan[8] },
+        { name: "Okt", Pendapatan: pendapatanPerBulan[9] },
+        { name: "Nov", Pendapatan: pendapatanPerBulan[10] },
+        { name: "Des", Pendapatan: pendapatanPerBulan[11] },
+    ];
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-4">Laporan Keuangan</h1>
-            {Array.isArray(data) || data.length > 0 ? (
-                <table className="w-full border-collapse">
-                    <thead>
-                        <tr>
-                            <th className="border px-4 py-2">ID Transaksi</th>
-                            <th className="border px-4 py-2">Tanggal</th>
-                            <th className="border px-4 py-2">Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((transaksi) => (
-                            <tr key={transaksi.id}>
-                                <td className="border px-4 py-2">
-                                    {transaksi.id}
-                                </td>
-                                <td className="border px-4 py-2">
-                                    {transaksi.tanggal_main}
-                                </td>
-                                <td className="border px-4 py-2">
-                                    {transaksi.amount}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <div className="text-center py-8">
-                    <h1>Belum dapat menampilkan laporan keuangan</h1>
-                </div>
-            )}
+            <h1 className="text-2xl font-semibold mb-4">Laporan Keuangan</h1>
+            <BarChart width={600} height={300} data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip
+                    formatter={(value) =>
+                        new Intl.NumberFormat("id-ID").format(value)
+                    }
+                />
+                <Legend />
+                <Bar dataKey="Pendapatan" fill="#4F46E5" />
+            </BarChart>
         </div>
     );
-};
-
-export default LaporanKeuangan;
+}
 
 LaporanKeuangan.layout = (page) => (
     <Layout children={page} title="laporan Keuangan" />

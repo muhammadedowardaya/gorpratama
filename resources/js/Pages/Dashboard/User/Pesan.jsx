@@ -9,12 +9,14 @@ import Layout from "@/Layouts/Layout";
 import Chat from "@/Components/Chat";
 import TruncateText from "@/Components/TruncateText";
 import { FiMove } from "react-icons/fi";
+import LoaderSpin from "@/Components/LoaderSpin";
 
 function Pesan() {
     // untuk komponen chat
     const [chatChannel, setChatChannel] = useState("");
     const [showChat, setShowChat] = useState(false);
     const [showLoading, setShowLoading] = useState(false);
+    const [showLoaderSpin, setShowLoaderSpin] = useState(false);
     const [tanggal, setTanggal] = useState("");
 
     function delay() {
@@ -38,19 +40,25 @@ function Pesan() {
     const [pesanGroupDibaca, setPesanGroupDibaca] = useState([]);
 
     async function getUnreadMessage() {
+        setShowLoaderSpin(true);
         try {
             const response = await axios.get("/api/chat/unread-conversations");
             setPesanGroupBelumDibaca(Object.values(response.data.pesan_group));
+            setShowLoaderSpin(false);
         } catch (error) {
+            setShowLoaderSpin(false);
             console.info(error);
         }
     }
 
     async function getReadMessage() {
+        setShowLoaderSpin(true);
         try {
             const response = await axios.get("/api/chat/read-conversations");
             setPesanGroupDibaca(Object.values(response.data.pesan_group));
+            setShowLoaderSpin(false);
         } catch (error) {
+            setShowLoaderSpin(false);
             console.info(error);
         }
     }
@@ -91,20 +99,13 @@ function Pesan() {
                                       synchronousDelayShowChat();
                                       setShowLoading(true);
                                       setChatChannel(pesan[0].chat_channel);
+                                      setTanggal(pesan[0].tanggal);
                                       setRecipientId(pesan[0].sender.id);
                                       setRecipientName(pesan[0].sender.nama);
                                       setRecipientPhoto(
                                           pesan[0].sender.url_foto
                                       );
-                                      console.info(
-                                          `chat_channel = ${chatChannel}`
-                                      );
-                                      console.info(
-                                          `recipient_id = ${recipientId}`
-                                      );
-                                      console.info(
-                                          `sender_id = ${auth.user.id}`
-                                      );
+
                                       axios
                                           .put(
                                               `/api/chat/mark-as-read/${pesan[0].chat_channel}`
@@ -120,6 +121,7 @@ function Pesan() {
                                       synchronousDelayShowChat();
                                       setShowLoading(true);
                                       setChatChannel(pesan[0].chat_channel);
+                                      setTanggal(pesan[0].tanggal);
                                       setRecipientId(pesan[0].sender.id);
                                       setRecipientName(pesan[0].sender.nama);
                                       setRecipientPhoto(
@@ -279,8 +281,16 @@ function Pesan() {
             {pesanGroupBelumDibaca.length == 0 &&
             pesanGroupDibaca.length == 0 ? (
                 <>
-                    <h2 className={` text-center mb-4`}>Belum ada pesan</h2>
-                    <hr className="border-slate-700" />
+                    {showLoaderSpin ? (
+                        <LoaderSpin />
+                    ) : (
+                        <>
+                            <h2 className={` text-center mb-4`}>
+                                Belum ada pesan
+                            </h2>
+                            <hr className="border-slate-700" />
+                        </>
+                    )}
                 </>
             ) : (
                 ""

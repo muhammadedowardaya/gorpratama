@@ -151,6 +151,7 @@ export default function EditTempatLapangan(props) {
             <Loading display={displayLoading} />
 
             <div className="md:max-w-4xl">
+                <h1 className="text-2xl font-bold mb-5">Edit Profil Gor</h1>
                 <div className="login-box">
                     <form
                         className="grid grid-cols-1 md:grid-cols-2 md:gap-4"
@@ -317,7 +318,9 @@ export default function EditTempatLapangan(props) {
                             </div>
 
                             <div className="mt-4">
-                                <Label forInput="image" value="Logo" />
+                                <label className="col-span-1 text-slate-700 text-sm">
+                                    Logo
+                                </label>
                                 <PortalWithState closeOnOutsideClick closeOnEsc>
                                     {({
                                         openPortal,
@@ -391,23 +394,25 @@ export default function EditTempatLapangan(props) {
                         </div>
 
                         <div className="md:col-span-2">
-                            <div className="flex items-center justify-end mt-8">
-                                <MyButton
-                                    value="Kembali"
-                                    oncClick={(e) => {
+                            <div className="flex items-center justify-end mt-8 gap-2">
+                                <button
+                                    onClick={(e) => {
                                         e.preventDefault();
                                         router.get(
                                             "/dashboard/tempat-lapangan"
                                         );
                                     }}
-                                    className="mr-1"
-                                />
+                                    className="bg-gray-700 py-2 px-6"
+                                >
+                                    Kembali
+                                </button>
 
-                                <MyButton
-                                    value="Submit"
-                                    button="create"
+                                <button
                                     type="submit"
-                                />
+                                    className="bg-yellow-500 py-2 px-6"
+                                >
+                                    Update
+                                </button>
                             </div>
                         </div>
                     </form>

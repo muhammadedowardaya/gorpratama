@@ -71,7 +71,7 @@ const Lapangan = (props) => {
                                     buttons={[
                                         {
                                             className:
-                                                "bg-gradient-to-br from-red-500 via-red-600 to-red-300 hover:bg-red-300 mr-2 mb-2",
+                                                "bg-gradient-to-br from-red-500 via-red-600 to-red-300 hover:bg-red-300",
                                             title: "hapus",
                                             onClick: (e) => {
                                                 e.preventDefault();
@@ -191,7 +191,7 @@ const Lapangan = (props) => {
                                         },
                                         {
                                             className:
-                                                "bg-gradient-to-br from-green-500 via-green-600 to-green-300 mr-2",
+                                                "bg-gradient-to-br from-green-500 via-green-600 to-green-300",
                                             title: "edit",
                                             onClick: (e) => {
                                                 e.preventDefault();

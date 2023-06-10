@@ -15,6 +15,7 @@ import { debounce } from "lodash";
 import Draggable from "react-draggable";
 import axios from "axios";
 import { GiMove, GiSpeaker } from "react-icons/gi";
+import LoaderSpin from "@/Components/LoaderSpin";
 
 export default function Jadwal(props) {
     const [chatChannel, setChatChannel] = useState("");
@@ -33,20 +34,21 @@ export default function Jadwal(props) {
     async function getJadwal() {
         try {
             const response = await axios.get(`/api/jadwal`);
+            console.info(response);
             if (
-                Array.isArray(response.data.jadwal.data) &&
-                response.data.jadwal.data.length > 0
+                Array.isArray(response.data.jadwal_view.data) &&
+                response.data.jadwal_view.data.length > 0
             ) {
-                setJadwal(response.data.jadwal.data);
+                setJadwal(response.data.jadwal_view.data);
                 setShowLoading(false);
             } else {
                 setShowLoading(false);
             }
             if (
-                Array.isArray(response.data.jadwal.data) &&
-                response.data.jadwal.data.length > 0
+                Array.isArray(response.data.jadwal_view.data) &&
+                response.data.jadwal_view.data.length > 0
             ) {
-                setLinks(response.data.jadwal.links);
+                setLinks(response.data.jadwal_view.links);
             }
         } catch (error) {
             console.error(error);
@@ -62,7 +64,7 @@ export default function Jadwal(props) {
 
         debouncedGetJadwal();
 
-        console.info(chatChannel);
+        console.info(jadwal);
     }, [recipientId]);
 
     return (
@@ -78,7 +80,6 @@ export default function Jadwal(props) {
             <h1 className="text-2xl font-bold md:mt-2 text-center mb-4">
                 Jadwal Bermain
             </h1>
-            <Loading display={showLoading} />
 
             <div className="flex flex-wrap justify-center w-full">
                 {Array.isArray(jadwal) && jadwal.length > 0 ? (
@@ -142,7 +143,7 @@ export default function Jadwal(props) {
                                         ""
                                     )}
 
-                                    {item.izinkan_permintaan_bergabung &&
+                                    {item.izinkan_permintaan_bergabung == 1 &&
                                     item.user.id !== auth.user.id ? (
                                         <button
                                             onClick={() => {
@@ -188,19 +189,25 @@ export default function Jadwal(props) {
                         );
                     })
                 ) : (
-                    <div className="bg-white shadow-lg rounded-lg p-4 text-stone-400">
-                        <h2 className="text-lg font-bold mb-4">
-                            Belum ada jadwal
-                        </h2>
-                        <a
-                            onClick={() => {
-                                router.get("/");
-                            }}
-                            className="bg-slate-500 py-1 px-2 rounded text-slate-50 cursor-pointer"
-                        >
-                            Kembali
-                        </a>
-                    </div>
+                    <>
+                        {showLoading ? (
+                            <LoaderSpin />
+                        ) : (
+                            <div className="bg-white shadow-lg rounded-lg p-4 text-stone-400">
+                                <h2 className="text-lg font-bold mb-4">
+                                    Belum ada jadwal
+                                </h2>
+                                <a
+                                    onClick={() => {
+                                        router.get("/");
+                                    }}
+                                    className="bg-slate-500 py-1 px-2 rounded text-slate-50 cursor-pointer"
+                                >
+                                    Kembali
+                                </a>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
             <Pagination links={links} className="mt-6 text-center" />

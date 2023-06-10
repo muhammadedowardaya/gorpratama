@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('pesan')->nullable();
             $table->boolean('izinkan_permintaan_bergabung')->default(false);
             $table->timestamps();
-            // user_id, lapangan_id, tanggal_sewa, waktu_mulai, dan waktu_selesai
         });
     }
 

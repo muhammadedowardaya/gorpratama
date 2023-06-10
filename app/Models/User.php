@@ -13,11 +13,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'id',
         'nama',
@@ -30,21 +25,11 @@ class User extends Authenticatable
         'type'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -53,11 +38,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Transaksi::class);
     }
-
-    // public function tempatLapangan()
-    // {
-    //     return $this->belongsTo(TempatLapangan::class, "tempat_lapangan_id");
-    // }
 
     protected function type(): Attribute
     {

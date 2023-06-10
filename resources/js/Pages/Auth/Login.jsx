@@ -149,7 +149,7 @@ export default function Login(props, { status, canResetPassword }) {
                         </div>
 
                         <center>
-                            <button type="submit" className="w-full">
+                            <button type="submit" className="w-full submit">
                                 SUBMIT
                                 <span></span>
                             </button>

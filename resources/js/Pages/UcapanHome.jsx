@@ -1,3 +1,4 @@
+import LoaderSpin from "@/Components/LoaderSpin";
 import { router } from "@inertiajs/react";
 import { React, useEffect, useState } from "react";
 import { IoRocketSharp } from "react-icons/io5";
@@ -8,6 +9,8 @@ export default function UcapanHome(props) {
         nama: "",
         type: "",
     });
+
+    const [loaderSpin, setLoaderspin] = useState(false);
 
     async function getUser() {
         try {
@@ -31,6 +34,7 @@ export default function UcapanHome(props) {
 
     useEffect(() => {
         async function fetchData() {
+            setLoaderspin(true);
             const data = await getUser();
             if (data != null) {
                 setUser((prevData) => ({
@@ -38,6 +42,9 @@ export default function UcapanHome(props) {
                     nama: data.nama,
                     type: data.type,
                 }));
+                setLoaderspin(false);
+            } else {
+                setLoaderspin(false);
             }
         }
         fetchData();
@@ -124,43 +131,47 @@ export default function UcapanHome(props) {
     } else {
         return (
             <>
-                <section className="pt-20 flex flex-col flex-wrap">
-                    <h1 className="py-6 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
-                        Ayo Bermain Badminton <br /> Di Lapangan Gor Pratama{" "}
-                        <br /> Desa Situ Daun!
-                    </h1>
-                    <div className="flex flex-col md:flex-row justify-evenly flex-wrap">
-                        <div className="flex flex-col items-center justify-end mt-4 sm:mt-0 sm:min-h-[80px]   ">
-                            <p className="my-4 text-white text-center">
-                                Belum punya akun?
-                            </p>
-                            <button
-                                className="bg-white text-blue-500 w-[70vw] sm:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
-                                onClick={(e) => {
-                                    e.preventDefault();
+                {loaderSpin ? (
+                    <LoaderSpin />
+                ) : (
+                    <section className="pt-20 flex flex-col flex-wrap">
+                        <h1 className="py-6 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
+                            Ayo Bermain Badminton <br /> Di Lapangan Gor Pratama{" "}
+                            <br /> Desa Situ Daun!
+                        </h1>
+                        <div className="flex flex-col md:flex-row justify-evenly flex-wrap">
+                            <div className="flex flex-col items-center justify-end mt-4 sm:mt-0 sm:min-h-[80px]   ">
+                                <p className="my-4 text-white text-center">
+                                    Belum punya akun?
+                                </p>
+                                <button
+                                    className="bg-white text-blue-500 w-[70vw] sm:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
+                                    onClick={(e) => {
+                                        e.preventDefault();
 
-                                    router.get("/register");
-                                }}
-                            >
-                                Register
-                            </button>
+                                        router.get("/register");
+                                    }}
+                                >
+                                    Register
+                                </button>
+                            </div>
+                            <div className="flex flex-col items-center justify-end sm:min-h-[80px]   ">
+                                <p className="my-4 text-white text-center">
+                                    Sudah punya akun?
+                                </p>
+                                <button
+                                    className="bg-white text-blue-500 w-[70vw] sm:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        router.get("/login");
+                                    }}
+                                >
+                                    Login
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex flex-col items-center justify-end sm:min-h-[80px]   ">
-                            <p className="my-4 text-white text-center">
-                                Sudah punya akun?
-                            </p>
-                            <button
-                                className="bg-white text-blue-500 w-[70vw] sm:w-72 py-2  rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    router.get("/login");
-                                }}
-                            >
-                                Login
-                            </button>
-                        </div>
-                    </div>
-                </section>
+                    </section>
+                )}
             </>
         );
     }

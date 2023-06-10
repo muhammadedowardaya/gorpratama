@@ -228,7 +228,7 @@ export default function Register() {
                                 }) => (
                                     <React.Fragment>
                                         <img
-                                            className="my-3 w-32 h-32 object-cover object-center rounded-full mx-auto border-4 border-slate-100 overflow-hidden mt-14"
+                                            className="my-3 w-32 h-32 object-cover object-center rounded-full mx-auto border-4  overflow-hidden mt-14 border-slate-400"
                                             src={data.url_foto}
                                             alt="avatar"
                                             onClick={openPortal}
@@ -270,7 +270,11 @@ export default function Register() {
                         </div>
 
                         <center className="col-span-2">
-                            <button href="#" className="w-full" type="submit">
+                            <button
+                                href="#"
+                                className="w-full submit"
+                                type="submit"
+                            >
                                 SUBMIT
                                 <span></span>
                             </button>

@@ -18,8 +18,9 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable();
             $table->foreignId('lapangan_id')->nullable();
             $table->string('external_id');
+            $table->string('invoice_url')->nullable();
             $table->tinyInteger('status_transaksi')->nullable();
-            $table->decimal('amount', 8, 2);
+            $table->decimal('amount', 8, 0);
             $table->date('tanggal_main');
             $table->timestamps();
         });

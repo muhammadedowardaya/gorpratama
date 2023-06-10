@@ -12,32 +12,6 @@ use Illuminate\Support\Str;
 
 class TransaksiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $secret_key = 'Basic ' . config('xendit.key_auth');
@@ -104,29 +78,25 @@ class TransaksiController extends Controller
             // ]
         ]);
 
-        // $createInvoice = \Xendit\Invoice::create($params);
-
-        // ]);
         $response = $data_request->object();
-        // 63fcbd4a240a7e17e6b4aee9
-
         // jadikan tanggal dengan format d m Y dapat diterima database
         $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
         $transaksi = new Transaksi();
         $transaksi->user_id = auth()->user()->id;
         $transaksi->lapangan_id = request('lapangan_id');
-        $transaksi->invoice_id = $response->user_id;
         $transaksi->external_id = $external_id;
+        $transaksi->invoice_url = $response->invoice_url;
+        $transaksi->status_transaksi = 1;
         $transaksi->amount = request('amount');
         $transaksi->tanggal_main = $tanggal_main;
         $transaksi->save();
 
         // buat jadwal baru
-        // buat jadwal baru
         $jadwal = new Jadwal;
         $jadwal->user_id = $request->user_id;
         $jadwal->lapangan_id = $request->lapangan_id;
         $jadwal->external_id = $external_id;
+        $jadwal->status_transaksi = 1;
         $jadwal->tanggal = $tanggal_main;
         $jadwal->jam_mulai = $request->jam_mulai;
         $jadwal->jam_selesai = $request->jam_selesai;
@@ -177,51 +147,6 @@ class TransaksiController extends Controller
             'lama_bermain' => $request->lama_bermain,
             'total_harga' => $request->total_harga
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaksi $transaksi)
-    {
-        //
     }
 
     public function pesanan()

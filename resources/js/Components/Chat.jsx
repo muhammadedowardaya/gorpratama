@@ -188,7 +188,7 @@ function Chat({
             channel.unbind();
             pusher.disconnect();
         };
-    }, [chatChannel, senderId, recipientId, messageRef]);
+    }, [chatChannel, senderId, recipientId, tanggal, messageRef]);
 
     // Kirim pesan ke server dengan debounce
     const sendMessage = debounce(() => {
@@ -347,7 +347,9 @@ function Chat({
                         );
                     })
                 ) : (
-                    <p className="text-center my-auto">Belum ada percakapan</p>
+                    <p className="text-center my-auto text-slate-700 font-bold">
+                        Belum ada percakapan
+                    </p>
                 )}
             </div>
 
@@ -374,15 +376,19 @@ function Chat({
                     )}
                 </button>
             </div>
-            {date.isSameOrAfter(today, "day") ? (
-                ""
+            {date != "" && date != null ? (
+                date.isSameOrAfter(today, "day") ? (
+                    ""
+                ) : (
+                    <div className="absolute top-0 left-0 right-0 h-14 bg-gray-900 flex justify-center items-center rounded-md">
+                        <p className="text-gray-400 leading-4 text-sm text-center p-2">
+                            Jadwal Booking sudah terlewat, kalau kamu masih mau
+                            chattan ya silahkan wkwk
+                        </p>
+                    </div>
+                )
             ) : (
-                <div className="absolute top-0 left-0 right-0 h-14 bg-gray-900 flex justify-center items-center rounded-md">
-                    <p className="text-gray-400 leading-4 text-sm text-center p-2">
-                        Jadwal Booking sudah terlewat, kalau kamu masih mau
-                        chattan ya silahkan wkwk
-                    </p>
-                </div>
+                ""
             )}
             <div
                 className={`absolute z-20 top-0 bottom-0 left-0 right-0 bg-gray-800 text-gray-50 ${

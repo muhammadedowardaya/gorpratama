@@ -177,12 +177,12 @@ export default function CreateTempatLapangan(props) {
         <div>
             <Head title="Kelola Tempat Lapangan" />
 
-            <div className="w-full  px-4 md:px-0 md:mt-2 text-white leading-normal grid justify-center justify-items-center">
+            <div className="w-full px-4 md:px-0 md:mt-2 text-white leading-normal grid justify-center justify-items-center">
                 <h1 className="text-center mb-8 text-xl font-bold mt-4">
                     Tambahkan informasi tempat Lapangan
                 </h1>
-                <div className="md:max-w-4xl">
-                    <div className="login-box">
+                <div className="md:max-w-4xl ">
+                    <div className="login-box ">
                         <form
                             className="grid grid-cols-1 md:grid-cols-2 md:gap-4"
                             onSubmit={store}

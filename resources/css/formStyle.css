@@ -94,7 +94,7 @@
         animation: neon 1.5s ease-in-out infinite alternate;
     }
 
-    .login-box form button[type="submit"]:hover {
+    .login-box form button.submit:hover {
         background: #38bdf8;
         color: #bdb8b8;
         border-radius: 5px;
@@ -166,7 +166,7 @@
         0 0 100px #03f40f;
 } */
 
-.login-box form button[type="submit"] {
+.login-box form button.submit {
     position: relative;
     display: inline-block;
     padding: 10px 20px;
@@ -183,18 +183,20 @@
     transition: 0.5s;
     margin-top: 40px;
 }
-.dark .login-box form button[type="submit"] {
+
+.dark .login-box form button.submit {
     color: #fafaf9;
+    border-radius: 5px;
 }
 
-.login-box form button[type="submit"]:hover {
+.login-box form button.submit:hover {
     background: #38bdf8;
     color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 5px #38bdf8, 0 0 25px #38bdf8;
 }
 
-.login-box form button[type="submit"] span {
+.login-box form button.submit span {
     position: absolute;
     display: block;
 }
@@ -210,7 +212,7 @@
     }
 }
 
-.login-box form button[type="submit"] span:nth-child(1) {
+.login-box form button.submit span:nth-child(1) {
     bottom: 2px;
     left: -100%;
     width: 100%;

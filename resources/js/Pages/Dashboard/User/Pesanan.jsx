@@ -6,10 +6,11 @@ import moment from "moment/moment";
 import { MdPaid } from "react-icons/md";
 import { AiFillSchedule } from "react-icons/ai";
 import Layout from "@/Layouts/Layout.jsx";
+import FormatRupiah from "@/Components/FormatRupiah.jsx";
 
 export default function Pesanan(props) {
     // Similar to componentDidMount and componentDidUpdate:
-    const { invoice } = usePage().props;
+    console.info(props.transaksi[0].status_transaksi == "PAID");
 
     // axios
     //     .get("https://api.xendit.co/v2/invoices")
@@ -102,16 +103,13 @@ export default function Pesanan(props) {
                                         {/* <td>{item.lapangan.nama}</td> */}
                                         <td>{tanggal_booking}</td>
                                         <td>{tanggal_bermain}</td>
-                                        <td>Rp. {invoice[index].amount}</td>
-                                        <td>{invoice[index].status}</td>
+                                        <td>Rp.{FormatRupiah(item.amount)}</td>
+                                        <td>{item.status_transaksi}</td>
                                         <td>
-                                            {invoice[index].status ==
+                                            {item.status_transaksi ==
                                             "PENDING" ? (
                                                 <a
-                                                    href={
-                                                        invoice[index]
-                                                            .invoice_url
-                                                    }
+                                                    href={item.invoice_url}
                                                     className="border-b border-spacing-1 border-slate-700 relative pay-btn p-1 pr-3"
                                                 >
                                                     <MdPaid
@@ -120,11 +118,23 @@ export default function Pesanan(props) {
                                                     />
                                                     Selesaikan Pembayaran
                                                 </a>
-                                            ) : invoice[index].status ==
+                                            ) : item.status_transaksi ==
+                                              "COD (belum konfirmasi)" ? (
+                                                <a
+                                                    href={item.invoice_url}
+                                                    className="border-b border-spacing-1 border-slate-700 relative pay-btn p-1 pr-3"
+                                                >
+                                                    <MdPaid
+                                                        className="inline-block mr-1 relative top-0"
+                                                        size="1.5rem"
+                                                    />
+                                                    Selesaikan Pembayaran
+                                                </a>
+                                            ) : item.status_transaksi ==
                                               "PAID" ? (
                                                 <a
                                                     href="/dashboard/jadwal"
-                                                    className="border-b border-spacing-1 border-slate-700 relative  p-1 pr-3 z-10"
+                                                    className="border-b border-spacing-1 border-slate-700 relative p-1 pr-3 z-10"
                                                 >
                                                     <AiFillSchedule
                                                         className="inline-block mr-1 relative top-0"
@@ -132,6 +142,24 @@ export default function Pesanan(props) {
                                                     />
                                                     Lihat jadwal
                                                 </a>
+                                            ) : item.status_transaksi ==
+                                              "COD (terkonfirmasi)" ? (
+                                                <a
+                                                    href="/dashboard/jadwal"
+                                                    className="border-b border-spacing-1 border-slate-700 relative p-1 pr-3 z-10"
+                                                >
+                                                    <AiFillSchedule
+                                                        className="inline-block mr-1 relative top-0"
+                                                        size="1.5rem"
+                                                    />
+                                                    Lihat jadwal
+                                                </a>
+                                            ) : item.status_transaksi ==
+                                              "FAILED" ? (
+                                                <span>Gagal</span>
+                                            ) : item.status_transaksi ==
+                                              "EXPIRED" ? (
+                                                <span>Kadaluarsa</span>
                                             ) : (
                                                 ""
                                             )}

@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\MessageEvent;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KonfirmasiWhatsAppController;
 use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\ProfileController;
@@ -11,13 +12,11 @@ use App\Models\Jadwal;
 use App\Models\Lapangan;
 use App\Models\TempatLapangan;
 use App\Models\Transaksi;
-use Carbon\Carbon;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -100,24 +99,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             $transaksi = Transaksi::with(['lapangan', 'user'])->where('user_id', auth()->user()->id)->get();
             if ($transaksi->isEmpty()) {
                 // Tidak ada transaksi yang ditemukan, tampilkan pesan kesalahan
-                $invoice = null;
                 $transaksi = null;
-            } else {
-                try {
-                    $external_id = $transaksi[0]['external_id'];
-                    $secret_key = 'Basic ' . config('xendit.key_auth');
-                    $response = Http::withHeaders([
-                        'Authorization' => $secret_key
-                    ])->get("https://api.xendit.co/v2/invoices?user_id=$external_id");
-                    $invoice =  $response->object();
-                } catch (\Throwable $th) {
-                    //throw $th;
-                    return Inertia::render('NoInternet');
-                }
             }
 
             return Inertia::render('Dashboard/User/Pesanan', [
-                'invoice' => $invoice,
                 'transaksi' => $transaksi
             ]);
         }
@@ -144,6 +129,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'jadwal' => $jadwal
             ]);
         }
+    });
+
+    Route::get('/dashboard/pengaturan', function () {
+        return Inertia::render('Dashboard/Pengaturan');
     });
 });
 /*------------------------------------------
@@ -188,16 +177,8 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     });
     Route::post('/kirim-konfirmasi-whatsapp', [KonfirmasiWhatsAppController::class, 'store']);
 
-    Route::get('/jadwal', function () {
-        return Inertia::render('Jadwal');
-    });
-
-    Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
-        $jadwal = Jadwal::with('user')->where('lapangan_id', $lapangan_id)->paginate(8);
-        return Inertia::render('Jadwal', [
-            'jadwal' => $jadwal
-        ]);
-    });
+    Route::get('/jadwal', [JadwalController::class, 'index']);
+    Route::get('/jadwal/{lapangan_id}', [JadwalController::class, 'jadwalByLapangan']);
 
     Route::get('/temukan-teman', function () {
 
@@ -215,12 +196,11 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
             $transaksi = Transaksi::where('external_id', $external_id)->first();
             if ($jadwal) {
                 $jadwal->status_transaksi = 0;
-                $transaksi->status_transaksi = 0;
                 $jadwal->save();
+                $transaksi->status_transaksi = 0;
+                $transaksi->save();
             }
-            return Inertia::render('Payment/Success', [
-                'invoice' => $invoice,
-            ]);
+            return Inertia::render('Payment/Success');
         } else if ($invoice[0]->status == 'PENDING') {
             $jadwal = Jadwal::where('external_id', $external_id)->first();
             $transaksi = Transaksi::where('external_id', $external_id)->first();
@@ -228,10 +208,9 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
                 $jadwal->status_transaksi = 1;
                 $transaksi->status_transaksi = 1;
                 $jadwal->save();
+                $transaksi->save();
             }
-            return Inertia::render('Payment/Pending', [
-                'invoice' => $invoice,
-            ]);
+            return Inertia::render('Payment/Pending');
         } else if ($invoice[0]->status == 'EXPIRED') {
             $jadwal = Jadwal::where('external_id', $external_id)->first();
             $transaksi = Transaksi::where('external_id', $external_id)->first();
@@ -239,10 +218,9 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
                 $jadwal->status_transaksi = 3;
                 $transaksi->status_transaksi = 3;
                 $jadwal->save();
+                $transaksi->save();
             }
-            return Inertia::render('Payment/Expired', [
-                'invoice' => $invoice,
-            ]);
+            return Inertia::render('Payment/Expired');
         } else {
             $jadwal = Jadwal::where('external_id', $external_id)->first();
             $transaksi = Transaksi::where('external_id', $external_id)->first();
@@ -250,20 +228,10 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
                 $jadwal->status_transaksi = 2;
                 $transaksi->status_transaksi = 2;
                 $jadwal->save();
+                $transaksi->save();
             }
-            return Inertia::render('Payment/Failed', [
-                'invoice' => $invoice,
-            ]);
+            return Inertia::render('Payment/Failed');
         }
-
-
-
-
-        // return Inertia::render('Invoice/Show', [
-        //     'invoice' => $invoice,
-        // ]);
-
-        // return Inertia::render('PaymentSuccess');
     });
 });
 
@@ -331,80 +299,10 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     });
 
     // tambah jadwal
-    Route::post('/jadwal', function (Request $request) {
-
-        // $validator = Validator::make($request->all(), [
-        //     'tanggal' => 'required',
-        // ]);
-
-        // if ($validator->fails()) {
-        //     throw new \Illuminate\Validation\ValidationException($validator);
-        // }
-
-        // // jadikan tanggal dengan format d m Y dapat diterima database
-        $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
-        $external_id = Str::random(10);
-        // // buat jadwal baru
-        $jadwal = new Jadwal;
-        $jadwal->user_id = $request->user_id;
-        $jadwal->lapangan_id = $request->lapangan_id;
-        $jadwal->status_transaksi = $request->status_transaksi;
-        $jadwal->tanggal = $tanggal_main;
-        $jadwal->jam_mulai = $request->jam_mulai;
-        $jadwal->jam_selesai = $request->jam_selesai;
-        $jadwal->save();
-
-        $transaksi = new Transaksi();
-        $transaksi->user_id = $request->user_id;
-        $transaksi->lapangan_id = $request->lapangan_id;
-        $transaksi->external_id = $external_id;
-        $transaksi->amount = $request->amount;
-        $transaksi->tanggal_main = $tanggal_main;
-        $transaksi->save();
-
-        return response()->json(['message' => 'Data berhasil ditambahkan'], 200);
-    });
+    Route::post('/jadwal', [JadwalController::class, 'store']);
 
     // update jadwal
-    Route::patch('/jadwal/{id}', function (Request $request, $id) {
-        $jadwal = Jadwal::find($id);
-        $transaksis = Transaksi::where('external_id', $jadwal->external_id)->get();
-        $transaksi = $transaksis->first();
-        // jadikan tanggal dengan format d m Y dapat diterima database
-        // $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
-        // // buat jadwal baru
-        $jadwal->lapangan_id = $request->lapangan_id;
-        $jadwal->tanggal = $request->tanggal_main;
-        $jadwal->status_transaksi = $request->status_transaksi;
-        $jadwal->jam_mulai = $request->jam_mulai;
-        $jadwal->jam_selesai = $request->jam_selesai;
-        $jadwal->save();
-
-        $transaksi->user_id = auth()->user()->id;
-        $transaksi->lapangan_id = request('lapangan_id');
-        $transaksi->amount = request('amount');
-        $transaksi->tanggal_main = $request->tanggal_main;
-        $transaksi->status_transaksi = $request->status_transaksi;
-        $transaksi->save();
-
-        // // Kirim notifikasi ke Pusher
-        // $pusher = new Pusher\Pusher(
-        //     env('PUSHER_APP_KEY'),
-        //     env('PUSHER_APP_SECRET'),
-        //     env('PUSHER_APP_ID'),
-        //     array('cluster' => env('PUSHER_APP_CLUSTER'))
-        // );
-        // $pusher->trigger('schedule', 'update', ['message' => 'Jadwal telah diperbarui']);
-
-        return response()->json([
-            'message' => 'Data berhasil diupdate'
-        ], 200);
-    });
-
-
-    Route::get('/dashboard/pengaturan', function () {
-        return Inertia::render('Dashboard/Pengaturan');
-    });
+    Route::patch('/jadwal/{id}', [JadwalController::class, 'updateJadwal']);
 });
 
 /*------------------------------------------

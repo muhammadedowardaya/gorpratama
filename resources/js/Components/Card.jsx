@@ -19,7 +19,7 @@ const Card = ({ image, name, status, buttons, onClick, children }) => {
                                 {status}
                             </p>
                         </div>
-                        <div className=" self-end">
+                        <div className="flex items-end justify-end gap-2">
                             {buttons &&
                                 Array.isArray(buttons) &&
                                 buttons.map((item, index) => (

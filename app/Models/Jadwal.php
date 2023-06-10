@@ -19,7 +19,6 @@ class Jadwal extends Model
         return $this->belongsTo(Lapangan::class);
     }
 
-
     public function user()
     {
         return $this->belongsTo(User::class);

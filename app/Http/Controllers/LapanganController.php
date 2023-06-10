@@ -14,11 +14,6 @@ use Illuminate\Support\Str;
 
 class LapanganController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $lapangan = Lapangan::all();
@@ -37,11 +32,6 @@ class LapanganController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $tempat_lapangan = TempatLapangan::all()->first();
@@ -52,12 +42,6 @@ class LapanganController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -100,29 +84,9 @@ class LapanganController extends Controller
             'error' => false,
             'response' => $lapangan,
         ], 200);
-
-
-
-        // $tempat_lapangan = TempatLapangan::firstWhere('user_id', auth()->user()->id);
-        // $lapangan->tempat_lapangan_id = $tempat_lapangan->id;
-        // $lapangan->jadwal_id = $tempat_lapangan->id;
-        // $lapangan->nama = $request->nama;
-        // $lapangan->slug = $slug;
-        // $lapangan->status = $request->status;
-        // $lapangan->foto = $nama_foto;
-        // $lapangan->url_foto = $url_foto;
-        // $lapangan->save();
-
-        // return Redirect::route('lapangan.index')->with('success', 'Data Lapangan berhasil ditambahkan!');
-        // return to_route('lapangan.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Lapangan  $lapangan
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Lapangan $lapangan)
     {
         return Inertia::render('Lapangan', [
@@ -130,12 +94,6 @@ class LapanganController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Lapangan  $lapangan
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Lapangan $lapangan)
     {
         return Inertia::render('Dashboard/Admin/Lapangan/EditLapangan', [
@@ -143,24 +101,6 @@ class LapanganController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Lapangan  $lapangan
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Lapangan $lapangan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Lapangan  $lapangan
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Lapangan $lapangan, Request $request)
     {
         $lapangan->delete();

@@ -18,7 +18,10 @@ export default function Booking(props) {
     const [show, setShow] = useState(false);
     const [showJadwal, setShowJadwal] = useState(false);
     const [links, setLinks] = useState(null);
+    // data untuk semua jadwal yang masih pending dan cod (belum konfirmasi)
     const [jadwal, setJadwal] = useState([]);
+    // data untuk semua jadwal yang status nya paid dan cod (terkonfirmasi)
+    const [jadwalView, setJadwalView] = useState([]);
 
     const { data, setData } = useForm({
         lapangan_id: props.lapangan.id,
@@ -294,7 +297,7 @@ export default function Booking(props) {
             setShow(false);
             Swal.fire(
                 "Ada Jadwal!",
-                "Silahkan pilih 'lihat jadwal' untuk melihatnya",
+                "Silahkan lihat jadwal (pilih tombol jadwal), jadwal ini akan berubah jika dalam 24 jam pelanggan tidak melakukan pembayaran atau konfirmasi bayar di tempat",
                 "warning"
             );
         }

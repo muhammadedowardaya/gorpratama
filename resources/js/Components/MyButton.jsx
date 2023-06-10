@@ -54,6 +54,7 @@ export default function MyButton({
             className={`cursor-pointer ${className} ${pickColor(button)} ${
                 underline ? "active" : ""
             }`}
+            type={type}
         >
             {value}
         </button>

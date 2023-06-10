@@ -3,6 +3,7 @@ import GridLength from "@/Components/GridLength";
 import Layout from "@/Layouts/Layout";
 import { router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { AiFillSetting } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 
 const Lapangan = (props) => {
@@ -41,14 +42,23 @@ const Lapangan = (props) => {
                                             {item.status}
                                         </span>
                                     ) : (
-                                        "icon perbaikan"
+                                        <span>
+                                            <AiFillSetting
+                                                className="inline-block mr-2 fill-slate-50 bg-green-500 px-[4px]"
+                                                size="1.5em"
+                                            />
+                                            {item.status}
+                                        </span>
                                     )
                                 }
                                 buttons={[
                                     {
                                         title: "Pilih Lapangan",
-                                        className:
-                                            "bg-blue-500 m-4 hover:bg-blue-600 shadow",
+                                        className: `bg-blue-500 m-4 hover:bg-blue-600 shadow ${
+                                            item.status !== "siap pakai"
+                                                ? "hidden"
+                                                : ""
+                                        }`,
                                         onClick: () => {
                                             router.get(
                                                 `/pilih-lapangan/${item.slug}`

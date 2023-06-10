@@ -135,19 +135,4 @@ class ChatController extends Controller
 
         return response()->json(['success' => true]);
     }
-
-    public function tandaiBaca(Request $request, $chatChannel)
-    {
-        Conversation::where('recipient_id', $request->user()->id)
-            ->where('chat_channel', $chatChannel)
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
-
-        $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
-            ->whereNull('read_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json(['success' => true]);
-    }
 }

@@ -32,16 +32,18 @@ use Inertia\Inertia;
 //     return $request->user();
 // });
 
-Route::get('/get-user', function () {
-    return response()->json([
-        'user' => auth()->user()
-    ]);
-});
+
 
 Route::get('/get-users-type-user', function () {
     $users = User::where('type', 'user')->get();
     return response()->json([
         'users' => $users
+    ]);
+});
+
+Route::get('/get-user', function () {
+    return response()->json([
+        'user' => auth()->user()
     ]);
 });
 
@@ -73,12 +75,11 @@ Route::get('/user/{id}', function ($id) {
 
 
 Route::put('/chat/mark-as-read/{chat_channel}', [ChatController::class, 'markAsRead']);
-Route::put('/chat/tandai_baca/{chat_channel}', [ChatController::class, 'tandaiBaca']);
-Route::get('/chat/unread-conversations', [ChatController::class, 'getUnreadConversations']);
-Route::get('/chat/read-conversations', [ChatController::class, 'getReadConversations']);
-Route::get('/chat/unread-messages', [ChatController::class, 'getUnreadMessages']);
 Route::get('/chat/conversation/{user1Id}/{user2Id}', [ChatController::class, 'showConversation']);
 Route::get('/chat/conversation/{user1Id}/{user2Id}/{channel}', [ChatController::class, 'showConversationByChannel']);
+Route::get('/chat/read-conversations', [ChatController::class, 'getReadConversations']);
+Route::get('/chat/unread-conversations', [ChatController::class, 'getUnreadConversations']);
+Route::get('/chat/unread-messages', [ChatController::class, 'getUnreadMessages']);
 Route::post('/chat/send-message', [ChatController::class, 'sendMessage']);
 Route::get('/message-event', function () {
     MessageEvent::dispatch();
@@ -91,24 +92,32 @@ Route::get('lapangan/image/{nama_file}', [LapanganImageController::class, 'show'
 Route::get('/user/image/{image}', [UserImageController::class, 'showImage'])->name('user.image.show');
 
 Route::get('/jadwal', function () {
+    // jadwal pending dan COD (belum konfirmasi)
     $jadwal = Jadwal::with('user')
+        ->whereIn('status_transaksi', [1, 4])
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->paginate(8);
+    // jadwal paid dan COD (terkonfirmasi)
+    $jadwal_view = Jadwal::with('user')
         ->whereIn('status_transaksi', [0, 5])
         ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
         ->paginate(8);
     return response()->json([
-        'jadwal' => $jadwal
+        'jadwal' => $jadwal,
+        'jadwal_view' => $jadwal_view,
     ]);
 });
 
 
 Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
     $jadwal = Jadwal::with('user')
-        ->whereIn('status_transaksi', [0, 5])
         ->where('lapangan_id', $lapangan_id)
         ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
         ->paginate(8);
+
     return response()->json([
         'jadwal' => $jadwal
     ]);
