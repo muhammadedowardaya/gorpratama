@@ -1,66 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
-export default function BookingSteps() {
+export default function FindMatchSteps() {
     const [currentStep, setCurrentStep] = useState(1);
     const [showArrow, setShowArrow] = useState(false);
 
     const steps = [
         {
-            title: "Pilih Lapangan",
+            title: "Temukan Teman",
             onClick: () => setCurrentStep(1),
             content: (
                 <div>
                     <p className="py-4">
                         Silahkan anda login terlebih dahulu, lalu tekan tombol
-                        "Booking"
+                        "Temukan Teman"
                     </p>
                     <img
                         src={`${
                             import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/1.png`}
+                        }/assets/images/cara_find_match/1.png`}
                         alt="cara booking lapangan"
                         className="mb-4 md:w-2/3"
-                    />
-                    <p className="py-4">
-                        Setelah itu pilih lapangan yang akan di booking
-                    </p>
-                    <img
-                        src={`${
-                            import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/2.png`}
-                        alt="cara booking lapangan"
-                        className="md:w-2/3"
                     />
                 </div>
             ),
         },
         {
-            title: "Tentukan Jadwal",
+            title: "Tombol Chat",
             onClick: () => setCurrentStep(2),
             content: (
                 <div>
                     <p className="py-4">
-                        Lengkapi formulir tanggal main, jam mulai dan jam
-                        selesai. Jika anda menggunakan smartphone, dalam memilih
-                        jam mulai tekan pemilihan jam 1x untuk membuka tampilan
-                        jam dan tekan lagi untuk memilih jam
+                        Tekan tombol chat pada jadwal (jika tersedia).
                     </p>
                     <img
                         src={`${
                             import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/3.png`}
-                        alt="cara booking lapangan"
-                        className="mb-4 md:w-2/3"
-                    />
-                    <p className="py-4">
-                        Jika sudah seleai, anda dapat menekan tombol "pesan
-                        sekarang"
-                    </p>
-                    <img
-                        src={`${
-                            import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/5.png`}
+                        }/assets/images/cara_find_match/2.png`}
                         alt="cara booking lapangan"
                         className="mb-4 md:w-2/3"
                     />
@@ -68,23 +44,17 @@ export default function BookingSteps() {
             ),
         },
         {
-            title: "Izinkan Permintaan Bergabung (opsional)",
+            title: "Kirim Pesan",
             onClick: () => setCurrentStep(3),
             content: (
                 <div>
                     <p className="py-4">
-                        Jika anda memberikan ceklis pada "izinkan permintaan
-                        bergabung", ini akan menampilkan tombol "Chat" pada
-                        jadwal bermain anda. Pemain lain dapat menekan tombol
-                        "Chat" tersebut dan membuat percakapan dengan Anda
-                        dengan maksud meminta bergabung untuk bertanding
-                        bersama. Ini adalah opsional, anda dapat mengabaikan hal
-                        ini jika dirasa tidak dibutuhkan.
+                        Mulai mengirimkan pesan dan ajak untuk bermain bersama
                     </p>
                     <img
                         src={`${
                             import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/4.png`}
+                        }/assets/images/cara_find_match/3.png`}
                         alt="cara booking lapangan"
                         className="mb-4 md:w-2/3"
                     />
@@ -92,64 +62,19 @@ export default function BookingSteps() {
             ),
         },
         {
-            title: "Konfirmasi & Bayar",
+            title: "Lihat Pesan Masuk",
             onClick: () => setCurrentStep(4),
             content: (
                 <div>
                     <p className="pb-4">
-                        Jika anda sudah menentukan tanggal bermain, jam mulai
-                        dan jam selesai, anda dapat menekan "pesan sekarang" dan
-                        melihat kembali untuk memastikan tanggal dan jam bermain
-                        sudah sesuai dengan yang diharapkan. Jika sudah sesuai,
-                        anda dapat menekan tombol "Bayar transfer" untuk
-                        membayar secara transfer dan "Bayar di tempat" untuk
-                        membayar sewa di tempat yaitu saat jadwal bermain.
+                        Pesan yang masuk akan berada di halaman Pesan. Anda
+                        dapat melanjutkan percakapan pada halaman ini dengan
+                        memilih salah satu channel obrolan atau pesan.
                     </p>
                     <img
                         src={`${
                             import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/6.png`}
-                        alt="cara booking lapangan"
-                        className="mb-4 md:w-2/3"
-                    />
-                    <p className="pb-4">
-                        Setelah anda menekan "Bayar Transfer", anda akan
-                        diarahkan ke halaman pesanan anda, yang harus anda
-                        lakukan untuk menyelesaikan booking lapangan badminton
-                        adalah segera melakukan pembayaran dengan menekan tombol
-                        "Selesaikan Pembayaran"
-                    </p>
-                    <img
-                        src={`${
-                            import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/7.png`}
-                        alt="cara booking lapangan"
-                        className="mb-4 md:w-2/3"
-                    />
-                    <p className="pb-4">
-                        Setelah anda menekan tombol "Selesaikan Pembayaran",
-                        anda akan diarahkan ke halaman yang menampilkan berbagai
-                        metode pembayaran. Setelah berhasil melakukan
-                        pembayaran, dalam beberapa detik anda akan diarahkan ke
-                        halaman pembayaran berhasil. Setelah itu anda dapat
-                        menekan "Lihat jadwal saya".
-                    </p>
-                    <img
-                        src={`${
-                            import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/8.png`}
-                        alt="cara booking lapangan"
-                        className="mb-4 md:w-2/3"
-                    />
-                    <p className="pb-4">
-                        Pada halaman "Jadwal saya" akan terdapat jadwal yang
-                        baru saja anda buat yang menandakan anda telah berhasil
-                        melakukan booking lapangan badminton
-                    </p>
-                    <img
-                        src={`${
-                            import.meta.env.VITE_APP_URL
-                        }/assets/images/cara_booking_lapangan/9.png`}
+                        }/assets/images/cara_find_match/4.png`}
                         alt="cara booking lapangan"
                         className="mb-4 md:w-2/3"
                     />

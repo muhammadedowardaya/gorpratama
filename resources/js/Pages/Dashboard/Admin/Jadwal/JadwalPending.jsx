@@ -1269,7 +1269,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                                 <center>
                                     <button
                                         type="submit"
-                                        className="w-full"
+                                        className="w-full submit"
                                         disabled={searchLoading ? true : false}
                                     >
                                         Update

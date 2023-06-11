@@ -26,9 +26,12 @@ import {
     MdPendingActions,
 } from "react-icons/md";
 import { FaCalendarAlt, FaQuestionCircle } from "react-icons/fa";
+
 import BookingSteps from "@/Components/BookingSteps";
 
 import MessageAlert from "@/Components/MessageAlert";
+import FindMatchSteps from "@/Components/FindMatchSteps";
+import Swal from "sweetalert2";
 
 export default function Layout({ children, header, title }) {
     const [user, setUser] = useState("");
@@ -37,7 +40,7 @@ export default function Layout({ children, header, title }) {
     // state untuk menampilkan atau menyembunyikan modal
     const [showModal, setShowModal] = useState(false);
     const [showCaraBooking, setShowCaraBooking] = useState(false);
-    const [showCaraTemukanTeman, setCaraTemukanTeman] = useState(false);
+    const [showCaraTemukanTeman, setShowCaraTemukanTeman] = useState(false);
     // pesan belum terbaca
     const [jumlahPesan, setJumlahPesan] = useState(0);
     // untuk profile gor
@@ -82,6 +85,7 @@ export default function Layout({ children, header, title }) {
     }
 
     function showNotification(isi_pesan, sender_photo) {
+        // Memeriksa apakah izin notifikasi telah diberikan
         if (Notification.permission === "granted") {
             const notification = new Notification("Pesan Baru", {
                 body: isi_pesan,
@@ -91,6 +95,44 @@ export default function Layout({ children, header, title }) {
             notification.onclick = function () {
                 window.focus();
             };
+        } else if (Notification.permission !== "denied") {
+            // Meminta izin untuk menampilkan notifikasi
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                    const notification = new Notification("Pesan Baru", {
+                        body: isi_pesan,
+                        icon: sender_photo,
+                    });
+
+                    notification.onclick = function () {
+                        window.focus();
+                    };
+                } else {
+                    // Tampilkan pesan untuk meminta pengguna mengaktifkan notifikasi
+                    // Anda dapat menyesuaikan tampilan pesan ini sesuai dengan desain aplikasi Anda
+                    Swal.fire(
+                        "Wahai Manusia! (perhatian euy)",
+                        "Mohon beri izin browser untuk memberikan notifikasi untuk keperluan mengirim pemberitahuan pesan baru. Santuy ae, gak bakal aneh aneh :)",
+                        "warning"
+                    );
+
+                    // Tampilkan pesan SweetAlert untuk meminta pengguna mengaktifkan notifikasi
+                    Swal.fire({
+                        title: "Wahai Manusia! (perhatian euy)",
+                        text: "Mohon beri izin browser untuk memberikan notifikasi untuk keperluan mengirim pemberitahuan pesan baru. Santuy ae, gak bakal aneh aneh :)",
+                        icon: "info",
+                        showCancelButton: true,
+                        confirmButtonText: "Aktifkan Notifikasi",
+                        cancelButtonText: "Abaikan",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Pengguna memilih untuk mengaktifkan notifikasi
+                            // Memicu pop-up izin notifikasi lagi
+                            Notification.requestPermission();
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -99,18 +141,18 @@ export default function Layout({ children, header, title }) {
             const response = await axios.get("/api/chat/unread-conversations");
             setJumlahPesan(response.data.jumlah_pesan);
 
-            if (response.data.jumlah_pesan > 0) {
-                //     // OneSignal.sendNotification({
-                //     //     headings: {
-                //     //         en: "Pesan Baru",
-                //     //     },
-                //     //     contents: {
-                //     //         en: `Anda memiliki ${response.data.jumlah_pesan} pesan baru`,
-                //     //     },
-                //     //     url: "https://gorpratama.site/dashboard/pesan",
-                //     // });
-                //     runOneSignal();
-            }
+            // if (response.data.jumlah_pesan > 0) {
+            //     OneSignal.sendNotification({
+            //         headings: {
+            //             en: "Pesan Baru",
+            //         },
+            //         contents: {
+            //             en: `Anda memiliki ${response.data.jumlah_pesan} pesan baru`,
+            //         },
+            //         url: "https://gorpratama.site/dashboard/pesan",
+            //     });
+            //     runOneSignal();
+            // }
         } catch (error) {
             // console.error(error);
         }
@@ -610,7 +652,13 @@ export default function Layout({ children, header, title }) {
                                             Step by Step Booking Lapangan
                                         </span>
                                     </div>
-                                    <div className="cursor-pointer flex items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4">
+                                    <div
+                                        onClick={() => {
+                                            setShowModal(false);
+                                            setShowCaraTemukanTeman(true);
+                                        }}
+                                        className="cursor-pointer flex items-center border-b  hover:border-gray-800 border-white shadow-md py-2 px-2 rounded-lg mb-4"
+                                    >
                                         <MdFindInPage
                                             size="0.8em"
                                             className="text-4xl mr-2"
@@ -636,6 +684,22 @@ export default function Layout({ children, header, title }) {
                             <BookingSteps />
                             <div
                                 onClick={() => setShowCaraBooking(false)}
+                                className="absolute -top-10 right-0 cursor-pointer"
+                            >
+                                <IoClose
+                                    className="inline-block ml-1 bg-red-500 hover:bg-red-400"
+                                    size="2em"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {showCaraTemukanTeman && (
+                    <div className="fixed inset-0 p-4 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <div className="bg-white rounded-lg pt-4 px-4 pb-2 relative">
+                            <FindMatchSteps />
+                            <div
+                                onClick={() => setShowCaraTemukanTeman(false)}
                                 className="absolute -top-10 right-0 cursor-pointer"
                             >
                                 <IoClose

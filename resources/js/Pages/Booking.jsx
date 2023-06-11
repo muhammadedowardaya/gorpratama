@@ -486,6 +486,13 @@ export default function Booking(props) {
                                         }
                                         size="large"
                                         tabIndex="0"
+                                        autoFocus={true}
+                                        onClick={(e) => {
+                                            e.target.click();
+                                        }}
+                                        onTouchStart={(e) => {
+                                            e.target.click();
+                                        }}
                                     />
                                     <TimePicker
                                         format="HH:mm"
@@ -510,6 +517,12 @@ export default function Booking(props) {
                                         size="large"
                                         tabIndex="0"
                                         autoFocus={true}
+                                        onClick={(e) => {
+                                            e.target.click();
+                                        }}
+                                        onTouchStart={(e) => {
+                                            e.target.click();
+                                        }}
                                     />
                                 </div>
                             </div>
