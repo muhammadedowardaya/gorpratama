@@ -88,7 +88,8 @@ class TempatLapanganImage extends Controller
      */
     public function show($nama_file)
     {
-        $image =   public_path('\storage\tempat-lapangan\\' . $nama_file);
+        // $image =   public_path('\storage\tempat-lapangan\\' . $nama_file);
+        $image =   public_path('/storage/tempat-lapangan/' . $nama_file);
         return Response::file($image);
     }
 
@@ -110,45 +111,7 @@ class TempatLapanganImage extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Image $image)
-    {
-        $rules = [
-            'image' => 'nullable|image|mimes:jpg,bmp,png',
-        ];
 
-        // Validation 
-        $validator = Validator::make($request->all(), $rules);
-
-        // Return the message
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => true,
-                'message' => $validator->errors()
-            ], 401);
-        }
-
-        if ($file_image = request()->file('image')) {
-            $nama_image = $request->image . "." . $file_image->getClientOriginalExtension();
-            $file_image->storePubliclyAs('tempat-lapangan', $nama_image, 'public');
-            $url_image = '/api/tempat-lapangan/image/' . $nama_image;
-
-            Storage::delete(public_path('\storage\tempat-lapangan\\' . $request->image));
-        } else {
-            $nama_image = $image->image;
-            $url_image = $image->url_image;
-        }
-
-        $images = new Image();
-        $images->user_id = auth()->user()->id;
-        $images->image = $nama_image;
-        $images->url_image = $url_image;
-        $images->save();
-
-        return response()->json([
-            'error' => false,
-            'response' => $images,
-        ], 200);
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -158,6 +121,7 @@ class TempatLapanganImage extends Controller
      */
     public function destroy($nama_file)
     {
-        Storage::delete(public_path('\storage\tempat-lapangan\\' . $nama_file));
+        // Storage::delete(public_path('\storage\tempat-lapangan\\' . $nama_file));
+        Storage::delete(public_path('/storage/tempat-lapangan/' . $nama_file));
     }
 }

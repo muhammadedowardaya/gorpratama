@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build && vite build --ssr && vite build && vite build --ssr --ssr && vite build && vite build --ssr && vite build && vite build --ssr --ssr --ssr && vite build && vite build --ssr && vite build && vite build --ssr --ssr && vite build && vite build --ssr && vite build && vite build --ssr --ssr --ssr --ssr && vite build && vite build --ssr && vite build && vite build --ssr --ssr && vite build && vite build --ssr && vite build && vite build --ssr --ssr --ssr && vite build && vite build --ssr && vite build && vite build --ssr --ssr && vite build && vite build --ssr && vite build && vite build --ssr --ssr --ssr --ssr --ssr",
+        "build": "vite build --ssr",
         "clear-cache": "vite clear-cache"
     },
     "devDependencies": {

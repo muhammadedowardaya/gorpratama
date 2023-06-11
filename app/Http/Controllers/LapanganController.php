@@ -137,7 +137,8 @@ class LapanganController extends Controller
             $foto->storePubliclyAs('lapangan', $nama_foto, 'public');
             $url_foto = '/api/lapangan/image/' . $nama_foto;
 
-            Storage::delete(public_path('\storage\lapangan\\' . $lapangan->foto));
+            // Storage::delete(public_path('\storage\lapangan\\' . $lapangan->foto));
+            Storage::delete(public_path('/storage/lapangan/' . $lapangan->foto));
         } else {
             $nama_foto = $lapangan->foto;
             $url_foto = $lapangan->url_foto;

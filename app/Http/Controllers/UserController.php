@@ -34,7 +34,8 @@ class UserController extends Controller
             $foto->storePubliclyAs('user', $nama_foto, 'public');
             $url_foto = '/api/user/image/' . $nama_foto;
 
-            Storage::delete(public_path('\storage\user\\' . $user->foto));
+            // Storage::delete(public_path('\storage\user\\' . $user->foto));
+            Storage::delete(public_path('/storage/user/' . $user->foto));
         } else {
             $nama_foto = $user->foto;
             $url_foto = $user->url_foto;

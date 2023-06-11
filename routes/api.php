@@ -144,8 +144,13 @@ Route::get('/pending-jadwal/{external_id}', function ($external_id) {
 });
 
 
+// Route::get('/image/{lapangan}', function ($nama_file) {
+//     $image =   public_path('\storage\images\\' . $nama_file);
+//     return Response::file($image);
+// });
+
 Route::get('/image/{lapangan}', function ($nama_file) {
-    $image =   public_path('\storage\images\\' . $nama_file);
+    $image =   public_path('/storage/images/' . $nama_file);
     return Response::file($image);
 });
 

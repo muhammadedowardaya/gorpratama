@@ -152,7 +152,8 @@ class TempatLapanganController extends Controller
             $logo->storePubliclyAs('tempat-lapangan', $nama_logo, 'public');
             $url_logo = '/api/tempat-lapangan/image/' . $nama_logo;
 
-            Storage::delete(public_path('\storage\tempat-lapangan\\' . $tempatLapangan->logo));
+            // Storage::delete(public_path('\storage\tempat-lapangan\\' . $tempatLapangan->logo));
+            Storage::delete(public_path('/storage/tempat-lapangan/' . $tempatLapangan->logo));
         } else {
             $nama_logo = $tempatLapangan->logo;
             $url_logo = $tempatLapangan->url_logo;

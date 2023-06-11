@@ -43,6 +43,7 @@ export default function Register() {
     const submit = (e) => {
         e.preventDefault();
         router.post("register", data, {
+            forceFormData: true,
             onError: (errors) => {
                 const error_keys = Object.keys(errors);
                 const error_values = Object.getOwnPropertyNames(errors);

@@ -20,7 +20,7 @@ class UsersSeeder extends Seeder
                 'nama' => 'Admin',
                 'slug' => 'admin',
                 'telp' => '083808165175',
-                'email' => 'muhammadedowardaya@gmail.com',
+                'email' => 'muhammadedowarday4@gmail.com',
                 'alamat' => 'Bogor',
                 'type' => 1,
                 'password' => bcrypt('admin'),
@@ -34,15 +34,15 @@ class UsersSeeder extends Seeder
             //     'type' => 2,
             //     'password' => bcrypt('1234'),
             // ],
-            [
-                'nama' => 'Muhammad Edo Wardaya',
-                'slug' => 'user',
-                'telp' => '083808165173',
-                'email' => 'muhammadedowarday4@gmail.com',
-                'alamat' => 'Bogor',
-                'type' => 0,
-                'password' => bcrypt('1234'),
-            ],
+            // [
+            //     'nama' => 'Muhammad Edo Wardaya',
+            //     'slug' => 'user',
+            //     'telp' => '083808165173',
+            //     'email' => 'muhammadedowarday4@gmail.com',
+            //     'alamat' => 'Bogor',
+            //     'type' => 0,
+            //     'password' => bcrypt('1234'),
+            // ],
         ];
 
         foreach ($users as $key => $user) {

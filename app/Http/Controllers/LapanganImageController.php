@@ -9,7 +9,8 @@ class LapanganImageController extends Controller
 {
     public function show($nama_file)
     {
-        $logo =   public_path('\storage\lapangan\\' . $nama_file);
-        return Response::file($logo);   
+        // $logo =   public_path('\storage\lapangan\\' . $nama_file);
+        $logo =   public_path('/storage/lapangan/' . $nama_file);
+        return Response::file($logo);
     }
 }

@@ -10,7 +10,8 @@ class UserImageController extends Controller
 {
     public function showImage($nama_file)
     {
-        $foto =   public_path('\storage\user\\' . $nama_file);
+        // $foto =   public_path('\storage\user\\' . $nama_file);
+        $foto =   public_path('/storage/user/' . $nama_file);
         return Response::file($foto);
     }
 }
