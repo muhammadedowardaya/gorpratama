@@ -110,12 +110,12 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
 
     async function getSemuaJadwal() {
         try {
-            const response = await axios.get(`/api/jadwal`);
+            const response = await axios.get(`/api/semua-status-jadwal`);
             if (
-                Array.isArray(response.data.jadwal.data) &&
-                response.data.jadwal.data.length > 0
+                Array.isArray(response.data.semua_jadwal.data) &&
+                response.data.semua_jadwal.data.length > 0
             ) {
-                setSemuaJadwal(response.data.jadwal.data);
+                setSemuaJadwal(response.data.semua_jadwal.data);
             }
         } catch (error) {
             console.error(error);
@@ -608,15 +608,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                                         <tr key={index}>
                                             <th>{index + 1}</th>
                                             <td>{item.user.nama}</td>
-                                            <td>
-                                                {
-                                                    statusTransaksiOptions.find(
-                                                        (option) =>
-                                                            option.value ==
-                                                            item.status_transaksi
-                                                    )?.label
-                                                }
-                                            </td>
+                                            <td>{item.status_transaksi}</td>
                                             <td>{tanggal_bermain}</td>
                                             <td>{item.jam_mulai}</td>
                                             <td>{item.jam_selesai}</td>

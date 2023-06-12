@@ -380,32 +380,6 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                         <a
                                                             onClick={(e) => {
                                                                 e.preventDefault();
-                                                                const loader =
-                                                                    window.document.getElementById(
-                                                                        "loader"
-                                                                    );
-                                                                const pyramidLoader =
-                                                                    window.document
-                                                                        .getElementById(
-                                                                            "loader"
-                                                                        )
-                                                                        .querySelector(
-                                                                            ".pyramid-loader"
-                                                                        );
-
-                                                                // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
-                                                                if (
-                                                                    loader.classList.contains(
-                                                                        "!hidden"
-                                                                    )
-                                                                ) {
-                                                                    loader.classList.remove(
-                                                                        "!hidden"
-                                                                    );
-                                                                    pyramidLoader.classList.remove(
-                                                                        "hidden"
-                                                                    );
-                                                                }
 
                                                                 Swal.fire({
                                                                     title: "Affah iyyah?",
@@ -427,6 +401,32 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                                         if (
                                                                             result.isConfirmed
                                                                         ) {
+                                                                            const loader =
+                                                                                window.document.getElementById(
+                                                                                    "loader"
+                                                                                );
+                                                                            const pyramidLoader =
+                                                                                window.document
+                                                                                    .getElementById(
+                                                                                        "loader"
+                                                                                    )
+                                                                                    .querySelector(
+                                                                                        ".pyramid-loader"
+                                                                                    );
+
+                                                                            // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+                                                                            if (
+                                                                                loader.classList.contains(
+                                                                                    "!hidden"
+                                                                                )
+                                                                            ) {
+                                                                                loader.classList.remove(
+                                                                                    "!hidden"
+                                                                                );
+                                                                                pyramidLoader.classList.remove(
+                                                                                    "hidden"
+                                                                                );
+                                                                            }
                                                                             // Proses penghapusan jadwal di sini
                                                                             axios
                                                                                 .post(

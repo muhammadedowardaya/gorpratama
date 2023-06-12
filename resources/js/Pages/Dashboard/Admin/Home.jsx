@@ -23,6 +23,7 @@ import Layout from "@/Layouts/Layout";
 import { router } from "@inertiajs/react";
 import FormatRupiah from "@/Components/FormatRupiah";
 import LoaderSpin from "@/Components/LoaderSpin";
+import axios from "axios";
 
 export default function Home() {
     const [newUsers, setNewUsers] = useState("");
@@ -39,11 +40,24 @@ export default function Home() {
     async function fetchData() {
         setShowLoaderSpin(true);
         try {
+            // const response = await axios.get("/api/info-dashboard-admin");
+            // const data = response;
+            // setNewUsers(data.new_users);
+            // setTransaksis(data.transaksis);
+            // setTotalUsers(data.total);
+            // setTotalJadwalPending(data.total_jadwal_pending);
+            // setTotalPendapatan(data.total_pendapatan);
+            // setTotalPendapatanSeminggu(data.total_pendapatan_seminggu);
+            // setTotalPendapatanHariIni(data.total_pendapatan_hari_ini);
+            // setShowLoaderSpin(false);
+            // console.info(response)
             fetch("/api/info-dashboard-admin")
                 .then((response) => {
+                    setShowLoaderSpin(false);
                     return response.json();
                 })
                 .then((response) => {
+                    console.info(response);
                     setNewUsers(response.new_users);
                     setTransaksis(response.transaksis);
                     setTotalUsers(response.total);
@@ -55,8 +69,10 @@ export default function Home() {
                     setTotalPendapatanHariIni(
                         response.total_pendapatan_hari_ini
                     );
+                    setShowLoaderSpin(false);
                 });
         } catch (error) {
+            setShowLoaderSpin(false);
             // Tangani error di sini
         }
     }

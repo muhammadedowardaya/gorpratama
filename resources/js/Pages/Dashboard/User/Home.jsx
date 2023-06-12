@@ -30,6 +30,7 @@ import { MdMessage } from "react-icons/md";
 import { IoCart } from "react-icons/io5";
 import { CgCalendar } from "react-icons/cg";
 import LoaderSpin from "@/Components/LoaderSpin";
+import axios from "axios";
 
 export default function Home(props) {
     const [pesanBelumDibaca, setPesanBelumDibaca] = useState(0);

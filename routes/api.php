@@ -41,6 +41,32 @@ Route::get('/get-users-type-user', function () {
     ]);
 });
 
+
+Route::get('/info-dashboard-user', function () {
+    $unreadConversations = Conversation::with('sender')->where('recipient_id', auth()->user()->id)
+        ->whereNull('read_at')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    $groupByChatChannel = $unreadConversations->groupBy('chat_channel');
+    $pesan_belum_dibaca = $unreadConversations->count();
+
+    $jadwal_pending = Jadwal::where('user_id', auth()->user()->id)
+        ->whereIn('status_transaksi', [1, 4])
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->get();
+
+    $jadwal = Jadwal::where('user_id', auth()->user()->id)
+        ->whereIn('status_transaksi', [0, 5])
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->get();
+
+    return response()->json([
+        'total_jadwal' => $jadwal->count(),
+        'pesan_belum_dibaca' => $pesan_belum_dibaca,
+        'total_jadwal_pending' => $jadwal_pending->count(),
+    ]);
+});
+
 Route::get('/info-dashboard-admin', function () {
     $total = User::where('type', 'user')->get();
     $new_users = User::where('created_at', '>=', now()->subWeek())->get();
@@ -73,30 +99,6 @@ Route::get('/info-dashboard-admin', function () {
 });
 
 
-Route::get('/info-dashboard-user', function () {
-    $unreadConversations = Conversation::with('sender')->where('recipient_id', auth()->user()->id)
-        ->whereNull('read_at')
-        ->orderBy('created_at', 'desc')
-        ->get();
-    $groupByChatChannel = $unreadConversations->groupBy('chat_channel');
-    $pesan_belum_dibaca = $unreadConversations->count();
-
-    $jadwal_pending = Jadwal::where('user_id', auth()->user()->id)
-        ->whereIn('status_transaksi', [1, 4])
-        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
-        ->get();
-
-    $jadwal = Jadwal::where('user_id', auth()->user()->id)
-        ->whereIn('status_transaksi', [0, 5])
-        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
-        ->get();
-
-    return response()->json([
-        'total_jadwal' => $jadwal->count(),
-        'pesan_belum_dibaca' => $pesan_belum_dibaca,
-        'total_jadwal_pending' => $jadwal_pending->count(),
-    ]);
-});
 
 Route::get('/get-user', function () {
     return response()->json([
@@ -164,6 +166,17 @@ Route::get('/jadwal', function () {
     return response()->json([
         'jadwal' => $jadwal,
         'jadwal_view' => $jadwal_view,
+    ]);
+});
+
+Route::get('/semua-status-jadwal', function () {
+    $semua_jadwal = Jadwal::with('user')
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->paginate(8);
+
+    return response()->json([
+        'semua_jadwal' => $semua_jadwal
     ]);
 });
 

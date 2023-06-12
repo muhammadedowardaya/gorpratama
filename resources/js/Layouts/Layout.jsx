@@ -591,6 +591,7 @@ export default function Layout({ children, header, title }) {
                                                             window.location.reload();
                                                         }, 300);
                                                     });
+                                            } else {
                                             }
                                         });
                                     },
