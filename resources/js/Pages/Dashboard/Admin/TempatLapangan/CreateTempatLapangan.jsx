@@ -13,38 +13,24 @@ import { Head, router, useForm, usePage } from "@inertiajs/react";
 import "../../../../../css/formStyle.css";
 import axios from "axios";
 
-// date picker dan time picker
-
-import { DatePicker, TimePicker } from "antd";
 import Layout from "@/Layouts/Layout.jsx";
 import moment from "moment";
 import Toast from "@/Components/Toast.jsx";
 
+// react-date
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 export default function CreateTempatLapangan(props) {
     const { data, setData, processing, errors } = useForm({
-        nama: props.tempat_lapangan != null ? props.tempat_lapangan.nama : "",
-        alamat:
-            props.tempat_lapangan != null ? props.tempat_lapangan.alamat : "",
-        telp: props.tempat_lapangan != null ? props.tempat_lapangan.telp : "",
-        email: props.tempat_lapangan != null ? props.tempat_lapangan.email : "",
-        deskripsi:
-            props.tempat_lapangan != null
-                ? props.tempat_lapangan.deskripsi
-                : "",
-        jam_buka:
-            props.tempat_lapangan != null
-                ? props.tempat_lapangan.jam_buka
-                : "DEFAULT",
-        jam_tutup:
-            props.tempat_lapangan != null
-                ? props.tempat_lapangan.jam_tutup
-                : "DEFAULT",
-        jam_buka_value: "",
-        jam_tutup_value: "",
-        harga_persewa:
-            props.tempat_lapangan != null
-                ? props.tempat_lapangan.harga_persewa
-                : "",
+        nama: "",
+        alamat: "",
+        telp: "",
+        email: "",
+        deskripsi: "",
+        jam_buka: "",
+        jam_tutup: "",
+        harga_persewa: "",
         logo: null,
         preview:
             props.tempat_lapangan != null ? props.tempat_lapangan.url_logo : "",
@@ -167,6 +153,37 @@ export default function CreateTempatLapangan(props) {
         };
 
         reader.readAsDataURL(e.target.files[0]);
+    };
+
+    const TimeInput = ({ label, date, onDateChange }) => {
+        const minTime = new Date();
+        minTime.setHours(parseInt(data.jam_buka.slice(0, 2)));
+        minTime.setMinutes(parseInt(data.jam_buka.slice(3, 5)));
+
+        const maxTime = new Date();
+        maxTime.setHours(parseInt(data.jam_tutup.slice(0, 2)));
+        maxTime.setMinutes(parseInt(data.jam_tutup.slice(3, 5)));
+
+        return (
+            <div className="flex flex-col">
+                <label className="text-gray-700 font-medium mb-2">
+                    {label}
+                </label>
+                <DatePicker
+                    selected={date}
+                    onChange={onDateChange}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={60}
+                    timeCaption="Time"
+                    dateFormat="HH:mm"
+                    timeFormat="HH:mm"
+                    minTime={minTime}
+                    maxTime={maxTime}
+                    className={`border  w-full  border-gray-300 rounded-md py-2 px-3 text-gray-700`}
+                />
+            </div>
+        );
     };
 
     useEffect(() => {
@@ -298,47 +315,47 @@ export default function CreateTempatLapangan(props) {
 
                                 <div className="mt-4">
                                     <div className="grid grid-cols-2 gap-2">
-                                        <Label
-                                            className="text-slate-600"
-                                            forInput="jam"
-                                            value="Jam Buka"
-                                        />
-                                        <Label
-                                            className="text-slate-600"
-                                            forInput="jam"
-                                            value="Jam Tutup"
-                                        />
-
-                                        <TimePicker
-                                            format="HH:mm"
-                                            onSelect={(time) => {
-                                                setData((prevData) => ({
-                                                    ...prevData,
-                                                    jam_buka: moment(
-                                                        time["$d"]
-                                                    ).format("HH:mm"),
-                                                    jam_buka_value: time,
-                                                }));
+                                        <TimeInput
+                                            label="Jam Buka"
+                                            date={
+                                                data.jam_buka == ""
+                                                    ? ""
+                                                    : moment(
+                                                          data.jam_buka,
+                                                          "HH:mm"
+                                                      ).toDate()
+                                            }
+                                            onDateChange={(date) => {
+                                                const formattedDate =
+                                                    moment(date).format(
+                                                        "HH:mm"
+                                                    );
+                                                setData(
+                                                    "jam_buka",
+                                                    formattedDate
+                                                );
                                             }}
-                                            minuteStep={5}
-                                            value={data.jam_buka_value}
-                                            size="large"
                                         />
-                                        <TimePicker
-                                            format="HH:mm"
-                                            onSelect={(time) => {
-                                                setData((prevData) => ({
-                                                    ...prevData,
-                                                    jam_tutup: moment(
-                                                        time["$d"]
-                                                    ).format("HH:mm"),
-                                                    jam_tutup_value: time,
-                                                }));
+                                        <TimeInput
+                                            label="Jam Tutup"
+                                            date={
+                                                data.jam_tutup == ""
+                                                    ? ""
+                                                    : moment(
+                                                          data.jam_tutup,
+                                                          "HH:mm"
+                                                      ).toDate()
+                                            }
+                                            onDateChange={(date) => {
+                                                const formattedDate =
+                                                    moment(date).format(
+                                                        "HH:mm"
+                                                    );
+                                                setData(
+                                                    "jam_tutup",
+                                                    formattedDate
+                                                );
                                             }}
-                                            locale="id"
-                                            minuteStep={5}
-                                            value={data.jam_tutup_value}
-                                            size="large"
                                         />
                                     </div>
                                 </div>
@@ -357,7 +374,7 @@ export default function CreateTempatLapangan(props) {
                                         }) => (
                                             <React.Fragment>
                                                 <img
-                                                    className="my-3 w-32 h-32 object-cover object-center mx-auto border rounded-full border-slate-800 overflow-hidden"
+                                                    className="my-3 w-32 h-32 rounded-full mx-auto border border-black overflow-hidden"
                                                     src={data.preview}
                                                     alt="avatar"
                                                     onClick={openPortal}
@@ -373,12 +390,12 @@ export default function CreateTempatLapangan(props) {
                                                                     src={
                                                                         data.preview
                                                                     }
-                                                                    alt="Foto Gor atauTempat lapangan"
-                                                                    className="object-cover w-full md:h-96"
+                                                                    alt=""
+                                                                    className="object-cover object-center w-[90vw] h-[85vh] md:w-[60vw] md:max-h-[70vh]"
                                                                 />
                                                                 <FaWindowClose
                                                                     size="2em"
-                                                                    className="top-1 right-2 absolute cursor-pointer"
+                                                                    className="top-1 right-2 absolute cursor-pointer fill-red-400"
                                                                     onClick={
                                                                         closePortal
                                                                     }
