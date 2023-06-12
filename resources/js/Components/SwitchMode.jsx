@@ -6,7 +6,7 @@ export default function SwitchMode({ className }) {
     useEffect(() => {
         // Mengecek Local Storage untuk mendapatkan mode saat halaman dimuat kembali
         const mode = localStorage.getItem("mode");
-        if (mode === "dark") {
+        if (mode == "dark") {
             setIsChecked(true);
             document.documentElement.classList.add("dark");
         } else {

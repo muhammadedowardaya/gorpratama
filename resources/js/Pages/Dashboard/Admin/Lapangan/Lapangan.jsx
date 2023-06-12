@@ -124,7 +124,7 @@ const Lapangan = (props) => {
                                                                 if (
                                                                     errors
                                                                         .response
-                                                                        .status ===
+                                                                        .status ==
                                                                     400
                                                                 ) {
                                                                     const error_keys =

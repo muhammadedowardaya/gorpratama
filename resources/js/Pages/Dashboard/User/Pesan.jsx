@@ -47,7 +47,7 @@ function Pesan() {
             setShowLoaderSpin(false);
         } catch (error) {
             setShowLoaderSpin(false);
-            console.info(error);
+            // console.info(error);
         }
     }
 
@@ -59,7 +59,7 @@ function Pesan() {
             setShowLoaderSpin(false);
         } catch (error) {
             setShowLoaderSpin(false);
-            console.info(error);
+            // console.info(error);
         }
     }
 
@@ -70,9 +70,6 @@ function Pesan() {
             getUnreadMessage();
             getReadMessage();
         });
-        console.info(`chat_channel = ${chatChannel}`);
-        console.info(`recipient_id = ${recipientId}`);
-        console.info(`sender_id = ${auth.user.id}`);
     }, [recipientId, chatChannel]);
 
     return (
@@ -114,7 +111,7 @@ function Pesan() {
                                               setShowLoading(false);
                                           })
                                           .catch((error) => {
-                                              console.info(error);
+                                              //   console.info(error);
                                           });
                                   }}
                                   onTouchStart={() => {
@@ -135,7 +132,7 @@ function Pesan() {
                                               setShowLoading(false);
                                           })
                                           .catch((error) => {
-                                              console.info(error);
+                                              //   console.info(error);
                                           });
                                   }}
                               >

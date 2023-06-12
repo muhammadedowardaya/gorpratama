@@ -41,78 +41,12 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
 
             {/* <ValidationErrors errors={props.errors} /> */}
             {/* <Loading display={displayLoading} /> */}
-
-            <div className="w-full px-4 md:px-0 md:mt-8 mb-16  leading-normal ">
-                <h1 className="text-center my-4 lg:mb-8 font-bold text-2xl text-slate-50">
-                    Tempat Lapangan
-                </h1>
-
-                <div
-                    id="content-table"
-                    className="flex justify-center flex-col md:flex-row"
-                >
-                    <table className="basis-1/3 order-2 md:order-1 text-slate-800">
-                        <tbody>
-                            <tr>
-                                <th>Nama</th>
-                                <td>{tempat_lapangan.nama}</td>
-                            </tr>
-                            <tr>
-                                <th>Alamat</th>
-                                <td className="max-h-min whitespace-pre-wrap text-xs italic">
-                                    {tempat_lapangan.alamat}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Telp</th>
-                                <td>{tempat_lapangan.telp}</td>
-                            </tr>
-                            <tr>
-                                <th>Email</th>
-                                <td>{tempat_lapangan.email}</td>
-                            </tr>
-
-                            <tr>
-                                <th>Jam Buka</th>
-                                <td>{tempat_lapangan.jam_buka}</td>
-                            </tr>
-                            <tr>
-                                <th>Jam Tutup</th>
-                                <td>{tempat_lapangan.jam_tutup}</td>
-                            </tr>
-                            <tr>
-                                <th>Harga Persewa</th>
-                                <td>{tempat_lapangan.harga_persewa}</td>
-                            </tr>
-                            <tr>
-                                <th>Deskripsi</th>
-                                <td className="max-h-min whitespace-pre-wrap ">
-                                    {tempat_lapangan.deskripsi}
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td
-                                    className="text-right pt-4 z-20"
-                                    colSpan={2}
-                                >
-                                    <MyButton
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            // setDisplayLoading(true);
-                                            router.get(
-                                                `/dashboard/tempat-lapangan-edit/${tempat_lapangan.slug}`
-                                            );
-                                        }}
-                                        value="Edit"
-                                        button="edit"
-                                    />
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <div className="md:pl-6 z-20 basis-1/3 order-1 md:order-2">
+            <div className="flex justify-center">
+                <div className="max-w-sm rounded overflow-hidden shadow-lg">
+                    <h1 className="font-bold text-xl text-center mt-4">
+                        Tempat Lapangan / Profil Gor
+                    </h1>
+                    <div className="px-4 py-4">
                         <PortalWithState closeOnOutsideClick closeOnEsc>
                             {({ openPortal, closePortal, isOpen, portal }) => (
                                 <React.Fragment>
@@ -148,7 +82,91 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
                                 </React.Fragment>
                             )}
                         </PortalWithState>
+                        <div className="font-bold text-xl my-4 text-gray-100">
+                            {tempat_lapangan.nama}
+                        </div>
+                        <div className="text-slate-800">
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Alamat
+                                </div>
+                                <div className="sm:w-2/3 w-full max-h-min whitespace-pre-wrap text-xs italic break-words">
+                                    {tempat_lapangan.alamat}
+                                </div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Telp
+                                </div>
+                                <div className="sm:w-2/3 w-full">
+                                    {tempat_lapangan.telp}
+                                </div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Email
+                                </div>
+                                <div className="sm:w-2/3 w-full break-words">
+                                    {tempat_lapangan.email}
+                                </div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Jam Buka
+                                </div>
+                                <div className="sm:w-2/3 w-full">
+                                    {tempat_lapangan.jam_buka}
+                                </div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Jam Tutup
+                                </div>
+                                <div className="sm:w-2/3 w-full">
+                                    {tempat_lapangan.jam_tutup}
+                                </div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Harga Persewa
+                                </div>
+                                <div className="sm:w-2/3 w-full">
+                                    {tempat_lapangan.harga_persewa}
+                                </div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Deskripsi
+                                </div>
+                                <div className="sm:w-2/3 w-full max-h-min whitespace-pre-wrap break-words">
+                                    {tempat_lapangan.deskripsi}
+                                </div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row text-gray-100 mb-2 md:mb-0 pt-4">
+                                <div className="sm:w-1/3 w-full font-bold">
+                                    Aksi
+                                </div>
+                                <div className="sm:w-2/3 w-full max-h-min whitespace-pre-wrap break-words text-right">
+                                    <button
+                                        onClick={() => {
+                                            router.get(
+                                                `/dashboard/tempat-lapangan-edit/${tempat_lapangan.slug}`
+                                            );
+                                        }}
+                                        className="bg-amber-500 px-6 py-1 "
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <style jsx>{`
+                        .break-words {
+                            word-break: break-word;
+                        }
+                    `}</style>
                 </div>
             </div>
         </>

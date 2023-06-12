@@ -12,7 +12,7 @@ export default function Pagination({ links, className }) {
             <div className={`mb-4 ${className}`}>
                 <div className="flex flex-wrap mt-8">
                     {links.map((link, key) =>
-                        link.url === null ? (
+                        link.url == null ? (
                             <a
                                 key={key}
                                 className={`${getClassName(link.active)} btn `}

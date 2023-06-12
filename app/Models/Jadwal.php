@@ -12,7 +12,7 @@ class Jadwal extends Model
 
     protected $table = 'jadwal';
 
-    protected $fillable = ['user_id', 'lapangan_id', 'chat_channel', 'status_transaksi', 'tanggal', 'jam_mulai', 'jam_selesai', 'izinkan_permintaan_bergabung'];
+    protected $fillable = ['user_id', 'external_id', 'lapangan_id', 'chat_channel', 'status_transaksi', 'tanggal', 'jam_mulai', 'jam_selesai', 'izinkan_permintaan_bergabung'];
 
     public function lapangan()
     {
@@ -29,7 +29,7 @@ class Jadwal extends Model
         return $this->belongsTo(Transaksi::class, 'transaksi_id');
     }
 
-    protected function status(): Attribute
+    protected function statusTransaksi(): Attribute
     {
         return new Attribute(
             get: fn ($value) =>  ["PAID", "PENDING", "FAILED", "EXPIRED", "COD (belum konfirmasi)", "COD (terkonfirmasi)"][$value],

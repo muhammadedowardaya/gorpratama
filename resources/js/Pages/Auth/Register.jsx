@@ -34,7 +34,7 @@ export default function Register() {
     const onHandleChange = (event) => {
         setData(
             event.target.name,
-            event.target.type === "checkbox"
+            event.target.type == "checkbox"
                 ? event.target.checked
                 : event.target.value
         );
@@ -76,7 +76,7 @@ export default function Register() {
         e.preventDefault();
         let reader = new FileReader();
         reader.onloadend = () => {
-            if (reader.readyState === 2) {
+            if (reader.readyState == 2) {
                 if (reader.result.includes("data:image")) {
                     setData({
                         ...data,

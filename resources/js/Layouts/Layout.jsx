@@ -68,7 +68,7 @@ export default function Layout({ children, header, title }) {
             //     // throw new Error("Terjadi kesalahan dalam mengambil data user");
             // }
         } catch (error) {
-            if (error instanceof Error && error.status === 500) {
+            if (error instanceof Error && error.status == 500) {
                 // Tindakan yang diambil ketika terjadi Internal Server Error
                 // console.error("Terjadi kesalahan internal server:", error);
             } else {
@@ -86,7 +86,7 @@ export default function Layout({ children, header, title }) {
 
     function showNotification(isi_pesan, sender_photo) {
         // Memeriksa apakah izin notifikasi telah diberikan
-        if (Notification.permission === "granted") {
+        if (Notification.permission == "granted") {
             const notification = new Notification("Pesan Baru", {
                 body: isi_pesan,
                 icon: sender_photo,
@@ -98,7 +98,7 @@ export default function Layout({ children, header, title }) {
         } else if (Notification.permission !== "denied") {
             // Meminta izin untuk menampilkan notifikasi
             Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
+                if (permission == "granted") {
                     const notification = new Notification("Pesan Baru", {
                         body: isi_pesan,
                         icon: sender_photo,
@@ -110,11 +110,6 @@ export default function Layout({ children, header, title }) {
                 } else {
                     // Tampilkan pesan untuk meminta pengguna mengaktifkan notifikasi
                     // Anda dapat menyesuaikan tampilan pesan ini sesuai dengan desain aplikasi Anda
-                    Swal.fire(
-                        "Wahai Manusia! (perhatian euy)",
-                        "Mohon beri izin browser untuk memberikan notifikasi untuk keperluan mengirim pemberitahuan pesan baru. Santuy ae, gak bakal aneh aneh :)",
-                        "warning"
-                    );
 
                     // Tampilkan pesan SweetAlert untuk meminta pengguna mengaktifkan notifikasi
                     Swal.fire({
@@ -177,23 +172,20 @@ export default function Layout({ children, header, title }) {
             getUnreadMessage();
             // Periksa apakah pengguna saat ini adalah penerima pesan
             if (event.recipient_id != "") {
-                if (event.recipient_id === auth.user.id) {
+                if (event.recipient_id == auth.user.id) {
                     // Tampilkan notifikasi ketika ada pesan baru
                     if (event.message != "") {
                         showNotification(
                             `${event.sender_name} : ${event.message}`,
                             event.sender_photo
                         );
-
-                        setTimeout(() => {
-                            setShowAlertMessage(true);
-                            setMessage((prevData) => ({
-                                ...prevData,
-                                sender_name: event.sender_name,
-                                sender_photo: event.sender_photo,
-                                value: event.message,
-                            }));
-                        }, 1000);
+                        setShowAlertMessage(true);
+                        setMessage((prevData) => ({
+                            ...prevData,
+                            sender_name: event.sender_name,
+                            sender_photo: event.sender_photo,
+                            value: event.message,
+                        }));
                     }
                     // setJumlahPesan(event.unread_message_total);
                     // runOneSignal();
@@ -201,7 +193,7 @@ export default function Layout({ children, header, title }) {
             }
         });
         const mode = localStorage.getItem("mode");
-        if (mode === "dark") {
+        if (mode == "dark") {
             if (!document.documentElement.classList.contains("dark")) {
                 document.documentElement.classList.add("dark");
             }
@@ -248,8 +240,8 @@ export default function Layout({ children, header, title }) {
                         jumlahPesan={jumlahPesan}
                         items={[
                             {
-                                path: "/",
-                                onClick: () => router.get("/"),
+                                path: "/dashboard",
+                                onClick: () => router.get("/dashboard"),
                                 icon: <IoHome size="1.5em" />,
                                 title: "Home",
                             },
@@ -280,13 +272,6 @@ export default function Layout({ children, header, title }) {
                                 icon: <MdPendingActions size="1.5em" />,
                                 title: "Jadwal Pending",
                             },
-                            {
-                                path: "/dashboard/laporan-keuangan*",
-                                onClick: () =>
-                                    router.get("/dashboard/laporan-keuangan"),
-                                icon: <MdAttachMoney size="1.5em" />,
-                                title: "Laporan",
-                            },
                         ]}
                     />
                 ) : (
@@ -294,8 +279,8 @@ export default function Layout({ children, header, title }) {
                         jumlahPesan={jumlahPesan}
                         items={[
                             {
-                                path: "/",
-                                onClick: () => router.get("/"),
+                                path: "/dashboard",
+                                onClick: () => router.get("/dashboard"),
                                 icon: <IoHome size="1.5em" />,
                                 title: "Home",
                             },
@@ -347,8 +332,8 @@ export default function Layout({ children, header, title }) {
                         <Sidebar
                             items={[
                                 {
-                                    path: "/",
-                                    onClick: () => router.get("/"),
+                                    path: "/dashboard",
+                                    onClick: () => router.get("/dashboard"),
                                     icon: <IoHome className="mt-4" />,
                                     title: "Home",
                                 },
@@ -389,41 +374,104 @@ export default function Layout({ children, header, title }) {
                                     title: "Lapangan",
                                 },
                                 {
-                                    path: "/dashboard/laporan-keuangan*",
-                                    onClick: () =>
-                                        router.get(
-                                            "/dashboard/laporan-keuangan"
-                                        ),
-                                    icon: <MdAttachMoney className="mt-4" />,
-                                    title: "Laporan",
-                                },
-
-                                {
                                     path: "/logout",
-                                    onClick: () => {
-                                        const loader =
-                                            window.document.getElementById(
-                                                "loader"
-                                            );
-                                        const pyramidLoader = window.document
-                                            .getElementById("loader")
-                                            .querySelector(".pyramid-loader");
-                                        if (
-                                            loader.classList.contains("!hidden")
-                                        ) {
-                                            loader.classList.remove("!hidden");
-                                            pyramidLoader.classList.remove(
-                                                "hidden"
-                                            );
-                                        }
-                                        axios
-                                            .post("/logout")
-                                            .then((response) => {
-                                                window.location.href = "/";
-                                                setTimeout(() => {
-                                                    window.location.reload();
-                                                }, 300);
-                                            });
+                                    onClick: (e) => {
+                                        e.preventDefault();
+                                        Swal.fire({
+                                            title: "Affah iyyah?",
+                                            text: "Mau logout aja?",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Ea, logout!",
+                                            cancelButtonText: "Gak jadi",
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                const loader =
+                                                    window.document.getElementById(
+                                                        "loader"
+                                                    );
+                                                const pyramidLoader =
+                                                    window.document
+                                                        .getElementById(
+                                                            "loader"
+                                                        )
+                                                        .querySelector(
+                                                            ".pyramid-loader"
+                                                        );
+                                                if (
+                                                    loader.classList.contains(
+                                                        "!hidden"
+                                                    )
+                                                ) {
+                                                    loader.classList.remove(
+                                                        "!hidden"
+                                                    );
+                                                    pyramidLoader.classList.remove(
+                                                        "hidden"
+                                                    );
+                                                }
+                                                axios
+                                                    .post("/logout")
+                                                    .then((response) => {
+                                                        window.location.href =
+                                                            "/";
+                                                        setTimeout(() => {
+                                                            window.location.reload();
+                                                        }, 300);
+                                                    });
+                                            }
+                                        });
+                                    },
+                                    ontouchstart: (e) => {
+                                        e.preventDefault();
+                                        Swal.fire({
+                                            title: "Affah iyyah?",
+                                            text: "Mau logout aja?",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Ea, logout!",
+                                            cancelButtonText: "Gak jadi",
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                const loader =
+                                                    window.document.getElementById(
+                                                        "loader"
+                                                    );
+                                                const pyramidLoader =
+                                                    window.document
+                                                        .getElementById(
+                                                            "loader"
+                                                        )
+                                                        .querySelector(
+                                                            ".pyramid-loader"
+                                                        );
+                                                if (
+                                                    loader.classList.contains(
+                                                        "!hidden"
+                                                    )
+                                                ) {
+                                                    loader.classList.remove(
+                                                        "!hidden"
+                                                    );
+                                                    pyramidLoader.classList.remove(
+                                                        "hidden"
+                                                    );
+                                                }
+                                                axios
+                                                    .post("/logout")
+                                                    .then((response) => {
+                                                        window.location.href =
+                                                            "/";
+                                                        setTimeout(() => {
+                                                            window.location.reload();
+                                                        }, 300);
+                                                    });
+                                            }
+                                        });
                                     },
                                     icon: <FiLogOut className="mt-4" />,
                                     title: "Logout",
@@ -434,8 +482,8 @@ export default function Layout({ children, header, title }) {
                         <Sidebar
                             items={[
                                 {
-                                    path: "/",
-                                    onClick: () => router.get("/"),
+                                    path: "/dashboard",
+                                    onClick: () => router.get("/dashboard"),
                                     icon: <IoHome className="mt-4" />,
                                     title: "Home",
                                 },
@@ -497,30 +545,103 @@ export default function Layout({ children, header, title }) {
                                 },
                                 {
                                     path: "/logout",
-                                    onClick: () => {
-                                        const loader =
-                                            window.document.getElementById(
-                                                "loader"
-                                            );
-                                        const pyramidLoader = window.document
-                                            .getElementById("loader")
-                                            .querySelector(".pyramid-loader");
-                                        if (
-                                            loader.classList.contains("!hidden")
-                                        ) {
-                                            loader.classList.remove("!hidden");
-                                            pyramidLoader.classList.remove(
-                                                "hidden"
-                                            );
-                                        }
-                                        axios
-                                            .post("/logout")
-                                            .then((response) => {
-                                                window.location.href = "/";
-                                                setTimeout(() => {
-                                                    window.location.reload();
-                                                }, 300);
-                                            });
+                                    onClick: (e) => {
+                                        e.preventDefault();
+                                        Swal.fire({
+                                            title: "Affah iyyah?",
+                                            text: "Mau logout aja?",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Ea, logout!",
+                                            cancelButtonText: "Gak jadi",
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                const loader =
+                                                    window.document.getElementById(
+                                                        "loader"
+                                                    );
+                                                const pyramidLoader =
+                                                    window.document
+                                                        .getElementById(
+                                                            "loader"
+                                                        )
+                                                        .querySelector(
+                                                            ".pyramid-loader"
+                                                        );
+                                                if (
+                                                    loader.classList.contains(
+                                                        "!hidden"
+                                                    )
+                                                ) {
+                                                    loader.classList.remove(
+                                                        "!hidden"
+                                                    );
+                                                    pyramidLoader.classList.remove(
+                                                        "hidden"
+                                                    );
+                                                }
+                                                axios
+                                                    .post("/logout")
+                                                    .then((response) => {
+                                                        window.location.href =
+                                                            "/";
+                                                        setTimeout(() => {
+                                                            window.location.reload();
+                                                        }, 300);
+                                                    });
+                                            }
+                                        });
+                                    },
+                                    ontouchstart: (e) => {
+                                        e.preventDefault();
+                                        Swal.fire({
+                                            title: "Affah iyyah?",
+                                            text: "Mau logout aja?",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Ea, logout!",
+                                            cancelButtonText: "Gak jadi",
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                const loader =
+                                                    window.document.getElementById(
+                                                        "loader"
+                                                    );
+                                                const pyramidLoader =
+                                                    window.document
+                                                        .getElementById(
+                                                            "loader"
+                                                        )
+                                                        .querySelector(
+                                                            ".pyramid-loader"
+                                                        );
+                                                if (
+                                                    loader.classList.contains(
+                                                        "!hidden"
+                                                    )
+                                                ) {
+                                                    loader.classList.remove(
+                                                        "!hidden"
+                                                    );
+                                                    pyramidLoader.classList.remove(
+                                                        "hidden"
+                                                    );
+                                                }
+                                                axios
+                                                    .post("/logout")
+                                                    .then((response) => {
+                                                        window.location.href =
+                                                            "/";
+                                                        setTimeout(() => {
+                                                            window.location.reload();
+                                                        }, 300);
+                                                    });
+                                            }
+                                        });
                                     },
                                     icon: <FiLogOut className="mt-4" />,
                                     title: "Logout",

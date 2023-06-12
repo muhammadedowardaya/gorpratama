@@ -105,7 +105,7 @@ export default function CreateTempatLapangan(props) {
                     loader.classList.add("!hidden");
                     pyramidLoader.classList.add("hidden");
                 }
-                if (errors.response.status === 400) {
+                if (errors.response.status == 400) {
                     if (
                         errors.response.data.message.nama[0] ==
                         "Nama sudah ada sebelumnya."
@@ -146,7 +146,7 @@ export default function CreateTempatLapangan(props) {
         e.preventDefault();
         let reader = new FileReader();
         reader.onloadend = () => {
-            if (reader.readyState === 2) {
+            if (reader.readyState == 2) {
                 if (reader.result.includes("data:image")) {
                     setData({
                         ...data,

@@ -55,8 +55,8 @@ class TempatLapanganPolicy
     public function update(User $user, TempatLapangan $tempatLapangan)
     {
         //
-        // return $user->id === $tempatLapangan->user_id;
-        return $user->type === 'admin'
+        // return $user->id == $tempatLapangan->user_id;
+        return $user->type == 'admin'
             ? Response::allow()
             : Response::deny('You do not own this post.');
     }

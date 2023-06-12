@@ -69,7 +69,7 @@ export default function CreateLapangan(props) {
             })
             .catch((errors) => {
                 setDisplayLoading(false);
-                if (errors.response.status === 400) {
+                if (errors.response.status == 400) {
                     const error_keys = Object.keys(
                         errors.response.data.message
                     );
@@ -103,7 +103,7 @@ export default function CreateLapangan(props) {
         e.preventDefault();
         let reader = new FileReader();
         reader.onloadend = () => {
-            if (reader.readyState === 2) {
+            if (reader.readyState == 2) {
                 if (reader.result.includes("data:image")) {
                     setData({
                         ...data,

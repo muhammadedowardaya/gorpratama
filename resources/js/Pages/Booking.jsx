@@ -8,13 +8,20 @@ import Layout from "@/Layouts/Layout";
 import { router, useForm } from "@inertiajs/react";
 
 // date picker dan time picker
-import { DatePicker, TimePicker } from "antd";
+// import { DatePicker, TimePicker } from "antd";
 import moment from "moment";
 import "moment/locale/id";
 import Loading from "@/Components/Loading";
 import axios from "axios";
 
+// react-date
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 export default function Booking(props) {
+    // react-date (untuk timeinput)
+
+    // -------------------
     const [show, setShow] = useState(false);
     const [showJadwal, setShowJadwal] = useState(false);
     const [links, setLinks] = useState(null);
@@ -36,8 +43,6 @@ export default function Booking(props) {
 
         jam_mulai: "",
         jam_selesai: "",
-        jam_mulai_value: "",
-        jam_selesai_value: "",
 
         izinkan_permintaan_bergabung: false,
         pesan: "",
@@ -63,11 +68,17 @@ export default function Booking(props) {
         let date1Obj = new Date(date1Formatted);
         let date2Obj = new Date(date2Formatted);
 
+        // Atur waktu kedua objek Date ke tengah malam
+        date1Obj.setHours(0, 0, 0, 0);
+        date2Obj.setHours(0, 0, 0, 0);
+
         // Bandingkan kedua objek Date
         if (date1Obj < date2Obj) {
-            return true;
-        } else {
+            return -1;
+        } else if (date1Obj > date2Obj) {
             return false;
+        } else {
+            return 0;
         }
     };
 
@@ -85,46 +96,40 @@ export default function Booking(props) {
         }
     }
 
-    const disabledTime = () => {
-        const disabledHours = [];
-        const disabledMinutes = [];
+    const TimeInput = ({ label, date, onDateChange }) => {
+        const isDisabled = !data.tanggal_main;
 
-        const timeHours = moment(data.jam_mulai["$d"])
-            .format("HH:mm")
-            .slice(0, 2);
+        const minTime = new Date();
+        minTime.setHours(parseInt(data.jam_buka.slice(0, 2)));
+        minTime.setMinutes(parseInt(data.jam_buka.slice(3, 5)));
 
-        // Disable hours before opening time and after closing time
-        for (let i = 0; i < 24; i++) {
-            if (
-                i < parseInt(data.jam_buka.slice(0, 2)) ||
-                i > parseInt(data.jam_tutup.slice(0, 2))
-            ) {
-                disabledHours.push(i);
-            }
-        }
+        const maxTime = new Date();
+        maxTime.setHours(parseInt(data.jam_tutup.slice(0, 2)));
+        maxTime.setMinutes(parseInt(data.jam_tutup.slice(3, 5)));
 
-        // Disable minutes when the selected hour is the same as the opening or closing time
-        if (data.jam_mulai && timeHours === data.jam_buka.slice(0, 2)) {
-            for (let i = 0; i < parseInt(data.jam_buka.slice(3, 5)); i++) {
-                disabledMinutes.push(i);
-            }
-        } else if (
-            data.jam_selesai &&
-            timeHours === data.jam_tutup.slice(0, 2)
-        ) {
-            for (
-                let i = parseInt(data.jam_tutup.slice(3, 5)) + 1;
-                i <= 59;
-                i++
-            ) {
-                disabledMinutes.push(i);
-            }
-        }
-
-        return {
-            disabledHours: () => disabledHours,
-            disabledMinutes: () => disabledMinutes,
-        };
+        return (
+            <div className="flex flex-col">
+                <label className="text-gray-700 font-medium mb-2">
+                    {label}
+                </label>
+                <DatePicker
+                    selected={date}
+                    onChange={onDateChange}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={60}
+                    timeCaption="Time"
+                    dateFormat="HH:mm"
+                    timeFormat="HH:mm"
+                    minTime={minTime}
+                    maxTime={maxTime}
+                    className={`border border-gray-300 rounded-md w-full ${
+                        isDisabled ? "bg-gray-100" : ""
+                    } border border-gray-300 rounded-md py-2 px-3 text-gray-700`}
+                    disabled={isDisabled}
+                />
+            </div>
+        );
     };
 
     function updateData() {
@@ -143,80 +148,31 @@ export default function Booking(props) {
         }));
     }
 
-    useEffect(() => {
-        getJadwal();
-
-        if (props.flash.success) {
-            Swal.fire("Berhasil!", `${props.flash.success}`, "success");
-        }
-
-        const table = document.querySelector("table");
-        let isDragging = false;
-        let lastX;
-
-        table.addEventListener("mousedown", (event) => {
-            isDragging = true;
-            lastX = event.clientX;
-            event.preventDefault();
-        });
-
-        table.addEventListener("mouseup", () => {
-            isDragging = false;
-        });
-
-        table.addEventListener("mousemove", (event) => {
-            if (isDragging) {
-                const deltaX = event.clientX - lastX;
-                const containerScrollLeft = table.parentElement.scrollLeft;
-                table.parentElement.scrollLeft = containerScrollLeft - deltaX;
-            }
-            lastX = event.clientX;
-        });
-
-        table.addEventListener("touchstart", (event) => {
-            isDragging = true;
-            lastX = event.touches[0].clientX;
-        });
-
-        table.addEventListener("touchend", () => {
-            isDragging = false;
-        });
-
-        table.addEventListener("touchmove", (event) => {
-            if (isDragging) {
-                const deltaX = event.touches[0].clientX - lastX;
-                const containerScrollLeft = table.parentElement.scrollLeft;
-                table.parentElement.scrollLeft = containerScrollLeft - deltaX;
-            }
-            lastX = event.touches[0].clientX;
-        });
-
-        updateData();
-    }, [
-        data.jam_mulai,
-        data.jam_selesai,
-        data.harga_persewa,
-        data.izinkan_permintaan_bergabung,
-    ]);
-
     const submit = (e) => {
         e.preventDefault();
-
         setShow(true);
         let ada_jadwal = false;
         if (Array.isArray(jadwal) && jadwal.length > 0) {
             for (let i = 0; i < jadwal.length; i++) {
+                const jadwalTanggal = moment(jadwal[i].tanggal).format(
+                    "DD-MM-YYYY"
+                );
+                const jadwalJamMulai = moment(jadwal[i].jam_mulai, "HH:mm");
+                const jadwalJamSelesai = moment(jadwal[i].jam_selesai, "HH:mm");
+
+                const dataTanggal = data.tanggal_main;
+                const dataJamMulai = moment(data.jam_mulai, "HH:mm");
+                const dataJamSelesai = moment(data.jam_selesai, "HH:mm");
+
                 if (
-                    (moment(jadwal[i].tanggal).format("DD-MM-Y") ==
-                        data.tanggal_main &&
-                        jadwal[i].jam_mulai == data.jam_mulai) ||
-                    (moment(jadwal[i].tanggal).format("DD-MM-Y") ==
-                        data.tanggal_main &&
-                        jadwal[i].jam_selesai == data.jam_selesai)
+                    jadwalTanggal == dataTanggal &&
+                    ((dataJamMulai >= jadwalJamMulai &&
+                        dataJamMulai < jadwalJamSelesai) ||
+                        (dataJamSelesai > jadwalJamMulai &&
+                            dataJamSelesai <= jadwalJamSelesai))
                 ) {
                     ada_jadwal = true;
-                } else {
-                    ada_jadwal = false;
+                    break;
                 }
             }
         }
@@ -232,7 +188,10 @@ export default function Booking(props) {
                 data.tanggal_main.toString(),
                 formattedDate.toString()
             );
-            if (cekTanggal) {
+            if (data.tanggal_main == "") {
+                setShow(false);
+                Swal.fire("Hmm..", "Anda belum mengisi tanggal", "warning");
+            } else if (cekTanggal) {
                 setShow(false);
                 Swal.fire(
                     "Hmm..",
@@ -243,7 +202,8 @@ export default function Booking(props) {
                 setShow(false);
                 Swal.fire("Hmm..", "Lengkapi jam terlebih dahulu", "warning");
             } else if (
-                parseInt(data.jam_selesai) - parseInt(data.jam_mulai) <
+                parseInt(moment(data.jam_selesai).format("HH:mm")) -
+                    parseInt(moment(data.jam_mulai).format("HH:mm")) <
                 1
             ) {
                 setShow(false);
@@ -297,11 +257,68 @@ export default function Booking(props) {
             setShow(false);
             Swal.fire(
                 "Ada Jadwal!",
-                "Silahkan lihat jadwal (pilih tombol jadwal), jadwal ini akan berubah jika dalam 24 jam pelanggan tidak melakukan pembayaran atau konfirmasi bayar di tempat",
+                "Silahkan lihat jadwal (pilih tombol lihat jadwal), jadwal ini akan berubah jika dalam 24 jam pelanggan tidak melakukan pembayaran atau konfirmasi bayar di tempat",
                 "warning"
             );
         }
     };
+
+    useEffect(() => {
+        getJadwal();
+
+        if (props.flash.success) {
+            Swal.fire("Berhasil!", `${props.flash.success}`, "success");
+        }
+
+        const table = document.querySelector("table");
+        let isDragging = false;
+        let lastX;
+
+        table.addEventListener("mousedown", (event) => {
+            isDragging = true;
+            lastX = event.clientX;
+            event.preventDefault();
+        });
+
+        table.addEventListener("mouseup", () => {
+            isDragging = false;
+        });
+
+        table.addEventListener("mousemove", (event) => {
+            if (isDragging) {
+                const deltaX = event.clientX - lastX;
+                const containerScrollLeft = table.parentElement.scrollLeft;
+                table.parentElement.scrollLeft = containerScrollLeft - deltaX;
+            }
+            lastX = event.clientX;
+        });
+
+        table.addEventListener("touchstart", (event) => {
+            isDragging = true;
+            lastX = event.touches[0].clientX;
+        });
+
+        table.addEventListener("touchend", () => {
+            isDragging = false;
+        });
+
+        table.addEventListener("touchmove", (event) => {
+            if (isDragging) {
+                const deltaX = event.touches[0].clientX - lastX;
+                const containerScrollLeft = table.parentElement.scrollLeft;
+                table.parentElement.scrollLeft = containerScrollLeft - deltaX;
+            }
+            lastX = event.touches[0].clientX;
+        });
+
+        updateData();
+    }, [
+        data.tanggal_main,
+        data.jam_mulai,
+        data.jam_selesai,
+        data.harga_persewa,
+        data.izinkan_permintaan_bergabung,
+    ]);
 
     return (
         <>
@@ -437,91 +454,63 @@ export default function Booking(props) {
                                     forInput="date"
                                     value="Tanggal"
                                 />
-
                                 <DatePicker
-                                    format="DD-MM-YYYY"
-                                    className="mt-2"
-                                    onChange={(day, date) => {
-                                        setData("tanggal_main", date);
+                                    dateFormat="dd-MM-yyyy"
+                                    className="mt-2 border border-gray-300 rounded-md py-2 px-3 text-gray-700"
+                                    calendarClassName="rounded-md border border-gray-300"
+                                    onChange={(date) => {
+                                        setData(
+                                            "tanggal_main",
+                                            moment(date).format("DD-MM-YYYY")
+                                        );
                                     }}
-                                    picker="large"
-                                    size="large"
+                                    selected={
+                                        data.tanggal_main == ""
+                                            ? ""
+                                            : moment(
+                                                  data.tanggal_main,
+                                                  "DD-MM-YYYY"
+                                              ).toDate()
+                                    }
+                                    minDate={new Date()}
                                 />
                             </div>
 
                             <div className="mt-4">
-                                <div className="grid grid-cols-2 gap-2 max-w-[300px]">
-                                    <Label
-                                        className="text-slate-700"
-                                        forInput="jam"
-                                        value="Jam mulai"
-                                    />
-                                    <Label
-                                        className="text-slate-700"
-                                        forInput="jam"
-                                        value="Jam selesai"
-                                    />
-
-                                    <TimePicker
-                                        format="HH:mm"
-                                        disabledTime={disabledTime}
-                                        onSelect={(time) => {
-                                            setData({
-                                                ...data,
-                                                jam_mulai: moment(
-                                                    time["$d"]
-                                                ).format("HH:mm"),
-                                                jam_mulai_value: time,
-                                            });
-                                        }}
-                                        disabled={
-                                            data.tanggal_main == ""
-                                                ? true
-                                                : false
+                                <div className="flex gap-2">
+                                    <TimeInput
+                                        label="Jam Mulai"
+                                        date={
+                                            data.jam_mulai == ""
+                                                ? ""
+                                                : moment(
+                                                      data.jam_mulai,
+                                                      "HH:mm"
+                                                  ).toDate()
                                         }
-                                        minuteStep={5}
-                                        value={
-                                            data.jam_mulai_value ??
-                                            moment(new Date()).format()
-                                        }
-                                        size="large"
-                                        tabIndex="0"
-                                        autoFocus={true}
-                                        onClick={(e) => {
-                                            e.target.click();
-                                        }}
-                                        onTouchStart={(e) => {
-                                            e.target.click();
+                                        onDateChange={(date) => {
+                                            const formattedDate =
+                                                moment(date).format("HH:mm");
+                                            setData("jam_mulai", formattedDate);
                                         }}
                                     />
-                                    <TimePicker
-                                        format="HH:mm"
-                                        disabledTime={disabledTime}
-                                        onSelect={(time) => {
-                                            setData({
-                                                ...data,
-                                                jam_selesai: moment(
-                                                    time["$d"]
-                                                ).format("HH:mm"),
-                                                jam_selesai_value: time,
-                                            });
-                                        }}
-                                        locale="id"
-                                        disabled={
-                                            data.tanggal_main == ""
-                                                ? true
-                                                : false
+                                    <TimeInput
+                                        label="Jam Selesai"
+                                        date={
+                                            data.jam_selesai == ""
+                                                ? ""
+                                                : moment(
+                                                      data.jam_selesai,
+                                                      "HH:mm"
+                                                  ).toDate()
                                         }
-                                        minuteStep={5}
-                                        value={data.jam_selesai_value}
-                                        size="large"
-                                        tabIndex="0"
-                                        autoFocus={true}
-                                        onClick={(e) => {
-                                            e.target.click();
-                                        }}
-                                        onTouchStart={(e) => {
-                                            e.target.click();
+                                        onDateChange={(date) => {
+                                            const formattedDate =
+                                                moment(date).format("HH:mm");
+                                            setData(
+                                                "jam_selesai",
+                                                formattedDate
+                                            );
                                         }}
                                     />
                                 </div>

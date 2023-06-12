@@ -63,7 +63,7 @@ export default function Login(props, { status, canResetPassword }) {
                 setShow(false);
                 if (
                     errors_data.response &&
-                    errors_data.response.status === 422
+                    errors_data.response.status == 422
                 ) {
                     let errors = errors_data.response.data.errors;
                     let errorText = "";
@@ -134,7 +134,7 @@ export default function Login(props, { status, canResetPassword }) {
                                 handleChange={(event) => {
                                     setData(
                                         "remember",
-                                        event.target.type === "checkbox"
+                                        event.target.type == "checkbox"
                                             ? event.target.checked
                                             : event.target.value
                                     );

@@ -22,7 +22,7 @@ export default function UcapanHome(props) {
                 // throw new Error("Terjadi kesalahan dalam mengambil data user");
             }
         } catch (error) {
-            if (error instanceof Error && error.status === 500) {
+            if (error instanceof Error && error.status == 500) {
                 // Tindakan yang diambil ketika terjadi Internal Server Error
                 // console.error("Terjadi kesalahan internal server:", error);
             } else {

@@ -128,7 +128,7 @@ export default function FindMatchSteps() {
                         className={`text-center md:mx-4 mb-4 ${
                             index < currentStep - 1
                                 ? "text-green-500 hidden md:block"
-                                : index === currentStep - 1
+                                : index == currentStep - 1
                                 ? "text-primary font-bold"
                                 : "text-gray-500 hidden md:block"
                         }`}
@@ -138,14 +138,14 @@ export default function FindMatchSteps() {
                             className={`w-6 h-6 md:mr-2 mb-1 flex items-center justify-center rounded-full ${
                                 index < currentStep - 1
                                     ? "bg-green-500 text-white"
-                                    : index === currentStep - 1
+                                    : index == currentStep - 1
                                     ? "bg-primary text-white"
                                     : "border border-gray-500"
                             }`}
                         >
                             {index < currentStep - 1 ? (
                                 <span>{index + 1}</span>
-                            ) : index === currentStep - 1 ? (
+                            ) : index == currentStep - 1 ? (
                                 index + 1
                             ) : (
                                 <span>{index + 1}</span>

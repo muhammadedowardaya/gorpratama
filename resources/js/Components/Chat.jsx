@@ -45,10 +45,10 @@ function Chat({
                     .put(`/api/chat/mark-as-read/${chatChannel}`)
                     .then((response) => {
                         //
-                        console.info("mark as read");
+                        // console.info("mark as read");
                     })
                     .catch((error) => {
-                        console.info(error);
+                        // console.info(error);
                     });
             }
         } catch (error) {
@@ -83,15 +83,15 @@ function Chat({
                     const conversations = response.data.conversations.map(
                         (conversation) => {
                             const sender_id =
-                                conversation.user_id === senderId
+                                conversation.user_id == senderId
                                     ? senderId
                                     : recipientId;
                             const sender_name =
-                                conversation.user_id === senderId
+                                conversation.user_id == senderId
                                     ? senderName
                                     : recipientName;
                             const sender_photo =
-                                conversation.user_id === senderId
+                                conversation.user_id == senderId
                                     ? senderPhoto
                                     : recipientPhoto;
                             return {
@@ -127,15 +127,15 @@ function Chat({
                         const conversations = response.data.conversations.map(
                             (conversation) => {
                                 const sender_id =
-                                    conversation.user_id === senderId
-                                        ? senderId
-                                        : recipientId;
+                                    conversation.user_id == parseInt(senderId)
+                                        ? parseInt(senderId)
+                                        : parseInt(recipientId);
                                 const sender_name =
-                                    conversation.user_id === senderId
+                                    conversation.user_id == parseInt(senderId)
                                         ? senderName
                                         : recipientName;
                                 const sender_photo =
-                                    conversation.user_id === senderId
+                                    conversation.user_id == parseInt(senderId)
                                         ? senderPhoto
                                         : recipientPhoto;
                                 return {
@@ -172,15 +172,6 @@ function Chat({
             }
         };
 
-        getUser(senderId);
-
-        console.info("senderId : " + senderId);
-        console.info("recipientId : " + recipientId);
-        console.info("message");
-        console.info(messages);
-        console.info(senderName);
-        console.info("tanggal : " + tanggal);
-
         return () => {
             window.removeEventListener("online", handleConnectionChange);
             window.removeEventListener("offline", handleConnectionChange);
@@ -197,8 +188,8 @@ function Chat({
             const data = {
                 message: newMessage,
                 channel: chatChannel,
-                sender_id: senderId,
-                recipient_id: recipientId,
+                sender_id: parseInt(senderId),
+                recipient_id: parseInt(recipientId),
                 tanggal: tanggal,
                 sender_name: senderName,
                 sender_photo: senderPhoto,
@@ -216,9 +207,9 @@ function Chat({
         const messageTime = moment(messageCreatedAt).startOf("day");
         const differenceInDays = now.diff(messageTime, "days");
 
-        if (differenceInDays === 0) {
+        if (differenceInDays == 0) {
             return "Hari ini";
-        } else if (differenceInDays === 1) {
+        } else if (differenceInDays == 1) {
             return "Kemarin";
         } else {
             return messageTime.format("dddd");
@@ -253,9 +244,9 @@ function Chat({
                                 "days"
                             );
 
-                            if (dayDiff === 0) {
+                            if (dayDiff == 0) {
                                 showDayLabel = false;
-                            } else if (dayDiff === 1) {
+                            } else if (dayDiff == 1) {
                                 if (index > 1) {
                                     const prevPrevCreatedAt = moment(
                                         messages[index - 2].createdAt
@@ -265,7 +256,7 @@ function Chat({
                                         "days"
                                     );
 
-                                    if (prevDayDiff === 0) {
+                                    if (prevDayDiff == 0) {
                                         showDayLabel = false;
                                     }
                                 }
@@ -281,12 +272,12 @@ function Chat({
                                 </div>
                                 <div
                                     className={`flex ${
-                                        message.sender_id === senderId
+                                        message.sender_id == recipientId
                                             ? "justify-start "
                                             : "justify-end "
                                     } items-start mb-2`}
                                 >
-                                    {message.sender_id === senderId && (
+                                    {message.sender_id == recipientId && (
                                         <div className="flex-shrink-0 mr-2">
                                             {message.sender_photo ? (
                                                 <img
@@ -302,19 +293,17 @@ function Chat({
                                     <div
                                         ref={messageRef}
                                         className={`${
-                                            message.sender_id === recipientId
+                                            message.sender_id == senderId
                                                 ? "bg-green-500 text-gray-50"
                                                 : "bg-white text-stone-600"
                                         } rounded-md px-4 py-2 max-w-md break-all shadow-md`}
                                         style={{
                                             borderTopLeftRadius:
-                                                message.sender_id ===
-                                                recipientId
+                                                message.sender_id == senderId
                                                     ? "20px"
                                                     : "0",
                                             borderTopRightRadius:
-                                                message.sender_id ===
-                                                recipientId
+                                                message.sender_id == senderId
                                                     ? "0"
                                                     : "20px",
                                             borderBottomLeftRadius: "20px",
@@ -329,13 +318,13 @@ function Chat({
                                             {time}
                                         </div>
                                     </div>
-                                    {message.sender_id === recipientId && (
+                                    {message.sender_id == senderId && (
                                         <div className="flex-shrink-0 ml-2">
-                                            {recipientPhoto ? (
+                                            {senderPhoto ? (
                                                 <img
                                                     className="w-8 h-8 rounded-full object-cover border"
-                                                    src={recipientPhoto}
-                                                    alt={`${recipientName}'s profile`}
+                                                    src={senderPhoto}
+                                                    alt={`${senderName}'s profile`}
                                                 />
                                             ) : (
                                                 <div className="w-8 h-8 rounded-full bg-gray-300" />

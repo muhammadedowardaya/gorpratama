@@ -10,7 +10,6 @@ import FormatRupiah from "@/Components/FormatRupiah.jsx";
 
 export default function Pesanan(props) {
     // Similar to componentDidMount and componentDidUpdate:
-    console.info(props.transaksi[0].status_transaksi == "PAID");
 
     // axios
     //     .get("https://api.xendit.co/v2/invoices")

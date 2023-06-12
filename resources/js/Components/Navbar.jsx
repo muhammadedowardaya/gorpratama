@@ -3,6 +3,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import { router } from "@inertiajs/react";
+import Swal from "sweetalert2";
 
 export default function Navbar({ className, items, jumlahPesan }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -406,24 +407,48 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                                     );
                                                                 }
 
-                                                                axios
-                                                                    .post(
-                                                                        "/logout"
-                                                                    )
-                                                                    .then(
-                                                                        (
-                                                                            response
-                                                                        ) => {
-                                                                            window.location.href =
-                                                                                "/";
-                                                                            setTimeout(
-                                                                                () => {
-                                                                                    window.location.reload();
-                                                                                },
-                                                                                300
-                                                                            );
+                                                                Swal.fire({
+                                                                    title: "Affah iyyah?",
+                                                                    text: "Mau logout aja?",
+                                                                    icon: "warning",
+                                                                    showCancelButton: true,
+                                                                    confirmButtonColor:
+                                                                        "#3085d6",
+                                                                    cancelButtonColor:
+                                                                        "#d33",
+                                                                    confirmButtonText:
+                                                                        "Ea, logout!",
+                                                                    cancelButtonText:
+                                                                        "Gak jadi",
+                                                                }).then(
+                                                                    (
+                                                                        result
+                                                                    ) => {
+                                                                        if (
+                                                                            result.isConfirmed
+                                                                        ) {
+                                                                            // Proses penghapusan jadwal di sini
+                                                                            axios
+                                                                                .post(
+                                                                                    "/logout"
+                                                                                )
+                                                                                .then(
+                                                                                    (
+                                                                                        response
+                                                                                    ) => {
+                                                                                        window.location.href =
+                                                                                            "/";
+                                                                                        setTimeout(
+                                                                                            () => {
+                                                                                                window.location.reload();
+                                                                                            },
+                                                                                            300
+                                                                                        );
+                                                                                    }
+                                                                                );
                                                                         }
-                                                                    );
+                                                                    }
+                                                                );
                                                             }}
                                                             className="block px-3 py-2 rounded text-base font-medium text-white hover:bg-slate-50 hover:text-sky-500 break-all focus:bg-gray-700"
                                                         >

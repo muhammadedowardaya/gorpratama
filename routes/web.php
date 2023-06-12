@@ -40,18 +40,24 @@ Route::get('/', function () {
     ]);
 });
 
-
-Route::get('/test', function (Request $request) {
-    $unreadConversations = Conversation::with('sender')->where('recipient_id', $request->user()->id)
+Route::get('/info-dashboard-user', function () {
+    $unreadConversations = Conversation::with('sender')->where('recipient_id', auth()->user()->id)
         ->whereNull('read_at')
-        ->orderBy('created_at', 'desc')->get();
-    dd($unreadConversations);
+        ->orderBy('created_at', 'desc')
+        ->get();
+    $groupByChatChannel = $unreadConversations->groupBy('chat_channel');
+    $pesan_belum_dibaca = $unreadConversations->count();
+
+    $jadwal_pending = Jadwal::where('user_id', auth()->user()->id)
+        ->whereIn('status_transaksi', [1, 4])
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->get();
+
+    $jadwal = Jadwal::where('user_id', auth()->user()->id)->whereIn('status_transaksi', [0, 5])->whereDate('tanggal', '>=', now()->toDateString())->get();
+    dd($jadwal);
 });
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -241,6 +247,7 @@ All Admin Routes List
 --------------------------------------------
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
+
     // Dashboard Tempat Lapangan
     Route::get('/dashboard/tempat-lapangan', [TempatLapanganController::class, 'index'])->name('tempat-lapangan.index');
     Route::get('/dashboard/tempat-lapangan-create', [TempatLapanganController::class, 'create']);

@@ -11,7 +11,7 @@ export default function Loading({ strokeColor = "#04fc43", display }) {
     });
 
     useEffect(() => {
-        if (display === true) {
+        if (display == true) {
             setDisplayContainer("flex");
             setDisplayCircle("");
         } else {

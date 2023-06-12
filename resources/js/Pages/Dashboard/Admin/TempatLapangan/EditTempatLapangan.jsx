@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-
-import Label from "@/Components/Label";
-
 import { FaWindowClose } from "react-icons/fa";
 
 import { PortalWithState } from "react-portal";
 import Swal from "sweetalert2";
-import MyButton from "@/Components/MyButton";
 import { Head, router, useForm } from "@inertiajs/react";
 
 import "../../../../../css/formStyle.css";
 import axios from "axios";
 import Toast from "@/Components/Toast";
 import Loading from "@/Components/Loading";
-import { TimePicker } from "antd";
 import moment from "moment";
 import Layout from "@/Layouts/Layout";
+
+// react-date
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function EditTempatLapangan(props) {
     const [slug, setSlug] = useState(props.tempat_lapangan.slug);
@@ -32,10 +31,8 @@ export default function EditTempatLapangan(props) {
             props.tempat_lapangan != null
                 ? props.tempat_lapangan.deskripsi
                 : "",
-        jam_buka: "",
-        jam_tutup: "",
-        jam_buka_value: "",
-        jam_tutup_value: "",
+        jam_buka: props.tempat_lapangan.jam_buka,
+        jam_tutup: props.tempat_lapangan.jam_tutup,
         harga_persewa:
             props.tempat_lapangan != null
                 ? props.tempat_lapangan.harga_persewa
@@ -45,6 +42,37 @@ export default function EditTempatLapangan(props) {
             props.tempat_lapangan != null ? props.tempat_lapangan.url_logo : "",
         jam: props.jam,
     });
+
+    const TimeInput = ({ label, date, onDateChange }) => {
+        const minTime = new Date();
+        minTime.setHours(parseInt(data.jam_buka.slice(0, 2)));
+        minTime.setMinutes(parseInt(data.jam_buka.slice(3, 5)));
+
+        const maxTime = new Date();
+        maxTime.setHours(parseInt(data.jam_tutup.slice(0, 2)));
+        maxTime.setMinutes(parseInt(data.jam_tutup.slice(3, 5)));
+
+        return (
+            <div className="flex flex-col">
+                <label className="text-gray-700 font-medium mb-2">
+                    {label}
+                </label>
+                <DatePicker
+                    selected={date}
+                    onChange={onDateChange}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={60}
+                    timeCaption="Time"
+                    dateFormat="HH:mm"
+                    timeFormat="HH:mm"
+                    minTime={minTime}
+                    maxTime={maxTime}
+                    className={`border  w-full  border-gray-300 rounded-md py-2 px-3 text-gray-700`}
+                />
+            </div>
+        );
+    };
 
     const update = (e) => {
         e.preventDefault();
@@ -86,7 +114,7 @@ export default function EditTempatLapangan(props) {
             })
             .catch((errors) => {
                 setDisplayLoading(false);
-                if (errors.response.status === 400) {
+                if (errors.response.status == 400) {
                     const error_keys = Object.keys(
                         errors.response.data.message
                     );
@@ -120,7 +148,7 @@ export default function EditTempatLapangan(props) {
         e.preventDefault();
         let reader = new FileReader();
         reader.onloadend = () => {
-            if (reader.readyState === 2) {
+            if (reader.readyState == 2) {
                 if (reader.result.includes("data:image")) {
                     setData({
                         ...data,
@@ -143,6 +171,15 @@ export default function EditTempatLapangan(props) {
 
         reader.readAsDataURL(e.target.files[0]);
     };
+
+    useEffect(() => {
+        //   first
+        console.info(data.jam_buka);
+
+        return () => {
+            // second
+        };
+    }, []);
 
     return (
         <div>
@@ -261,59 +298,38 @@ export default function EditTempatLapangan(props) {
                                 <label>Harga sewa per-jam</label>
                             </div>
 
-                            <div className="grid grid-cols-2">
-                                <label className="col-span-1 text-slate-600 text-sm">
-                                    Jam buka
-                                </label>
-                                <label className="col-span-1 col-start-2 text-slate-600 text-sm">
-                                    Jam tutup
-                                </label>
-                                {/* <TimePicker.RangePicker
-                                    defaultValue={[
-                                        moment(data.jam_buka, "HH:mm:ss"),
-                                        moment(data.jam_tutup, "HH:mm:ss"),
-                                    ]}
-                                    format="HH:mm"
-                                    onChange={(value, dateString) => {
-                                        setData({
-                                            ...data,
-                                            jam_buka: dateString[0],
-                                            jam_tutup: dateString[1],
-                                        });
-                                    }}
-                                    disabled={
-                                        data.tanggal_main == "" ? true : false
+                            <div className="grid grid-cols-2 gap-2">
+                                <TimeInput
+                                    label="Jam Buka"
+                                    date={
+                                        data.jam_buka == ""
+                                            ? ""
+                                            : moment(
+                                                  data.jam_buka,
+                                                  "HH:mm"
+                                              ).toDate()
                                     }
-                                    size="large"
-                                    className="mt-2 col-span-2 bg-stone-50 border-none"
-                                /> */}
-                                <TimePicker
-                                    format="HH:mm"
-                                    onSelect={(time) => {
-                                        setData({
-                                            ...data,
-                                            jam_buka: moment(time["$d"]).format(
-                                                "HH:mm"
-                                            ),
-                                            jam_buka_value: time,
-                                        });
+                                    onDateChange={(date) => {
+                                        const formattedDate =
+                                            moment(date).format("HH:mm");
+                                        setData("jam_buka", formattedDate);
                                     }}
-                                    value={data.jam_buka_value}
-                                    minuteStep={5}
                                 />
-                                <TimePicker
-                                    format="HH:mm"
-                                    onSelect={(time) => {
-                                        setData({
-                                            ...data,
-                                            jam_tutup: moment(
-                                                time["$d"]
-                                            ).format("HH:mm"),
-                                            jam_tutup_value: time,
-                                        });
+                                <TimeInput
+                                    label="Jam Tutup"
+                                    date={
+                                        data.jam_tutup == ""
+                                            ? ""
+                                            : moment(
+                                                  data.jam_tutup,
+                                                  "HH:mm"
+                                              ).toDate()
+                                    }
+                                    onDateChange={(date) => {
+                                        const formattedDate =
+                                            moment(date).format("HH:mm");
+                                        setData("jam_tutup", formattedDate);
                                     }}
-                                    value={data.jam_tutup_value}
-                                    minuteStep={5}
                                 />
                             </div>
 

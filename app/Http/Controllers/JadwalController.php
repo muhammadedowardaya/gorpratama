@@ -29,6 +29,7 @@ class JadwalController extends Controller
         // // buat jadwal baru
         $jadwal = new Jadwal;
         $jadwal->user_id = $request->user_id;
+        $jadwal->external_id = $external_id;
         $jadwal->lapangan_id = $request->lapangan_id;
         $jadwal->status_transaksi = $request->status_transaksi;
         $jadwal->tanggal = $tanggal_main;
@@ -79,22 +80,23 @@ class JadwalController extends Controller
         // jadikan tanggal dengan format d m Y dapat diterima database
         // $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
         // // buat jadwal baru
-        $jadwal->lapangan_id = $request->lapangan_id;
-        $jadwal->tanggal = $request->tanggal_main;
-        $jadwal->status_transaksi = $request->status_transaksi;
-        $jadwal->jam_mulai = $request->jam_mulai;
-        $jadwal->jam_selesai = $request->jam_selesai;
-        $jadwal->save();
+        // $jadwal->lapangan_id = $request->lapangan_id;
+        // $jadwal->tanggal = $request->tanggal_main;
+        // $jadwal->status_transaksi = $request->status_transaksi;
+        // $jadwal->jam_mulai = $request->jam_mulai;
+        // $jadwal->jam_selesai = $request->jam_selesai;
+        // $jadwal->save();
 
-        $transaksi->user_id = auth()->user()->id;
-        $transaksi->lapangan_id = request('lapangan_id');
-        $transaksi->amount = request('amount');
-        $transaksi->tanggal_main = $request->tanggal_main;
-        $transaksi->status_transaksi = $request->status_transaksi;
-        $transaksi->save();
+        // $transaksi->user_id = $request->user_id;
+        // $transaksi->lapangan_id = request('lapangan_id');
+        // $transaksi->amount = request('amount');
+        // $transaksi->tanggal_main = $request->tanggal_main;
+        // $transaksi->status_transaksi = $request->status_transaksi;
+        // $transaksi->save();
 
         return response()->json([
-            'message' => 'Data berhasil diupdate'
+            'message' => 'Data berhasil diupdate',
+            'external_id' => $jadwal
         ], 200);
     }
 }

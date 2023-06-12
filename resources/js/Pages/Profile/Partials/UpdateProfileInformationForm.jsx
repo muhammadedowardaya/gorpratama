@@ -75,7 +75,7 @@ export default function UpdateProfileInformation({
             })
             .catch((errors) => {
                 setDisplayLoading(false);
-                if (errors.response.status === 400) {
+                if (errors.response.status == 400) {
                     const error_keys = Object.keys(
                         errors.response.data.message
                     );
@@ -121,7 +121,7 @@ export default function UpdateProfileInformation({
         e.preventDefault();
         let reader = new FileReader();
         reader.onloadend = () => {
-            if (reader.readyState === 2) {
+            if (reader.readyState == 2) {
                 if (reader.result.includes("data:image")) {
                     setData({
                         ...data,
@@ -202,7 +202,7 @@ export default function UpdateProfileInformation({
                     <InputError className="mt-2" message={errors.email} />
                 </div>
 
-                {mustVerifyEmail && user.email_verified_at === null && (
+                {mustVerifyEmail && user.email_verified_at == null && (
                     <div>
                         <p className="text-sm mt-2 text-gray-800">
                             Your email address is unverified.
@@ -216,7 +216,7 @@ export default function UpdateProfileInformation({
                             </Link>
                         </p>
 
-                        {status === "verification-link-sent" && (
+                        {status == "verification-link-sent" && (
                             <div className="mt-2 font-medium text-sm text-green-600">
                                 A new verification link has been sent to your
                                 email address.
