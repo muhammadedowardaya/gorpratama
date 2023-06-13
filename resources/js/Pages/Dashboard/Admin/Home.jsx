@@ -41,7 +41,6 @@ export default function Home() {
     async function fetchData() {
         setShowLoaderSpin(true);
         try {
-<<<<<<< HEAD
             const response = await axios.get("/api/info-dashboard-admin");
             const data = response.data;
             setNewUsers(data.new_users);
@@ -52,39 +51,6 @@ export default function Home() {
             setTotalPendapatanSeminggu(data.total_pendapatan_seminggu);
             setTotalPendapatanHariIni(data.total_pendapatan_hari_ini);
             setShowLoaderSpin(false);
-=======
-            // const response = await axios.get("/api/info-dashboard-admin");
-            // const data = response;
-            // setNewUsers(data.new_users);
-            // setTransaksis(data.transaksis);
-            // setTotalUsers(data.total);
-            // setTotalJadwalPending(data.total_jadwal_pending);
-            // setTotalPendapatan(data.total_pendapatan);
-            // setTotalPendapatanSeminggu(data.total_pendapatan_seminggu);
-            // setTotalPendapatanHariIni(data.total_pendapatan_hari_ini);
-            // setShowLoaderSpin(false);
-            // console.info(response)
-            fetch("/api/info-dashboard-admin")
-                .then((response) => {
-                    setShowLoaderSpin(false);
-                    return response.json();
-                })
-                .then((response) => {
-                    console.info(response);
-                    setNewUsers(response.new_users);
-                    setTransaksis(response.transaksis);
-                    setTotalUsers(response.total);
-                    setTotalJadwalPending(response.total_jadwal_pending);
-                    setTotalPendapatan(response.total_pendapatan);
-                    setTotalPendapatanSeminggu(
-                        response.total_pendapatan_seminggu
-                    );
-                    setTotalPendapatanHariIni(
-                        response.total_pendapatan_hari_ini
-                    );
-                    setShowLoaderSpin(false);
-                });
->>>>>>> cc80b6c6d85212b6a0705ad40977f06786f28755
         } catch (error) {
             setShowLoaderSpin(false);
             // Tangani error di sini
