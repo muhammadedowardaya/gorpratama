@@ -76,10 +76,14 @@ Route::middleware('auth')->group(function () {
 // });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/pengaturan', function () {
+        return Inertia::render('Dashboard/Pengaturan');
+    });
+
+    Route::get('/pengaturan/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile-update', [ProfileController::class, 'updateProfile']);
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/pengaturan/profile-update', [ProfileController::class, 'updateProfile']);
+    Route::delete('/pengaturan/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
     // Dashboard
@@ -135,10 +139,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'jadwal' => $jadwal
             ]);
         }
-    });
-
-    Route::get('/dashboard/pengaturan', function () {
-        return Inertia::render('Dashboard/Pengaturan');
     });
 });
 /*------------------------------------------

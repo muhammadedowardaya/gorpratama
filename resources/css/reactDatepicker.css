@@ -1,0 +1,23 @@
+@media (max-width: 640px) {
+    .react-datepicker__time-container
+        .react-datepicker__time
+        .react-datepicker__time-box {
+        width: 120px;
+        font-size: large;
+    }
+
+    .react-datepicker__time-container {
+        display: flex;
+        justify-content: center;
+        float: right;
+        border-left: 1px solid #aeaeae;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .react-datepicker__time-container {
+        float: right;
+        border-left: 1px solid #aeaeae;
+        width: 100%;
+    }
+}

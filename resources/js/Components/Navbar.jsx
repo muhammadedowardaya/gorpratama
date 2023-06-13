@@ -59,7 +59,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
         <div
             className={`${className} fixed md:hidden ${
                 user != null ? "" : "hidden"
-            } top-0 left-0 right-0 bottom-auto z-20 px-4 bg-sky-500`}
+            } top-0 left-0 right-0 bottom-auto z-20 px-4 bg-sky-500 dark:bg-gray-700`}
         >
             {user != null ? (
                 <nav>
@@ -339,7 +339,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                           }
                                                       )
                                                     : ""}
-                                                <div className="py-4 bg-sky-800 w-full rounded-md shadow shadow-slate-50">
+                                                <div className="py-4 bg-sky-800 dark:bg-gray-700 w-full rounded-md shadow shadow-slate-50">
                                                     <div className="flex items-center px-4">
                                                         <div className="flex-shrink-0">
                                                             <img
@@ -370,9 +370,9 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                             Your Profile
                                                         </a>
                                                         <a
-                                                            href="/dashboard/pengaturan"
+                                                            href="/pengaturan"
                                                             className={`block px-3 py-2 rounded text-base font-medium text-white hover:bg-slate-50 hover:text-sky-500 ${requestIs(
-                                                                "/dashboard/pengaturan"
+                                                                "/pengaturan"
                                                             )}`}
                                                         >
                                                             Settings
@@ -380,32 +380,6 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                         <a
                                                             onClick={(e) => {
                                                                 e.preventDefault();
-                                                                const loader =
-                                                                    window.document.getElementById(
-                                                                        "loader"
-                                                                    );
-                                                                const pyramidLoader =
-                                                                    window.document
-                                                                        .getElementById(
-                                                                            "loader"
-                                                                        )
-                                                                        .querySelector(
-                                                                            ".pyramid-loader"
-                                                                        );
-
-                                                                // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
-                                                                if (
-                                                                    loader.classList.contains(
-                                                                        "!hidden"
-                                                                    )
-                                                                ) {
-                                                                    loader.classList.remove(
-                                                                        "!hidden"
-                                                                    );
-                                                                    pyramidLoader.classList.remove(
-                                                                        "hidden"
-                                                                    );
-                                                                }
 
                                                                 Swal.fire({
                                                                     title: "Affah iyyah?",
@@ -427,6 +401,32 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                                         if (
                                                                             result.isConfirmed
                                                                         ) {
+                                                                            const loader =
+                                                                                window.document.getElementById(
+                                                                                    "loader"
+                                                                                );
+                                                                            const pyramidLoader =
+                                                                                window.document
+                                                                                    .getElementById(
+                                                                                        "loader"
+                                                                                    )
+                                                                                    .querySelector(
+                                                                                        ".pyramid-loader"
+                                                                                    );
+
+                                                                            // kode di sini akan dijalankan setelah semua elemen halaman telah dimuat
+                                                                            if (
+                                                                                loader.classList.contains(
+                                                                                    "!hidden"
+                                                                                )
+                                                                            ) {
+                                                                                loader.classList.remove(
+                                                                                    "!hidden"
+                                                                                );
+                                                                                pyramidLoader.classList.remove(
+                                                                                    "hidden"
+                                                                                );
+                                                                            }
                                                                             // Proses penghapusan jadwal di sini
                                                                             axios
                                                                                 .post(

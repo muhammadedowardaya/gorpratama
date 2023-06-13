@@ -32,8 +32,6 @@ use Inertia\Inertia;
 //     return $request->user();
 // });
 
-
-
 Route::get('/get-users-type-user', function () {
     $users = User::where('type', 'user')->get();
     return response()->json([
@@ -44,9 +42,9 @@ Route::get('/get-users-type-user', function () {
 Route::get('/info-dashboard-admin', function () {
     $total = User::where('type', 'user')->get();
     $new_users = User::where('created_at', '>=', now()->subWeek())->get();
-    // Ambil semua data transaksi dari database
+    // // Ambil semua data transaksi dari database
     $transaksis = Transaksi::all();
-    // Hitung total pendapatan
+    // // Hitung total pendapatan
     $total_pendapatan = $transaksis->sum('amount');
     $total_pendapatan_seminggu = Transaksi::whereIn('status_transaksi', [0, 5])
         ->where('created_at', '>=', now()->subWeek())
@@ -164,6 +162,16 @@ Route::get('/jadwal', function () {
     return response()->json([
         'jadwal' => $jadwal,
         'jadwal_view' => $jadwal_view,
+    ]);
+});
+
+Route::get('/semua-jadwal', function () {
+    $semua_jadwal = Jadwal::with('user')
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->paginate(8);
+    return response()->json([
+        'semua_jadwal' => $semua_jadwal,
     ]);
 });
 

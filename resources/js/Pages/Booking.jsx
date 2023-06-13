@@ -109,7 +109,7 @@ export default function Booking(props) {
 
         return (
             <div className="flex flex-col">
-                <label className="text-gray-700 font-medium mb-2">
+                <label className="text-gray-700 dark:text-slate-100 font-medium mb-2">
                     {label}
                 </label>
                 <DatePicker
@@ -127,6 +127,7 @@ export default function Booking(props) {
                         isDisabled ? "bg-gray-100" : ""
                     } border border-gray-300 rounded-md py-2 px-3 text-gray-700`}
                     disabled={isDisabled}
+                    autoFocus={data.tanggal_main != "" ? true : false}
                 />
             </div>
         );
@@ -324,8 +325,11 @@ export default function Booking(props) {
         <>
             <Loading display={show} />
             <div className="w-full p-1 sm:p-10">
-                <form onSubmit={submit} className="bg-white p-4 rounded">
-                    <h1 className="text-center text-slate-700 text-2xl font-bold pb-4">
+                <form
+                    onSubmit={submit}
+                    className="bg-white dark:bg-gray-700 p-4 rounded"
+                >
+                    <h1 className="text-center text-slate-700 dark:text-slate-100 text-2xl font-bold pb-4">
                         Booking
                     </h1>
 
@@ -334,7 +338,7 @@ export default function Booking(props) {
                         <div className="md:basis-1/2">
                             <div className="mt-4">
                                 <Label
-                                    className="text-slate-700"
+                                    className="text-slate-700 dark:text-slate-100"
                                     forInput="nama"
                                     value="Nama"
                                 />
@@ -343,7 +347,7 @@ export default function Booking(props) {
                                     type="text"
                                     name="nama"
                                     value={data.nama}
-                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700  focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="nama"
                                     autoFocus={true}
                                     onChange={(e) => {
@@ -355,12 +359,12 @@ export default function Booking(props) {
                             </div>
                             <div className="mt-4">
                                 <Label
-                                    className="text-slate-700"
+                                    className="text-slate-700 dark:text-slate-100"
                                     forInput="alamat"
                                     value="Alamat"
                                 />
                                 <textarea
-                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700  focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     onChange={(e) => {
                                         e.preventDefault();
                                         setData(alamat, e.target.value);
@@ -373,7 +377,7 @@ export default function Booking(props) {
 
                             <div className="mt-4 md:mt-2">
                                 <Label
-                                    className="text-slate-700"
+                                    className="text-slate-700 dark:text-slate-100"
                                     forInput="telp"
                                     value="Telp"
                                 />
@@ -382,7 +386,7 @@ export default function Booking(props) {
                                     type="text"
                                     name="telp"
                                     value={data.telp}
-                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sms"
+                                    className="w-full mt-1 border-gray-300 text-slate-700  focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sms"
                                     autoComplete="telp"
                                     onChange={(e) => {
                                         e.preventDefault();
@@ -396,7 +400,7 @@ export default function Booking(props) {
 
                             <div className="mt-4">
                                 <Label
-                                    className="text-slate-700"
+                                    className="text-slate-700 dark:text-slate-100"
                                     forInput="email"
                                     value="Email"
                                 />
@@ -405,7 +409,7 @@ export default function Booking(props) {
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700  focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="email"
                                     // handleChange={onHandleChange}
                                     readOnly
@@ -413,7 +417,7 @@ export default function Booking(props) {
                             </div>
                             <div className="mt-4">
                                 <Label
-                                    className="text-slate-700"
+                                    className="text-slate-700 dark:text-slate-100"
                                     forInput="nama_lapangan"
                                     value="Lapangan yang di pilih"
                                 />
@@ -422,7 +426,7 @@ export default function Booking(props) {
                                     type="text"
                                     name="nama_lapangan"
                                     value={data.nama_lapangan}
-                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700  focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="nama_lapangan"
                                     // handleChange={onHandleChange}
                                     readOnly
@@ -432,7 +436,7 @@ export default function Booking(props) {
                         <div className="md:basis-1/2 ">
                             <div className="mt-4">
                                 <Label
-                                    className="text-slate-700"
+                                    className="text-slate-700 dark:text-slate-100"
                                     forInput="harga_lapangan"
                                     value="Harga sewa perjam"
                                 />
@@ -441,7 +445,7 @@ export default function Booking(props) {
                                     type="text"
                                     name="harga_persewa"
                                     value={data.harga_persewa}
-                                    className="w-full mt-1 border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                    className="w-full mt-1 border-gray-300 text-slate-700  focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                     autoComplete="harga_persewa"
                                     // handleChange={onHandleChange}
                                     readOnly
@@ -450,14 +454,14 @@ export default function Booking(props) {
 
                             <div className="mt-4">
                                 <Label
-                                    className="text-slate-700"
+                                    className="text-slate-700 dark:text-slate-100"
                                     forInput="date"
                                     value="Tanggal"
                                 />
                                 <DatePicker
                                     dateFormat="dd-MM-yyyy"
                                     className="mt-2 border border-gray-300 rounded-md py-2 px-3 text-gray-700"
-                                    calendarClassName="rounded-md border border-gray-300"
+                                    calendarClassName="rounded-md border border-gray-300 "
                                     onChange={(date) => {
                                         setData(
                                             "tanggal_main",
@@ -517,7 +521,7 @@ export default function Booking(props) {
                             </div>
 
                             <div className="mt-4 select-none">
-                                <p className="text-slate-700 font-bold">
+                                <p className="text-slate-700 dark:text-slate-100 font-bold">
                                     Izinkan permintaan bergabung?
                                 </p>
                                 <div className="flex items-center my-1 p-2">
@@ -537,7 +541,7 @@ export default function Booking(props) {
                                     />
                                     <label
                                         htmlFor="join-request"
-                                        className="ml-2 block text-sm text-gray-900"
+                                        className="ml-2 block text-sm text-gray-900 dark:text-slate-100"
                                     >
                                         Izinkan Permintaan Bergabung
                                     </label>
@@ -558,7 +562,7 @@ export default function Booking(props) {
                                     }`}
                                 >
                                     <Label
-                                        className="text-slate-700 text-sm"
+                                        className="text-slate-700 dark:text-slate-100 text-sm"
                                         forInput="harga_lapangan"
                                         value="Pesan"
                                     />
@@ -566,7 +570,7 @@ export default function Booking(props) {
                                         type="text"
                                         name="pesan"
                                         value={data.pesan}
-                                        className="w-full mt-1  border-gray-300 text-slate-700 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                        className="w-full mt-1  border-gray-300 text-slate-700 dark:text-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                         autoComplete="pesan"
                                         onChange={(e) => {
                                             e.preventDefault();
@@ -588,7 +592,7 @@ export default function Booking(props) {
                     <div className="flex justify-between mt-8 flex-wrap gap-2">
                         <button
                             type="button"
-                            className="btn btn-sm md:btn-md"
+                            className="btn btn-sm md:btn-md dark:bg-gray-900"
                             onClick={() => {
                                 setShowJadwal(true);
                             }}
@@ -619,7 +623,7 @@ export default function Booking(props) {
                         <div id="table-container">
                             <table
                                 id="my-table"
-                                className="table table-compact w-full select-none"
+                                className="table table-compact w-full select-none "
                                 // className="table-compact w-full select-none"
                             >
                                 <thead>

@@ -16,6 +16,7 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
+    ResponsiveContainer,
 } from "recharts";
 
 import React, { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ import Layout from "@/Layouts/Layout";
 import { router } from "@inertiajs/react";
 import FormatRupiah from "@/Components/FormatRupiah";
 import LoaderSpin from "@/Components/LoaderSpin";
+import axios from "axios";
 
 export default function Home() {
     const [newUsers, setNewUsers] = useState("");
@@ -34,28 +36,21 @@ export default function Home() {
     const [totalPendapatanHariIni, setTotalPendapatanHariIni] = useState("");
 
     // loading
-    const [showLoaderSpin, setShowLoaderSpin] = useState(false);
+    const [showLoaderSpin, setShowLoaderSpin] = useState(true);
 
     async function fetchData() {
         setShowLoaderSpin(true);
         try {
-            fetch("/api/info-dashboard-admin")
-                .then((response) => {
-                    return response.json();
-                })
-                .then((response) => {
-                    setNewUsers(response.new_users);
-                    setTransaksis(response.transaksis);
-                    setTotalUsers(response.total);
-                    setTotalJadwalPending(response.total_jadwal_pending);
-                    setTotalPendapatan(response.total_pendapatan);
-                    setTotalPendapatanSeminggu(
-                        response.total_pendapatan_seminggu
-                    );
-                    setTotalPendapatanHariIni(
-                        response.total_pendapatan_hari_ini
-                    );
-                });
+            const response = await axios.get("/api/info-dashboard-admin");
+            const data = response.data;
+            setNewUsers(data.new_users);
+            setTransaksis(data.transaksis);
+            setTotalUsers(data.total);
+            setTotalJadwalPending(data.total_jadwal_pending);
+            setTotalPendapatan(data.total_pendapatan);
+            setTotalPendapatanSeminggu(data.total_pendapatan_seminggu);
+            setTotalPendapatanHariIni(data.total_pendapatan_hari_ini);
+            setShowLoaderSpin(false);
         } catch (error) {
             // Tangani error di sini
         }
@@ -117,7 +112,9 @@ export default function Home() {
                                             Total Pendapatan
                                         </h5>
                                         <h3 className="font-bold text-3xl">
-                                            {totalPendapatan}
+                                            {new Intl.NumberFormat(
+                                                "id-ID"
+                                            ).format(totalPendapatan)}
                                             <span className="text-green-500">
                                                 <FaCaretUp className="inline-block" />
                                                 {/* <i className="fas fa-caret-up"></i> */}
@@ -141,7 +138,9 @@ export default function Home() {
                                             Pendapatan seminggu
                                         </h5>
                                         <h3 className="font-bold text-3xl">
-                                            {totalPendapatanSeminggu}
+                                            {new Intl.NumberFormat(
+                                                "id-ID"
+                                            ).format(totalPendapatanSeminggu)}
                                         </h3>
                                     </div>
                                 </div>
@@ -161,7 +160,9 @@ export default function Home() {
                                             Pendapatan hari ini
                                         </h5>
                                         <h3 className="font-bold text-3xl">
-                                            {totalPendapatanHariIni}
+                                            {new Intl.NumberFormat(
+                                                "id-ID"
+                                            ).format(totalPendapatanHariIni)}
                                         </h3>
                                     </div>
                                 </div>
@@ -246,41 +247,76 @@ export default function Home() {
                     <hr className="border-b-2 border-gray-200 my-8 mx-4" />
 
                     <div className="flex flex-row flex-wrap flex-grow mt-2">
-                        <div className="w-full p-3">
-                            <div className="bg-white border rounded shadow p-4">
+                        <div className="w-full">
+                            <div className="bg-white border rounded shadow">
                                 <div className="border-b p-3 border-gray-200">
                                     <h5 className="font-bold uppercase text-gray-600 text-center">
                                         Grafik Pendapatan
                                     </h5>
                                 </div>
                                 <div className="flex justify-center">
-                                    <BarChart
-                                        width={600}
+                                    <ResponsiveContainer
+                                        width="100%"
                                         height={300}
-                                        data={data}
                                     >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" />
-                                        <YAxis
-                                            tickFormatter={(value) =>
-                                                new Intl.NumberFormat(
-                                                    "id-ID"
-                                                ).format(value)
-                                            }
-                                        />
-                                        <Tooltip
-                                            formatter={(value) =>
-                                                new Intl.NumberFormat(
-                                                    "id-ID"
-                                                ).format(value)
-                                            }
-                                        />
-                                        <Legend />
-                                        <Bar
-                                            dataKey="Pendapatan"
-                                            fill="#4F46E5"
-                                        />
-                                    </BarChart>
+                                        <BarChart data={data}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis
+                                                // tickFormatter={(value) =>
+                                                //     new Intl.NumberFormat(
+                                                //         "id-ID"
+                                                //     ).format(value)
+                                                // }
+                                                tickFormatter={(value) => {
+                                                    if (value >= 1000000000) {
+                                                        return (
+                                                            (value / 1000000000)
+                                                                .toFixed(1)
+                                                                .replace(
+                                                                    ".0",
+                                                                    ""
+                                                                ) + "B"
+                                                        );
+                                                    } else if (
+                                                        value >= 1000000
+                                                    ) {
+                                                        return (
+                                                            (value / 1000000)
+                                                                .toFixed(1)
+                                                                .replace(
+                                                                    ".0",
+                                                                    ""
+                                                                ) + "M"
+                                                        );
+                                                    } else if (value >= 1000) {
+                                                        return (
+                                                            (value / 1000)
+                                                                .toFixed(1)
+                                                                .replace(
+                                                                    ".0",
+                                                                    ""
+                                                                ) + "K"
+                                                        );
+                                                    } else {
+                                                        return value;
+                                                    }
+                                                }}
+                                            />
+                                            <Tooltip
+                                                formatter={(value) =>
+                                                    new Intl.NumberFormat(
+                                                        "id-ID"
+                                                    ).format(value)
+                                                }
+                                            />
+                                            <Legend />
+                                            <Bar
+                                                dataKey="Pendapatan"
+                                                fill="#4F46E5"
+                                            />
+                                        </BarChart>
+                                    </ResponsiveContainer>
                                 </div>
                             </div>
                         </div>

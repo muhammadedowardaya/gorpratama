@@ -195,7 +195,7 @@ export default function BookingSteps() {
     }, [currentStep, showArrow]);
 
     return (
-        <div className="flex container-content flex-col flex-wrap h-[70vh] md:w-[70vw] w-[80vw] select-none">
+        <div className="flex container-content flex-col flex-wrap h-[70vh] md:w-[70vw] w-[80vw] select-none ">
             <div className="flex flex-col md:flex-row justify-between md:items-center items-start">
                 {steps.map((step, index) => (
                     <div
@@ -232,7 +232,7 @@ export default function BookingSteps() {
             </div>
             <div
                 id="step-content"
-                className="w-full scrollbar-hide self-center text-gray-800 p-4 flex-1 overflow-y-scroll"
+                className="w-full scrollbar-hide self-center text-gray-800 dark:text-gray-400 p-4 flex-1 overflow-y-scroll dark:bg-gray-700"
             >
                 {steps[currentStep - 1].content}
             </div>
@@ -261,12 +261,12 @@ export default function BookingSteps() {
             {showArrow && (
                 <div
                     id="arrow-button"
-                    className="absolute bottom-10 right-0 mb-4 mr-4 animate-bounce cursor-pointer"
+                    className="absolute bottom-10 right-2 mb-4 mr-4 animate-bounce cursor-pointer"
                 >
-                    <span className="drop-shadow-lg text-gray-800 shadow-white">
+                    <span className="drop-shadow-lg text-gray-800 shadow-white dark:text-gray-100">
                         Scroll
                     </span>
-                    <FaChevronDown className="text-3xl scroll-down fill-gray-800 ml-1" />
+                    <FaChevronDown className="text-3xl scroll-down fill-gray-800 ml-1 dark:fill-gray-100" />
                 </div>
             )}
         </div>

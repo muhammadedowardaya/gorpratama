@@ -79,6 +79,13 @@ footer ul li a {
     color: #1c1917;
 }
 
+.dark #table-container table tr th {
+    color: #eaeaeaea;
+}
+.dark #table-container table tr td {
+    background-color: #1c1917;
+    color: #eaeaea;
+}
 #table-container:active {
     cursor: grabbing;
 }
