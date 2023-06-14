@@ -181,12 +181,25 @@ Route::get('/semua-jadwal', function () {
 });
 
 
+Route::get('/admin-jadwal/{lapangan_id}', function ($lapangan_id) {
+    $jadwal = Jadwal::with('user')
+        ->where('lapangan_id', $lapangan_id)
+        ->whereIn('status_transaksi', [0, 5])
+        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->get();
+
+    return response()->json([
+        'jadwal' => $jadwal
+    ]);
+});
+
 Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
     $jadwal = Jadwal::with('user')
         ->where('lapangan_id', $lapangan_id)
         ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
-        ->get();
+        ->paginate(3);
 
     return response()->json([
         'jadwal' => $jadwal

@@ -383,18 +383,17 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
             } else {
                 //    tambah jadwal
                 setShowLoading(false);
-                console.info(data);
-                // axios
-                //     .patch(`/jadwal/${data.jadwal_id}`, data)
-                //     .then((response) => {
-                //         setData("status_transaksi", "");
-                //         setShowEditJadwal(false);
-                //         Swal.fire(
-                //             "Berhasil!",
-                //             "Data berhasil diupdate",
-                //             "success"
-                //         );
-                //     });
+                axios
+                    .patch(`/jadwal/${data.jadwal_id}`, data)
+                    .then((response) => {
+                        setData("status_transaksi", "");
+                        setShowEditJadwal(false);
+                        Swal.fire(
+                            "Berhasil!",
+                            "Data berhasil diupdate",
+                            "success"
+                        );
+                    });
             }
         } else {
             setShowLoading(false);
@@ -404,7 +403,6 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
 
     useEffect(() => {
         getSemuaJadwal();
-        console.info(semuaJadwal);
         // get jadwal pending saja
         getJadwal();
         // ------------
@@ -1063,9 +1061,15 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                                                     undefined &&
                                                 data.status_transaksi !== ""
                                                     ? statusTransaksiOptions.findIndex(
-                                                          (option) =>
-                                                              option.label ==
+                                                          Number.isInteger(
                                                               data.status_transaksi
+                                                          )
+                                                              ? (option) =>
+                                                                    option.value ==
+                                                                    data.status_transaksi
+                                                              : (option) =>
+                                                                    option.label ==
+                                                                    data.status_transaksi
                                                       )
                                                     : "default"
                                             }
@@ -1218,7 +1222,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                         className="overflow-auto mt-7"
                         style={{ maxHeight: "70vh" }}
                     >
-                        <div id="table-container ">
+                        <div id="table-container">
                             <table
                                 id="tabel-jadwal"
                                 className="table table-compact w-full select-none "

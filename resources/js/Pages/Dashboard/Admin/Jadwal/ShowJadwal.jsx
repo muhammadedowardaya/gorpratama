@@ -63,13 +63,15 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
     async function getJadwal() {
         try {
             setSearchLoading(true);
-            const response = await axios.get(`/api/jadwal/${lapangan_id}`);
+            const response = await axios.get(
+                `/api/admin-jadwal/${lapangan_id}`
+            );
             if (
-                Array.isArray(response.data.jadwal.data) &&
-                response.data.jadwal.data.length > 0
+                Array.isArray(response.data.jadwal) &&
+                response.data.jadwal.length > 0
             ) {
                 setSearchLoading(false);
-                setJadwal(response.data.jadwal.data);
+                setJadwal(response.data.jadwal);
             } else {
                 setSearchLoading(false);
             }
@@ -328,12 +330,13 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                 axios
                     .patch(`/jadwal/${data.jadwal_id}`, data)
                     .then((response) => {
-                        // setShowEditJadwal(false);
-                        // Swal.fire(
-                        //     "Berhasil!",
-                        //     "Data berhasil diupdate",
-                        //     "success"
-                        // );
+                        setData("status_transaksi", "");
+                        setShowEditJadwal(false);
+                        Swal.fire(
+                            "Berhasil!",
+                            "Data berhasil diupdate",
+                            "success"
+                        );
                         console.info(response);
                     });
                 // console.info(data);
