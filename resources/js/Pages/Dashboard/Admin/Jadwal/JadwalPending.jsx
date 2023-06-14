@@ -112,10 +112,10 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
         try {
             const response = await axios.get(`/api/semua-jadwal`);
             if (
-                Array.isArray(response.data.semua_jadwal.data) &&
-                response.data.semua_jadwal.data.length > 0
+                Array.isArray(response.data.semua_jadwal) &&
+                response.data.semua_jadwal.length > 0
             ) {
-                setSemuaJadwal(response.data.semua_jadwal.data);
+                setSemuaJadwal(response.data.semua_jadwal);
             }
         } catch (error) {
             console.error(error);
@@ -186,7 +186,13 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                         isDisabled ? "bg-gray-100" : ""
                     } border border-gray-300 rounded-md py-2 px-3 text-gray-700`}
                     disabled={isDisabled}
-                    autoFocus={data.tanggal_main != "" ? true : false}
+                    autoFocus={
+                        data.tanggal_main != "" &&
+                        data.jam_mulai == "" &&
+                        data.jam_tutup == ""
+                            ? true
+                            : false
+                    }
                 />
             </div>
         );
@@ -377,17 +383,18 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
             } else {
                 //    tambah jadwal
                 setShowLoading(false);
-                axios
-                    .patch(`/jadwal/${data.jadwal_id}`, data)
-                    .then((response) => {
-                        setData("status_transaksi", "");
-                        setShowEditJadwal(false);
-                        Swal.fire(
-                            "Berhasil!",
-                            "Data berhasil diupdate",
-                            "success"
-                        );
-                    });
+                console.info(data);
+                // axios
+                //     .patch(`/jadwal/${data.jadwal_id}`, data)
+                //     .then((response) => {
+                //         setData("status_transaksi", "");
+                //         setShowEditJadwal(false);
+                //         Swal.fire(
+                //             "Berhasil!",
+                //             "Data berhasil diupdate",
+                //             "success"
+                //         );
+                //     });
             }
         } else {
             setShowLoading(false);
@@ -397,6 +404,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
 
     useEffect(() => {
         getSemuaJadwal();
+        console.info(semuaJadwal);
         // get jadwal pending saja
         getJadwal();
         // ------------
@@ -529,12 +537,12 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
         <div className="p-4">
             <Loading display={showLoading} />
 
-            <h1 className="text-2xl font-bold md:my-2 text-center mb-6">
+            <h1 className="text-2xl font-bold md:my-2 text-center mb-6 text-slate-50">
                 Jadwal Bermain
             </h1>
             <div className="flex justify-between">
                 <button
-                    className="shadow px-2 shadow-white text-sm md:text-base"
+                    className="shadow px-2 shadow-white text-sm md:text-base text-slate-50"
                     onClick={() => {
                         setShowJadwal(true);
                     }}
@@ -542,7 +550,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                     Lihat Jadwal
                 </button>
                 <button
-                    className="shadow px-2 shadow-white text-sm md:text-base"
+                    className="shadow px-2 shadow-white text-sm md:text-base text-slate-50"
                     onClick={() => {
                         setShowTambahJadwal(true);
                     }}
@@ -577,6 +585,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                     </div>
                 </form>
             </div>
+
             <div className="overflow-auto mt-7">
                 <div id="table-container">
                     <table
@@ -697,7 +706,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                 <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center p-4 z-20 mt-14 md:mt-0 backdrop-filter backdrop-blur-sm">
                     <div className="relative overflow-y-auto md:overflow-y-hidden">
                         <div className="login-box w-full md:w-[70vw]">
-                            <h1 className="text-gray-700 text-center mb-4">
+                            <h1 className="text-gray-50 text-center mb-4">
                                 Tambah Jadwal
                             </h1>
 
@@ -1197,33 +1206,39 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
             )}
 
             <div
-                className={`fixed top-0 bottom-0 right-0 left-0 ${
+                className={`fixed md:top-0 top-16 bottom-0 right-0 left-0 ${
                     showJadwal ? "grid" : "hidden"
-                } justify-center backdrop-filter backdrop-blur-sm bg-stone-900 bg-opacity-70 h-screen w-screen z-50 pt-20 md:pt-4`}
+                } justify-center backdrop-filter backdrop-blur-sm bg-stone-900 bg-opacity-70 h-screen w-screen z-50 pt-5 md:pt-4`}
             >
-                <div className="px-4 pr-8 w-[95vw]">
-                    <h1 className="text-2xl font-bold md:mt-2">
+                <div className="px-4 md:pr-2 md:w-[95vw] w-[99vw]">
+                    <h1 className="text-2xl font-bold md:mt-2 text-slate-50">
                         Jadwal Bermain
                     </h1>
-                    <div className="overflow-auto mt-7">
-                        <div id="table-container">
+                    <div
+                        className="overflow-auto mt-7"
+                        style={{ maxHeight: "70vh" }}
+                    >
+                        <div id="table-container ">
                             <table
                                 id="tabel-jadwal"
-                                className="table table-compact w-full select-none"
+                                className="table table-compact w-full select-none "
                                 // className="table-compact w-full select-none"
                             >
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Pelanggan</th>
+                                        <th>Status Transaksi</th>
                                         <th>Jadwal Bermain</th>
+                                        <th>Lapangan</th>
                                         <th>Jam Mulai</th>
                                         <th>Jam Selesai</th>
                                     </tr>
                                 </thead>
                                 <tbody className="overflow-hidden">
                                     {Array.isArray(semuaJadwal) &&
-                                    semuaJadwal.length > 0 ? (
+                                    semuaJadwal.length > 0 &&
+                                    semuaJadwal != "" ? (
                                         semuaJadwal.map((item, index) => {
                                             // const tanggal_booking = moment(
                                             //     item.created_at
@@ -1236,7 +1251,13 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                                                 <tr key={index}>
                                                     <th>{index + 1}</th>
                                                     <td>{item.user.nama}</td>
+                                                    <td>
+                                                        {item.status_transaksi}
+                                                    </td>
                                                     <td>{tanggal_bermain}</td>
+                                                    <td>
+                                                        {item.lapangan.nama}
+                                                    </td>
                                                     <td>{item.jam_mulai}</td>
                                                     <td>{item.jam_selesai}</td>
                                                 </tr>
@@ -1257,7 +1278,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                         </div>
                     </div>
                     <div
-                        className="px-2 z-10 top-20 md:top-4 right-8 fixed justify-self-center animate-pulse"
+                        className="px-2 z-10 top-4 md:top-4 right-8 fixed justify-self-center animate-pulse"
                         onClick={() => {
                             setShowJadwal(false);
                         }}
@@ -1268,10 +1289,6 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                         />
                     </div>
                 </div>
-                {/* <Pagination
-                    links={links}
-                    className={`${showJadwal ? "block" : "hidden"}`}
-                /> */}
             </div>
         </div>
     );

@@ -39,7 +39,7 @@ export default function UpdateProfileInformation({
 
         // patch(route("profile.update"));
         axios
-            .post(`/profile-update`, data, {
+            .post(`/pengaturan/profile-update`, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -70,7 +70,7 @@ export default function UpdateProfileInformation({
                 });
 
                 setTimeout(() => {
-                    router.get("/profile");
+                    router.get("/pengaturan/profile");
                 }, 100);
             })
             .catch((errors) => {

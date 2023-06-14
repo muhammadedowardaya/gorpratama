@@ -14,7 +14,9 @@ const Card = ({ image, name, status, buttons, onClick, children }) => {
                         }`}
                     >
                         <div className="px-6 py-4 ">
-                            <div className="font-bold text-xl mb-2">{name}</div>
+                            <div className="font-bold text-xl mb-2 text-slate-50">
+                                {name}
+                            </div>
                             <p className={`text-slate-50 text-base`}>
                                 {status}
                             </p>

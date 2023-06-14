@@ -60,8 +60,10 @@ export default function Home(props) {
     }, []);
 
     return (
-        <div className="container w-full mx-auto">
-            <h1 className="font-bold text-2xl mt-4">Dashboard User</h1>
+        <div className="w-full mx-auto">
+            <h1 className="font-bold mb-4 text-2xl mt-4 text-slate-50">
+                Dashboard User
+            </h1>
             {showLoaderSpin ? (
                 <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
                     <LoaderSpin />

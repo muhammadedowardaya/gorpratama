@@ -265,7 +265,7 @@ export default function EditTempatLapangan(props) {
                                 <textarea
                                     className={`${
                                         data.deskripsi != "" ? "aktif" : ""
-                                    } !text-slate-800 mb-4`}
+                                    } !text-slate-800 mb-4 dark:!text-slate-100`}
                                     onChange={(e) => {
                                         e.preventDefault();
                                         setData("deskripsi", e.target.value);

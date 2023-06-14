@@ -72,7 +72,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                         src={gor.url_logo}
                                         alt="Logo Gor"
                                     />
-                                    <h1 className="ml-4 font-bold inline-block">
+                                    <h1 className="ml-4 font-bold inline-block text-slate-100">
                                         {gor.nama}
                                     </h1>
                                 </div>
@@ -269,7 +269,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                     src={gor.url_logo}
                                                     alt="Logo"
                                                 />
-                                                <h1 className="ml-2 break-all inline-block font-extrabold">
+                                                <h1 className="ml-2 break-all inline-block font-extrabold text-slate-100">
                                                     {gor.nama}
                                                 </h1>
                                             </div>
@@ -316,7 +316,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                                       onClick={
                                                                           item.onClick
                                                                       }
-                                                                      className={`-m-3 p-3 flex items-center space-x-4  hover:bg-slate-50 hover:text-sky-500 ${requestIs(
+                                                                      className={`-m-3 p-3 flex items-center space-x-4 text-slate-100 hover:bg-slate-50 hover:text-sky-500 ${requestIs(
                                                                           item.path
                                                                       )}`}
                                                                   >

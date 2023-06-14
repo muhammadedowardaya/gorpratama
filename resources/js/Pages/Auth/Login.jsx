@@ -89,7 +89,7 @@ export default function Login(props, { status, canResetPassword }) {
                 <h1 className="text-2xl font-bold my-8 text-white text-center">
                     Login
                 </h1>
-                <div className="login-box ">
+                <div className="login-box bg-[#fff]">
                     <form
                         className="grid grid-cols-1 md:gap-4 w-[60vw] sm:w-56"
                         onSubmit={submit}
@@ -140,7 +140,7 @@ export default function Login(props, { status, canResetPassword }) {
                                     );
                                 }}
                                 labelValue="Remember me"
-                                classForLabel="dark:text-white text-stone-800 text-sm ml-2 select-none"
+                                classForLabel="text-stone-800 text-sm ml-2 select-none"
                                 id="remember"
                             />
                             {/* <label className="text-white ml-2 !text-sm">

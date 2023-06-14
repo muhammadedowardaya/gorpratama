@@ -7,17 +7,18 @@ import Toast from "@/Components/Toast";
 
 export default function Pengaturan(props) {
     // Similar to componentDidMount and componentDidUpdate:
+    const [mode, setMode] = useState(localStorage.getItem("mode"));
     useEffect(() => {
         if (props.flash.success) {
             Swal.fire("Berhasil!", `${props.flash.success}`, "success");
         }
-    });
+    }, [localStorage.getItem("mode")]);
 
     return (
         <>
-            <h1 className="text-2xl font-bold mb-2">Pengaturan</h1>
+            <h1 className="text-2xl font-bold mb-2 text-white">Pengaturan</h1>
             <hr className="border-2 border-slate-700" />
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap text-slate-100">
                 <div
                     onClick={() => {
                         router.get("/pengaturan/profile");
@@ -41,17 +42,36 @@ export default function Pengaturan(props) {
                             "mode",
                             isDarkMode ? "dark" : "light"
                         );
+                        if (isDarkMode) {
+                            setMode("dark");
+                        } else {
+                            setMode("light");
+                        }
                     }}
                     className={`w-full sm:w-1/3 p-2 cursor-pointer select-none`}
                 >
                     <div className="bg-white rounded overflow-hidden shadow-lg p-4 backdrop-filter backdrop-blur-lg bg-opacity-10 border border-white border-opacity-30">
-                        <div className="font-bold text-xl mb-2 text-center">
-                            Mode Malam
-                        </div>
-                        <p className="text-base text-center">
-                            Aktifkan mode malam untuk mengurangi ketegangan
-                            mata.
-                        </p>
+                        {mode == "dark" ? (
+                            <div>
+                                <div className="font-bold text-xl mb-2 text-center">
+                                    Mode Light
+                                </div>
+                                <p className="text-base text-center">
+                                    Nonaktifkan mode malam untuk kembali ke
+                                    tampilan semula.
+                                </p>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="font-bold text-xl mb-2 text-center">
+                                    Mode Malam
+                                </div>
+                                <p className="text-base text-center">
+                                    Aktifkan mode malam untuk mengurangi
+                                    ketegangan mata.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div

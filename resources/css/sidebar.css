@@ -30,51 +30,13 @@
     width: 100%;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
+    background: inherit;
 }
 
 .navigation ul li:hover,
 .navigation ul li.active {
     background-color: #fff;
 }
-
-@media (prefers-color-scheme: dark) {
-    /* Tambahkan style untuk mode dark di sini */
-    body {
-        background-color: #1a202c;
-        color: #cbd5e0;
-    }
-    .navigation ul li:hover,
-    .navigation ul li.active {
-        background-color: #292524 !important;
-    }
-
-    .navigation ul li:not(:first-child):hover::before,
-    .navigation ul li:not(:first-child).active::before {
-        content: "";
-        position: absolute;
-        top: -20px;
-        right: 0;
-        width: 20px;
-        height: 20px;
-        background: transparent;
-        border-bottom-right-radius: 20px;
-        box-shadow: 7.5px 7.5px 0 7.5px #292524;
-    }
-
-    .navigation ul li:not(:first-child):hover::after,
-    .navigation ul li:not(:first-child).active::after {
-        content: "";
-        position: absolute;
-        bottom: -20px;
-        right: 0;
-        width: 20px;
-        height: 20px;
-        background: transparent;
-        border-top-right-radius: 20px;
-        box-shadow: 7.5px -8.5px 0 7.5px #292524;
-    }
-}
-
 .navigation ul li:nth-child(1) {
     top: 20px;
     margin-bottom: 20px;

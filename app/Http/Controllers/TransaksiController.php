@@ -58,8 +58,10 @@ class TransaksiController extends Controller
                 //     ]
             ],
             // 'success_redirect_url' => 'https=>//www.google.com',
-            'success_redirect_url' => "https://gorpratama.site/payment/$external_id",
-            'failure_redirect_url' => "https://gorpratama.site/payment/$external_id",
+            'success_redirect_url' => "http://127.0.0.1:8000/payment/$external_id",
+            'failure_redirect_url' => "http://127.0.0.1:8000/payment/$external_id",
+            // 'success_redirect_url' => "https://gorpratama.site/payment/$external_id",
+            // 'failure_redirect_url' => "https://gorpratama.site/payment/$external_id",
             'currency' => 'IDR',
             // 'items' => [
             //     [

@@ -3,10 +3,11 @@ import Swal from "sweetalert2";
 import { Head, router, usePage } from "@inertiajs/react";
 import "../../../modules/csrf.js";
 import moment from "moment/moment";
-import { MdPaid } from "react-icons/md";
+import { MdMessage, MdPaid } from "react-icons/md";
 import { AiFillSchedule } from "react-icons/ai";
 import Layout from "@/Layouts/Layout.jsx";
 import FormatRupiah from "@/Components/FormatRupiah.jsx";
+import Pagination from "@/Components/Pagination.jsx";
 
 export default function Pesanan(props) {
     // Similar to componentDidMount and componentDidUpdate:
@@ -69,7 +70,9 @@ export default function Pesanan(props) {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-2">Pesanan Saya</h1>
+            <h1 className="text-2xl font-bold mb-2 text-slate-100">
+                Pesanan Saya
+            </h1>
             <div id="table-container">
                 <table
                     id="my-table"
@@ -88,8 +91,9 @@ export default function Pesanan(props) {
                         </tr>
                     </thead>
                     <tbody className="overflow-auto scrollbar-hide">
-                        {props.transaksi != null || props.invoice != null ? (
-                            props.transaksi.map((item, index) => {
+                        {Array.isArray(props.transaksi.data) &&
+                        props.transaksi.data.length > 0 ? (
+                            props.transaksi.data.map((item, index) => {
                                 const tanggal_booking = moment(
                                     item.created_at
                                 ).format("DD MMMM YYYY");
@@ -120,14 +124,18 @@ export default function Pesanan(props) {
                                             ) : item.status_transaksi ==
                                               "COD (belum konfirmasi)" ? (
                                                 <a
-                                                    href={item.invoice_url}
-                                                    className="border-b border-spacing-1 border-slate-700 relative pay-btn p-1 pr-3"
+                                                    href={`https://wa.me/${
+                                                        props.nomor_admin
+                                                    }?text=${encodeURIComponent(
+                                                        `Saya ${item.user.nama} ingin konfirmasi bayar di tempat untuk\ntanggal bermain :${tanggal_bermain}\nkode unik : ${item.external_id}`
+                                                    )}`}
+                                                    className="border-b border-spacing-1 border-slate-700 relative bg-sky-500 leading-5 uppercase dark:bg-green-100 dark:text-gray-700 text-white p-2 pr-3 font-bold rounded "
                                                 >
-                                                    <MdPaid
+                                                    <MdMessage
                                                         className="inline-block mr-1 relative top-0"
                                                         size="1.5rem"
                                                     />
-                                                    Selesaikan Pembayaran
+                                                    Konfirmasi Whatsapp
                                                 </a>
                                             ) : item.status_transaksi ==
                                               "PAID" ? (
@@ -176,6 +184,9 @@ export default function Pesanan(props) {
                     </tbody>
                 </table>
             </div>
+            {props.transaksi.data && (
+                <Pagination links={props.transaksi.links} />
+            )}
         </div>
     );
 }

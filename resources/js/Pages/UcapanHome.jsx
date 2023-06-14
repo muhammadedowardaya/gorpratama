@@ -53,7 +53,7 @@ export default function UcapanHome(props) {
     if (user.nama != null && user.type == "user") {
         return (
             <>
-                <section className="pt-20 flex flex-col flex-wrap">
+                <section className="md:pt-20 pt-10  flex flex-col flex-wrap">
                     <h1 className="py-6 mb-8 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
                         Selamat Datang di Website Pemesanan Lapangan Badminton
                         Gor Pratama!
@@ -102,7 +102,7 @@ export default function UcapanHome(props) {
     } else if (user.nama != null && user.type == "admin") {
         return (
             <>
-                <section className="pt-20 flex flex-col flex-wrap">
+                <section className="justify-center md:pt-20 pt-10 flex flex-col flex-wrap">
                     <h1 className="py-6 mb-8 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
                         Selamat Datang
                         <br /> Admin Pengelola Lapangan <br /> Badminton Gor
@@ -134,7 +134,7 @@ export default function UcapanHome(props) {
                 {loaderSpin ? (
                     <LoaderSpin />
                 ) : (
-                    <section className="pt-20 flex flex-col flex-wrap">
+                    <section className="md:pt-20 pt-10 flex flex-col flex-wrap">
                         <h1 className="py-6 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
                             Ayo Bermain Badminton <br /> Di Lapangan Gor Pratama{" "}
                             <br /> Desa Situ Daun!

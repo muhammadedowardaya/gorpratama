@@ -63,9 +63,6 @@ footer ul li a {
 #content main table tr th {
     background: transparent;
 } */
-.dark #content main table tr th {
-    background: #292524;
-}
 
 #table-container {
     position: relative;
@@ -76,16 +73,10 @@ footer ul li a {
 
 #table-container table tr th,
 #table-container table tr td {
+    background: #fff;
     color: #1c1917;
 }
 
-.dark #table-container table tr th {
-    color: #eaeaeaea;
-}
-.dark #table-container table tr td {
-    background-color: #1c1917;
-    color: #eaeaea;
-}
 #table-container:active {
     cursor: grabbing;
 }

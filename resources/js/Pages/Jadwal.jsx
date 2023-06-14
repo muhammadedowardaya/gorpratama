@@ -69,7 +69,7 @@ export default function Jadwal(props) {
 
     return (
         <div className="flex flex-col items-center w-full">
-            <div className="text-sm md:text-lg breadcrumbs self-start">
+            <div className="text-sm md:text-lg breadcrumbs self-start text-slate-50">
                 <ul>
                     <li>
                         <a href="/">Home</a>
@@ -77,7 +77,7 @@ export default function Jadwal(props) {
                     <li>Temukan Teman</li>
                 </ul>
             </div>
-            <h1 className="text-2xl font-bold md:mt-2 text-center mb-4">
+            <h1 className="text-2xl font-bold md:mt-2 text-center mb-4 text-slate-50">
                 Jadwal Bermain
             </h1>
 

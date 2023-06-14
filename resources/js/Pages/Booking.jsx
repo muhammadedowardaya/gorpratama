@@ -86,10 +86,10 @@ export default function Booking(props) {
         try {
             const response = await axios.get(`/api/jadwal/${data.lapangan_id}`);
             if (
-                Array.isArray(response.data.jadwal.data) &&
-                response.data.jadwal.data.length > 0
+                Array.isArray(response.data.jadwal) &&
+                response.data.jadwal.length > 0
             ) {
-                setJadwal(response.data.jadwal.data);
+                setJadwal(response.data.jadwal);
             }
         } catch (error) {
             console.error(error);
@@ -127,7 +127,13 @@ export default function Booking(props) {
                         isDisabled ? "bg-gray-100" : ""
                     } border border-gray-300 rounded-md py-2 px-3 text-gray-700`}
                     disabled={isDisabled}
-                    autoFocus={data.tanggal_main != "" ? true : false}
+                    autoFocus={
+                        data.tanggal_main != "" &&
+                        data.jam_mulai == "" &&
+                        data.jam_tutup == ""
+                            ? true
+                            : false
+                    }
                 />
             </div>
         );
@@ -570,7 +576,7 @@ export default function Booking(props) {
                                         type="text"
                                         name="pesan"
                                         value={data.pesan}
-                                        className="w-full mt-1  border-gray-300 text-slate-700 dark:text-slate-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                        className="w-full mt-1  border-gray-300 text-slate-700  focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                         autoComplete="pesan"
                                         onChange={(e) => {
                                             e.preventDefault();
@@ -592,7 +598,7 @@ export default function Booking(props) {
                     <div className="flex justify-between mt-8 flex-wrap gap-2">
                         <button
                             type="button"
-                            className="btn btn-sm md:btn-md dark:bg-gray-900"
+                            className="btn btn-sm md:btn-md bg-gray-900 text-slate-100"
                             onClick={() => {
                                 setShowJadwal(true);
                             }}
@@ -601,7 +607,7 @@ export default function Booking(props) {
                         </button>
 
                         <button
-                            className="btn bg-green-500 btn-sm md:btn-md"
+                            className="btn bg-green-500 btn-sm md:btn-md text-slate-100"
                             type="submit"
                             id="btnSubmit"
                         >
@@ -616,14 +622,14 @@ export default function Booking(props) {
                 } justify-center backdrop-filter backdrop-blur-sm bg-stone-900 bg-opacity-70 h-screen w-screen z-50 pt-20 md:pt-4`}
             >
                 <div className="px-4 pr-8 w-[95vw]">
-                    <h1 className="text-2xl font-bold md:mt-2">
+                    <h1 className="text-2xl font-bold md:mt-2 text-slate-50">
                         Jadwal Bermain
                     </h1>
                     <div className="overflow-auto mt-7">
                         <div id="table-container">
                             <table
                                 id="my-table"
-                                className="table table-compact w-full select-none "
+                                className="table table-compact w-full select-none bg-slate-100"
                                 // className="table-compact w-full select-none"
                             >
                                 <thead>

@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import moment from "moment";
 import Layout from "@/Layouts/Layout";
-import { usePage } from "@inertiajs/react";
+import Pagination from "@/Components/Pagination";
 
 export default function Jadwal(props) {
-    // Similar to componentDidMount and componentDidUpdate:
-    const { invoice } = usePage().props;
-
     useEffect(() => {
         if (props.flash.success) {
             Swal.fire("Berhasil!", `${props.flash.success}`, "success");
@@ -56,8 +53,10 @@ export default function Jadwal(props) {
     }, []);
 
     return (
-        <>
-            <h1 className="text-2xl font-bold mb-2">Jadwal Bermain</h1>
+        <div className="relative">
+            <h1 className="text-2xl font-bold mb-2 text-slate-100">
+                Jadwal Bermain
+            </h1>
             <div id="table-container">
                 <table
                     id="my-table"
@@ -74,8 +73,8 @@ export default function Jadwal(props) {
                         </tr>
                     </thead>
                     <tbody className="overflow-auto scrollbar-hide">
-                        {props.jadwal.length !== 0 ? (
-                            props.jadwal.map((item, index) => {
+                        {props.jadwal.data.length !== 0 ? (
+                            props.jadwal.data.map((item, index) => {
                                 // const tanggal_booking = moment(
                                 //     item.created_at
                                 // ).format("DD MMMM YYYY");
@@ -103,7 +102,8 @@ export default function Jadwal(props) {
                     </tbody>
                 </table>
             </div>
-        </>
+            {props.jadwal.data && <Pagination links={props.jadwal.links} />}
+        </div>
     );
 }
 

@@ -40,6 +40,7 @@ Route::get('/', function () {
     ]);
 });
 
+
 Route::get('/info-dashboard-user', function () {
     $unreadConversations = Conversation::with('sender')->where('recipient_id', auth()->user()->id)
         ->whereNull('read_at')
@@ -106,14 +107,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (auth()->user()->type == 'admin') {
             return Inertia::render('Dashboard/Admin/Pesanan');
         } else if (auth()->user()->type == 'user') {
-            $transaksi = Transaksi::with(['lapangan', 'user'])->where('user_id', auth()->user()->id)->get();
-            if ($transaksi->isEmpty()) {
-                // Tidak ada transaksi yang ditemukan, tampilkan pesan kesalahan
-                $transaksi = null;
-            }
+            $tempat_lapangan = TempatLapangan::first();
+            $nomorTelepon = $tempat_lapangan->telp;
+            $kodeNegara = '+62';
+            $nomorWhatsApp = $kodeNegara . substr($nomorTelepon, 1);
+
+
+            $transaksi = Transaksi::with(['lapangan', 'user'])->where('user_id', auth()->user()->id)->paginate(8);
+
 
             return Inertia::render('Dashboard/User/Pesanan', [
-                'transaksi' => $transaksi
+                'transaksi' => $transaksi,
+                'nomor_admin' => $nomorWhatsApp
             ]);
         }
     });
@@ -133,7 +138,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->where('status_transaksi', 0)
                 ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
                 ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
-                ->get();
+                ->paginate(8);
 
             return Inertia::render('Dashboard/User/Jadwal', [
                 'jadwal' => $jadwal

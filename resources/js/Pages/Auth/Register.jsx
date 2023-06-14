@@ -109,7 +109,7 @@ export default function Register() {
                 Register
             </h1>
             <div className="p-4 ">
-                <div className="login-box md:w-[500px]">
+                <div className="login-box md:w-[500px] bg-[#fff]">
                     <form
                         className="grid grid-cols-1 sm:grid-cols-2 sm:gap-4"
                         onSubmit={submit}

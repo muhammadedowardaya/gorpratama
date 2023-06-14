@@ -168,10 +168,13 @@ Route::get('/jadwal', function () {
 });
 
 Route::get('/semua-jadwal', function () {
-    $semua_jadwal = Jadwal::with('user')
-        ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+    $semua_jadwal = Jadwal::with('user', 'lapangan')->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
-        ->paginate(8);
+        ->get();
+    // $semua_jadwal = Jadwal::with('user', 'lapangan')
+    //     ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+    //     ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+    //     ->get();
     return response()->json([
         'semua_jadwal' => $semua_jadwal,
     ]);
@@ -183,7 +186,7 @@ Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
         ->where('lapangan_id', $lapangan_id)
         ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
-        ->paginate(8);
+        ->get();
 
     return response()->json([
         'jadwal' => $jadwal

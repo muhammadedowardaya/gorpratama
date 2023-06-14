@@ -11,8 +11,18 @@ export default function Pagination({ links, className }) {
         links.length > 3 && (
             <div className={`mb-4 ${className}`}>
                 <div className="flex flex-wrap mt-8">
-                    {links.map((link, key) =>
-                        link.url == null ? (
+                    {links.map((link, key) => {
+                        // Jika link.label sama dengan label untuk tombol prev atau next
+                        // dan link.url bernilai null, maka kembalikan null
+                        if (
+                            (link.label === "&laquo; Sebelumnya" ||
+                                link.label === "Berikutnya &raquo;") &&
+                            link.url === null
+                        ) {
+                            return null;
+                        }
+
+                        return (
                             <a
                                 key={key}
                                 className={`${getClassName(link.active)} btn `}
@@ -21,38 +31,10 @@ export default function Pagination({ links, className }) {
                                     __html: link.label,
                                 }}
                             ></a>
-                        ) : (
-                            <a
-                                key={key}
-                                className={`${getClassName(link.active)} btn `}
-                                href={link.url}
-                                dangerouslySetInnerHTML={{
-                                    __html: link.label,
-                                }}
-                            ></a>
-                        )
-                    )}
+                        );
+                    })}
                 </div>
             </div>
-
-            // <div className="flex justify-center items-center mt-8">
-            //     <nav className="block">
-            //         <ul className="flex pl-0 rounded list-none">
-            //             {links.map((link, index) => (
-            //                 <li key={index}>
-            //                     <a
-            //                         href={link.url}
-            //                         className={`text-gray-600 hover:text-gray-800 px-3 py-2 rounded ${
-            //                             link.active ? "bg-gray-200" : ""
-            //                         }`}
-            //                     >
-            //                         {link.label}
-            //                     </a>
-            //                 </li>
-            //             ))}
-            //         </ul>
-            //     </nav>
-            // </div>
         )
     );
 }
