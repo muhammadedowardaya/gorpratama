@@ -148,6 +148,7 @@ export default function CreateLapangan(props) {
                             <input
                                 type="text"
                                 name="nama"
+                                autoComplete="off"
                                 value={data.nama}
                                 className="text-slate-500 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 autoFocus
@@ -230,7 +231,14 @@ export default function CreateLapangan(props) {
                                             className="my-3 w-full object-cover object-center h-32  mx-auto border border-black overflow-hidden"
                                             src={data.preview}
                                             alt="avatar"
-                                            onClick={openPortal}
+                                            onClick={
+                                                data.preview == ""
+                                                    ? () =>
+                                                          Toast.fire(
+                                                              "tidak ada gambar"
+                                                          )
+                                                    : openPortal
+                                            }
                                         />
                                         {portal(
                                             <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
@@ -246,7 +254,7 @@ export default function CreateLapangan(props) {
                                                         />
                                                         <FaWindowClose
                                                             size="2em"
-                                                            className="top-1 right-2 absolute cursor-pointer"
+                                                            className="top-1 right-2 absolute cursor-pointer fill-red-500"
                                                             onClick={
                                                                 closePortal
                                                             }

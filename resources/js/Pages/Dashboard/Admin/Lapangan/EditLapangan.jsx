@@ -233,7 +233,14 @@ export default function EditLapangan({ lapangan }) {
                                             className="my-3 w-32 h-32 rounded-full mx-auto border border-black overflow-hidden"
                                             src={data.preview}
                                             alt="avatar"
-                                            onClick={openPortal}
+                                            onClick={
+                                                data.preview == ""
+                                                    ? () =>
+                                                          Toast.fire(
+                                                              "tidak ada gambar"
+                                                          )
+                                                    : openPortal
+                                            }
                                         />
                                         {portal(
                                             <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">

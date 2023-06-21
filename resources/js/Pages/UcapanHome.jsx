@@ -1,10 +1,11 @@
 import LoaderSpin from "@/Components/LoaderSpin";
 import { router } from "@inertiajs/react";
 import { React, useEffect, useState } from "react";
+import { FaGoogle } from "react-icons/fa";
 import { IoRocketSharp } from "react-icons/io5";
 import { MdPersonSearch } from "react-icons/md";
 
-export default function UcapanHome(props) {
+export default function UcapanHome({ style }) {
     const [user, setUser] = useState({
         nama: "",
         type: "",
@@ -53,8 +54,11 @@ export default function UcapanHome(props) {
     if (user.nama != null && user.type == "user") {
         return (
             <>
-                <section className="md:pt-20 pt-10  flex flex-col flex-wrap">
-                    <h1 className="py-6 mb-8 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
+                <section
+                    style={style}
+                    className="h-[100vh] px-5 flex flex-col flex-wrap border-b-4 border-gray-50"
+                >
+                    <h1 className="py-6 mt-24 md:mt-32 text-2xl md:text-5xl font-bold text-white tracking-wide text-center">
                         Selamat Datang di Website Pemesanan Lapangan Badminton
                         Gor Pratama!
                     </h1>
@@ -62,7 +66,7 @@ export default function UcapanHome(props) {
                         <div className="flex flex-col items-center justify-bettween mt-4 md:mt-0 md:0 md:min-h-[80px]   ">
                             <p className="my-4 text-white text-center">
                                 Ingin mencari teman atau lawan bermain?
-                                <br />
+                                <br className="hidden md:block" />
                                 Temukan teman atau lawan anda!
                             </p>
                             <button
@@ -79,7 +83,7 @@ export default function UcapanHome(props) {
                             </button>
                         </div>
                         <div className="flex flex-col items-center justify-between md:min-h-[80px]   ">
-                            <p className="my-4 text-white text-center">
+                            <p className="my-4 text-white text-center drop-shadow shadow-black">
                                 Siap Bermain?
                                 <br />
                                 Ayo segera booking sekarang!
@@ -102,8 +106,11 @@ export default function UcapanHome(props) {
     } else if (user.nama != null && user.type == "admin") {
         return (
             <>
-                <section className="justify-center md:pt-20 pt-10 flex flex-col flex-wrap">
-                    <h1 className="py-6 mb-8 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
+                <section
+                    style={style}
+                    className="h-[100vh] px-5 flex flex-col flex-wrap border-b-4 border-gray-50"
+                >
+                    <h1 className="mt-36 md:mt-32 text-2xl md:text-5xl font-bold text-white tracking-wide text-center">
                         Selamat Datang
                         <br /> Admin Pengelola Lapangan <br /> Badminton Gor
                         Pratama!
@@ -134,8 +141,11 @@ export default function UcapanHome(props) {
                 {loaderSpin ? (
                     <LoaderSpin />
                 ) : (
-                    <section className="md:pt-20 pt-10 flex flex-col flex-wrap">
-                        <h1 className="py-6 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
+                    <section
+                        style={style}
+                        className="h-[100vh] px-5 flex flex-col flex-wrap border-b-4 border-gray-50"
+                    >
+                        <h1 className="py-6 mt-12 md:mt-32 text-3xl md:text-5xl font-bold text-white tracking-wide text-center ">
                             Ayo Bermain Badminton <br /> Di Lapangan Gor Pratama{" "}
                             <br /> Desa Situ Daun!
                         </h1>
@@ -167,6 +177,20 @@ export default function UcapanHome(props) {
                                     }}
                                 >
                                     Login
+                                </button>
+                            </div>
+                        </div>
+                        <hr className="border-2 w-52 self-center my-6 md:hidden" />
+                        <div className="flex flex-col md:flex-row justify-evenly flex-wrap">
+                            <div className="flex flex-col items-center justify-end sm:min-h-[80px]   ">
+                                <button
+                                    onClick={() => {
+                                        router.get("/login/google");
+                                    }}
+                                    className="border border-gray-50 flex items-center justify-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                >
+                                    <FaGoogle className="mr-2" />
+                                    <span>Login with Google</span>
                                 </button>
                             </div>
                         </div>

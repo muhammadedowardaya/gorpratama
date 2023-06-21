@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,7 +68,7 @@ Route::get('/info-dashboard-user', function () {
 
 Route::get('/info-dashboard-admin', function () {
     $total = User::where('type', 'user')->get();
-    $new_users = User::where('created_at', '>=', now()->subWeek())->get();
+    $new_users = User::where('created_at', '>=', now()->subWeek())->where('type', 'user')->get();
     // // Ambil semua data transaksi dari database
     $transaksis = Transaksi::all();
     // // Hitung total pendapatan
@@ -99,9 +100,18 @@ Route::get('/info-dashboard-admin', function () {
 
 
 Route::get('/get-user', function () {
-    return response()->json([
-        'user' => auth()->user()
-    ]);
+    if (auth()->check() && auth()->user()->provider_name == 'google') {
+        // Pengguna login menggunakan akun Google
+        $user = Socialite::driver('google')->user();
+        return response()->json([
+            'user' => $user
+        ]);
+    } else {
+        // Pengguna login menggunakan sistem otentikasi lain
+        return response()->json([
+            'user' => auth()->user()
+        ]);
+    }
 });
 
 Route::get('/get-list-lapangan', function () {
@@ -167,9 +177,19 @@ Route::get('/jadwal', function () {
     ]);
 });
 
+
 Route::get('/semua-jadwal', function () {
-    $semua_jadwal = Jadwal::with('user', 'lapangan')->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+    $semua_jadwal = Jadwal::with('user', 'lapangan')
+        ->where('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->where(function ($query) {
+            $query->where('tanggal', '>', now()->toDateString())
+                ->orWhere(function ($query) {
+                    $query->where('tanggal', '=', now()->toDateString())
+                        ->where('jam_mulai', '>=', now()->format('H:i'));
+                });
+        })
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->orderBy('jam_mulai', 'asc') // tambahkan pengurutan berdasarkan jam_mulai dengan urutan menaik
         ->get();
     // $semua_jadwal = Jadwal::with('user', 'lapangan')
     //     ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
@@ -199,7 +219,7 @@ Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
         ->where('lapangan_id', $lapangan_id)
         ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
-        ->paginate(3);
+        ->get();
 
     return response()->json([
         'jadwal' => $jadwal

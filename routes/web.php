@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Socialite\Facades\Socialite;
 
 
 /*
@@ -40,6 +41,9 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/login/google', function () {
+    return Socialite::driver('google')->redirect();
+});
 
 Route::get('/info-dashboard-user', function () {
     $unreadConversations = Conversation::with('sender')->where('recipient_id', auth()->user()->id)
@@ -89,11 +93,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', function () {
+        $user = Socialite::driver('google')->user();
         if (auth()->user()->type == 'admin') {
             return Inertia::render('Dashboard/Admin/Home');
-        } else if (auth()->user()->type == 'manager') {
-            return redirect()->route('manager.home');
-        } else {
+        } else if (auth()->user()->type == 'user') {
             return Inertia::render('Dashboard/User/Home');
         }
     })->name('dashboard');
@@ -312,7 +315,6 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
 
     // tambah jadwal
     Route::post('/jadwal', [JadwalController::class, 'store']);
-
     // update jadwal
     Route::patch('/jadwal/{id}', [JadwalController::class, 'updateJadwal']);
 });

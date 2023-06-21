@@ -188,7 +188,9 @@ export default function EditTempatLapangan(props) {
             <Loading display={displayLoading} />
 
             <div className="md:max-w-4xl">
-                <h1 className="text-2xl font-bold mb-5">Edit Profil Gor</h1>
+                <h1 className="text-2xl font-bold mb-5 md:mt-10">
+                    Edit Profil Gor
+                </h1>
                 <div className="login-box">
                     <form
                         className="grid grid-cols-1 md:grid-cols-2 md:gap-4"
@@ -265,7 +267,7 @@ export default function EditTempatLapangan(props) {
                                 <textarea
                                     className={`${
                                         data.deskripsi != "" ? "aktif" : ""
-                                    } !text-slate-800 mb-4 dark:!text-slate-100`}
+                                    } text-slate-800 mb-4 `}
                                     onChange={(e) => {
                                         e.preventDefault();
                                         setData("deskripsi", e.target.value);
@@ -349,7 +351,14 @@ export default function EditTempatLapangan(props) {
                                                 className="my-3 w-32 h-32 object-cover object-center mx-auto border rounded-full border-slate-800 overflow-hidden"
                                                 src={data.preview}
                                                 alt="avatar"
-                                                onClick={openPortal}
+                                                onClick={
+                                                    data.preview == ""
+                                                        ? () =>
+                                                              Toast.fire(
+                                                                  "tidak ada gambar"
+                                                              )
+                                                        : openPortal
+                                                }
                                             />
                                             {portal(
                                                 <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
@@ -383,7 +392,7 @@ export default function EditTempatLapangan(props) {
                                 <div className="relative flex items-center justify-center w-full max-w-md mx-auto px-6 py-4 bg-white rounded-lg shadow-md">
                                     <input
                                         type="file"
-                                        className="absolute inset-0 z-50 w-full h-full opacity-0"
+                                        className="absolute inset-0 w-full h-full opacity-0"
                                         name="file"
                                         id="file"
                                         onChange={handleUpload}

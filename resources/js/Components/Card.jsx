@@ -1,6 +1,6 @@
 const Card = ({ image, name, status, buttons, onClick, children }) => {
     return (
-        <div className="flex flex-col justify-between w-full h-full rounded overflow-hidden  ">
+        <div className="flex flex-col justify-between w-full h-full rounded overflow-hidden shadow-md dark:shadow-green-200 ">
             {children ?? (
                 <div className="backdrop-filter backdrop-blur bg-opacity-5 bg-slate-50 shadow-lg">
                     <img

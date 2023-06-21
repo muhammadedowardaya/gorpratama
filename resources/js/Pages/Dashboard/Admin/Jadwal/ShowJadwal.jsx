@@ -331,6 +331,7 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                     .patch(`/jadwal/${data.jadwal_id}`, data)
                     .then((response) => {
                         setData("status_transaksi", "");
+                        reset();
                         setShowEditJadwal(false);
                         Swal.fire(
                             "Berhasil!",

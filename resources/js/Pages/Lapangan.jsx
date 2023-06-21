@@ -21,7 +21,7 @@ const Lapangan = (props) => {
                 Lapangan
             </h1>
             <div
-                className={`grid grid-cols-1 gap-x-2 gap-y-5 justify-center justify-items-center ${GridLength(
+                className={`grid grid-cols-1 gap-x-4 mx-4 gap-y-5 justify-center justify-items-center ${GridLength(
                     props.lapangan.length
                 )}`}
             >

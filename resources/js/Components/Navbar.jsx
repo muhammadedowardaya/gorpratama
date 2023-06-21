@@ -44,6 +44,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
             email: response.data.user.email ?? "",
             url_foto: response.data.user.url_foto ?? "",
         }));
+        console.info(response);
     }
 
     useEffect(() => {

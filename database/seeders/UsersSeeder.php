@@ -17,13 +17,14 @@ class UsersSeeder extends Seeder
     {
         $users = [
             [
+                'id' => 1,
                 'nama' => 'Admin',
                 'slug' => 'admin',
                 'telp' => '083808165175',
                 'email' => 'muhammadedowarday4@gmail.com',
                 'alamat' => 'Bogor',
                 'type' => 1,
-                'password' => bcrypt('admin'),
+                'password' => bcrypt('iyeuadmin'),
             ],
             // [
             //     'nama' => 'Manager User',
@@ -34,15 +35,16 @@ class UsersSeeder extends Seeder
             //     'type' => 2,
             //     'password' => bcrypt('1234'),
             // ],
-            // [
-            //     'nama' => 'Muhammad Edo Wardaya',
-            //     'slug' => 'user',
-            //     'telp' => '083808165173',
-            //     'email' => 'muhammadedowarday4@gmail.com',
-            //     'alamat' => 'Bogor',
-            //     'type' => 0,
-            //     'password' => bcrypt('1234'),
-            // ],
+            [
+                'id' => 2,
+                'nama' => 'Muhammad Edo Wardaya',
+                'slug' => 'user',
+                'telp' => '083808165173',
+                'email' => 'muhammadedowardaya@gmail.com',
+                'alamat' => 'Bogor',
+                'type' => 0,
+                'password' => bcrypt('1234'),
+            ],
         ];
 
         foreach ($users as $key => $user) {

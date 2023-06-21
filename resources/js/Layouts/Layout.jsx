@@ -60,17 +60,62 @@ export default function Layout({ children, header, title }) {
         value: "",
     });
 
-    // function gantiMode() {
-    //     setMode(localStorage.getItem("mode"));
-    //     if (mode == "dark") {
-    //         if (!document.documentElement.classList.contains("dark")) {
-    //             document.documentElement.classList.add("dark");
-    //         }
-    //     } else {
-    //         document.documentElement.classList.remove("dark");
-    //     }
-    //     console.info(mode);
-    // }
+    function izinAktifkanNotifikasi() {
+        const currentTime = new Date();
+        const currentHour = currentTime.getHours();
+
+        let timeOfDay;
+
+        if (currentHour < 12) {
+            timeOfDay = "Pagi";
+        } else if (currentHour >= 12 && currentHour < 15) {
+            timeOfDay = "Siang";
+        } else if (currentHour >= 15 && currentHour < 18) {
+            timeOfDay = "Sore";
+        } else {
+            timeOfDay = "Malam";
+        }
+        if (Notification.permission != "granted") {
+            Swal.fire({
+                title: `Selamat ${timeOfDay} tuan!`,
+                text: "Sepertinya dirimu belum mengaktifkan notifikasi untuk website ini. Ini diperlukan agar kamu mendapatkan notifikasi jika ada pesan baru",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Aktifkan Notifikasi",
+                cancelButtonText: "Abaikan",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Pengguna memilih untuk mengaktifkan notifikasi
+                    // Memicu pop-up izin notifikasi lagi
+                    Notification.requestPermission().then((permission) => {
+                        if (permission == "granted") {
+                            Swal.fire({
+                                title: "Nah gitu dong!",
+                                text: ":)",
+                                icon: "success",
+                                confirmButtonText: "Tentu saja",
+                            });
+                        } else {
+                            // Tampilkan pesan SweetAlert untuk meminta pengguna mengaktifkan notifikasi
+                            Swal.fire({
+                                title: "Baiklah!",
+                                text: "Saya akan menanyakan hal ini kembali nanti",
+                                icon: "info",
+                                confirmButtonText: "Oke",
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Baiklah!",
+                        text: "Saya akan menanyakan hal ini kembali nanti",
+                        icon: "info",
+                        confirmButtonText: "Oke",
+                    });
+                }
+            });
+        }
+    }
 
     async function getUser() {
         try {
@@ -123,9 +168,6 @@ export default function Layout({ children, header, title }) {
                         window.focus();
                     };
                 } else {
-                    // Tampilkan pesan untuk meminta pengguna mengaktifkan notifikasi
-                    // Anda dapat menyesuaikan tampilan pesan ini sesuai dengan desain aplikasi Anda
-
                     // Tampilkan pesan SweetAlert untuk meminta pengguna mengaktifkan notifikasi
                     Swal.fire({
                         title: "Wahai Manusia! (perhatian euy)",
@@ -181,6 +223,7 @@ export default function Layout({ children, header, title }) {
     }
 
     useEffect(() => {
+        izinAktifkanNotifikasi();
         fetchData();
         getDataGor();
         if (localStorage.getItem("mode") === "dark") {
@@ -268,7 +311,7 @@ export default function Layout({ children, header, title }) {
                                 onClick: () =>
                                     router.get("/dashboard/tempat-lapangan"),
                                 icon: <GiFootyField size="1.5em" />,
-                                title: "Profile Gor | Tempat Lapangan",
+                                title: "Profile Gor",
                             },
                             {
                                 path: "/dashboard/lapangan*",
@@ -365,7 +408,7 @@ export default function Layout({ children, header, title }) {
                                     path: "/dashboard",
                                     onClick: () => router.get("/dashboard"),
                                     icon: <MdDashboard className="mt-4" />,
-                                    title: "Home",
+                                    title: "Dashboard",
                                 },
                                 {
                                     path: "/dashboard/jadwal*",
@@ -388,7 +431,7 @@ export default function Layout({ children, header, title }) {
                                             "/dashboard/tempat-lapangan"
                                         ),
                                     icon: <GiFootyField className="mt-4" />,
-                                    title: "Profile Gor | Tempat Lapangan",
+                                    title: "Profile Gor",
                                 },
                                 {
                                     path: "/dashboard/lapangan*",
@@ -418,7 +461,7 @@ export default function Layout({ children, header, title }) {
                                     path: "/dashboard",
                                     onClick: () => router.get("/dashboard"),
                                     icon: <MdDashboard className="mt-4" />,
-                                    title: "Home",
+                                    title: "Dashboard",
                                 },
                                 {
                                     path: "/dashboard/pesan",
@@ -478,11 +521,13 @@ export default function Layout({ children, header, title }) {
 
                 <section
                     id="content"
-                    className={`z-10 overflow-y-scroll scrollbar-hide ml-0 md:ml-8 md:pt-1 pt-16 col-span-2 ${
+                    className={`z-10 overflow-y-scroll scrollbar-hide ml-0 pt-0 col-span-2 ${
                         user != null ? "md:col-span-1" : "md:col-span-2"
                     }`}
                 >
-                    <main className="p-4">{children}</main>
+                    <main className={`p-0 ${user != null ? "md:pl-6" : ""}`}>
+                        {children}
+                    </main>
                     <div
                         className={`${
                             showAlertMessage ? "fixed" : "hidden"

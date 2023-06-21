@@ -68,7 +68,6 @@ footer ul li a {
     position: relative;
     overflow-x: hidden;
     white-space: nowrap;
-    cursor: grab;
 }
 
 #table-container table tr th,
@@ -77,8 +76,14 @@ footer ul li a {
     color: #1c1917;
 }
 
-#table-container:active {
-    cursor: grabbing;
+@media (min-width: 768px) {
+    /* Aturan CSS untuk ukuran md */
+    #table-container {
+        cursor: grab;
+    }
+    #table-container:active {
+        cursor: grabbing;
+    }
 }
 
 nav.navbar {

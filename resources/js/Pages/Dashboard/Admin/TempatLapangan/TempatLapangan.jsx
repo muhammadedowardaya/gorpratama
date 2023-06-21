@@ -43,7 +43,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
             {/* <Loading display={displayLoading} /> */}
             <div className="flex justify-center">
                 <div className="max-w-sm rounded overflow-hidden shadow-lg">
-                    <h1 className="font-bold text-xl text-center mt-4">
+                    <h1 className="font-bold text-xl text-center mt-4 md:mt-10">
                         Tempat Lapangan / Profil Gor
                     </h1>
                     <div className="px-4 py-4">

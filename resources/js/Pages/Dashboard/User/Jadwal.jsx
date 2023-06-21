@@ -3,13 +3,13 @@ import Swal from "sweetalert2";
 import moment from "moment";
 import Layout from "@/Layouts/Layout";
 import Pagination from "@/Components/Pagination";
+import Schedule from "@/Components/Schedule";
 
 export default function Jadwal(props) {
     useEffect(() => {
         if (props.flash.success) {
             Swal.fire("Berhasil!", `${props.flash.success}`, "success");
         }
-
         const table = document.querySelector("table");
         let isDragging = false;
         let lastX;
@@ -53,15 +53,14 @@ export default function Jadwal(props) {
     }, []);
 
     return (
-        <div className="relative">
-            <h1 className="text-2xl font-bold mb-2 text-slate-100">
-                Jadwal Bermain
+        <div className="relative p-4">
+            <h1 className="text-2xl font-bold text-slate-100 my-4">
+                Jadwal Bermain Saya
             </h1>
             <div id="table-container">
                 <table
                     id="my-table"
                     className="table table-compact w-full select-none"
-                    // className="table-compact w-full select-none"
                 >
                     <thead>
                         <tr>
@@ -83,7 +82,13 @@ export default function Jadwal(props) {
                                 ).format("DD MMMM YYYY");
                                 return (
                                     <tr key={index}>
-                                        <th>{index + 1}</th>
+                                        <th>
+                                            {index +
+                                                1 +
+                                                (props.jadwal.current_page -
+                                                    1) *
+                                                    props.jadwal.per_page}
+                                        </th>
                                         <td>{item.lapangan.nama}</td>
                                         <td>{tanggal_bermain}</td>
                                         <td>{item.jam_mulai}</td>
@@ -103,6 +108,9 @@ export default function Jadwal(props) {
                 </table>
             </div>
             {props.jadwal.data && <Pagination links={props.jadwal.links} />}
+            <div className="mt-10">
+                <Schedule />
+            </div>
         </div>
     );
 }

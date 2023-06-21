@@ -87,7 +87,7 @@ export default function Booking(props) {
             const response = await axios.get(`/api/jadwal/${data.lapangan_id}`);
             if (
                 Array.isArray(response.data.jadwal) &&
-                response.data.jadwal.length > 0
+                response.data.jadwal > 0
             ) {
                 setJadwal(response.data.jadwal);
             }
@@ -190,6 +190,32 @@ export default function Booking(props) {
         const year = today.getFullYear();
         const formattedDate = day + "-" + month + "-" + year;
 
+        // ------------------------------------untuk validasi jam booking-----------------------
+        const jamMulai = new Date();
+        const jamSelesai = new Date();
+        const currentTime = new Date();
+
+        // Mengatur jam mulai
+        jamMulai.setHours(parseInt(data.jam_mulai.split(":")[0]));
+        jamMulai.setMinutes(parseInt(data.jam_mulai.split(":")[1]));
+
+        // Mengatur jam selesai
+        jamSelesai.setHours(parseInt(data.jam_selesai.split(":")[0]));
+        jamSelesai.setMinutes(parseInt(data.jam_selesai.split(":")[1]));
+
+        console.info(
+            (jamMulai.getHours() < currentTime.getHours() ||
+                (jamMulai.getHours() == currentTime.getHours() &&
+                    jamMulai.getMinutes() <= currentTime.getMinutes())) &&
+                (jamSelesai.getHours() < currentTime.getHours() ||
+                    (jamSelesai.getHours() == currentTime.getHours() &&
+                        jamSelesai.getMinutes() <= currentTime.getMinutes()))
+        );
+        console.info(`${jamMulai.getHours()} < ${currentTime.getHours()}`);
+        console.info(`${jamMulai.getMinutes()} < ${currentTime.getMinutes()}`);
+
+        // ------------------------------------------------------------------------
+
         if (ada_jadwal == false) {
             const cekTanggal = compareDates(
                 data.tanggal_main.toString(),
@@ -215,6 +241,28 @@ export default function Booking(props) {
             ) {
                 setShow(false);
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
+            } else if (
+                jamMulai.getHours() < currentTime.getHours() ||
+                (jamMulai.getHours() == currentTime.getHours() &&
+                    jamMulai.getMinutes() <= currentTime.getMinutes())
+            ) {
+                setShow(false);
+                Swal.fire(
+                    "Hmm..",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
+                    "warning"
+                );
+            } else if (
+                jamSelesai.getHours() < currentTime.getHours() ||
+                (jamSelesai.getHours() == currentTime.getHours() &&
+                    jamSelesai.getMinutes() <= currentTime.getMinutes())
+            ) {
+                setShow(false);
+                Swal.fire(
+                    "Hmm..",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
+                    "warning"
+                );
             } else {
                 setShow(false);
                 Swal.fire({
@@ -333,7 +381,7 @@ export default function Booking(props) {
             <div className="w-full p-1 sm:p-10">
                 <form
                     onSubmit={submit}
-                    className="bg-white dark:bg-gray-700 p-4 rounded"
+                    className="bg-white dark:backdrop-filter dark:backdrop-blur dark:bg-opacity-10  p-4 rounded"
                 >
                     <h1 className="text-center text-slate-700 dark:text-slate-100 text-2xl font-bold pb-4">
                         Booking

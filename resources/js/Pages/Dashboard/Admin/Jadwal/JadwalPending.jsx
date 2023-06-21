@@ -387,6 +387,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                     .patch(`/jadwal/${data.jadwal_id}`, data)
                     .then((response) => {
                         setData("status_transaksi", "");
+                        reset();
                         setShowEditJadwal(false);
                         Swal.fire(
                             "Berhasil!",

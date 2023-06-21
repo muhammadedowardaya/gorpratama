@@ -33,9 +33,10 @@ const Lapangan = (props) => {
                 underline="true"
             />
 
-            <h1 className="text-center text-slate-50 font-bold text-2xl mb-6 md:mb-8 xl:mb-10">
+            <h1 className="text-center text-slate-50 font-bold text-2xl mb-6 md:mb-8 md:mt-10 xl:mb-10">
                 Lapangan
             </h1>
+            <hr />
             <div
                 className={`flex flex-wrap justify-center justify-items-center items-center`}
             >
@@ -103,7 +104,7 @@ const Lapangan = (props) => {
                                                                     );
                                                                     Toast.fire({
                                                                         icon: "success",
-                                                                        title: `Berhasil memperbarui ${response.data.response.nama}`,
+                                                                        title: `Berhasil menghapus ${response.data.response.nama}`,
                                                                     });
 
                                                                     setTimeout(

@@ -69,8 +69,8 @@ export default function Pesanan(props) {
     }, []);
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-2 text-slate-100">
+        <div className="p-2">
+            <h1 className="text-2xl font-bold mb-2 text-slate-100 my-4">
                 Pesanan Saya
             </h1>
             <div id="table-container">

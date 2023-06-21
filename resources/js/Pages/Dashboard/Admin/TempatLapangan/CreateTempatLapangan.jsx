@@ -180,7 +180,7 @@ export default function CreateTempatLapangan(props) {
                     timeFormat="HH:mm"
                     minTime={minTime}
                     maxTime={maxTime}
-                    className={`border  w-full  border-gray-300 rounded-md py-2 px-3 text-gray-700`}
+                    className={`border w-full  border-gray-300 rounded-md py-2 px-3 text-gray-700`}
                 />
             </div>
         );
@@ -377,7 +377,14 @@ export default function CreateTempatLapangan(props) {
                                                     className="my-3 w-32 h-32 rounded-full mx-auto border border-black overflow-hidden"
                                                     src={data.preview}
                                                     alt="avatar"
-                                                    onClick={openPortal}
+                                                    onClick={
+                                                        data.preview == ""
+                                                            ? () =>
+                                                                  Toast.fire(
+                                                                      "tidak ada gambar"
+                                                                  )
+                                                            : openPortal
+                                                    }
                                                 />
                                                 {portal(
                                                     <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">
@@ -411,7 +418,7 @@ export default function CreateTempatLapangan(props) {
                                     <div className="relative flex items-center justify-center w-full max-w-md mx-auto px-6 py-4 bg-white rounded-lg shadow-md">
                                         <input
                                             type="file"
-                                            className="absolute inset-0 z-50 w-full h-full opacity-0"
+                                            className="absolute inset-0 w-full h-full opacity-0"
                                             name="file"
                                             id="file"
                                             onChange={handleUpload}

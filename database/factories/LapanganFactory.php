@@ -19,7 +19,7 @@ class LapanganFactory extends Factory
     {
         $nama = fake()->name();
         return [
-            'jadwal_id' => fake()->randomDigit(),
+            'jadwal_id' => 1,
             'transaksi_id' => fake()->randomDigit(),
             'foto' => null,
             'url_foto' => null,

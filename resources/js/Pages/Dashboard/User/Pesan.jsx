@@ -19,6 +19,8 @@ function Pesan() {
     const [showLoaderSpin, setShowLoaderSpin] = useState(false);
     const [tanggal, setTanggal] = useState("");
 
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     function delay() {
         return new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -281,12 +283,27 @@ function Pesan() {
                     {showLoaderSpin ? (
                         <LoaderSpin />
                     ) : (
-                        <>
-                            <h2 className={` text-center mb-4`}>
+                        <div className="pt-10">
+                            {!imageLoaded && (
+                                <p className="text-center dark:text-gray-50">
+                                    Dagoan heula...
+                                </p>
+                            )}
+                            <img
+                                src={`${
+                                    import.meta.env.VITE_APP_URL
+                                }/assets/icon/message.png`}
+                                alt="pesan kosong"
+                                className="w-32"
+                                onLoad={() => {
+                                    setImageLoaded(true);
+                                }}
+                            />
+                            <h2 className="text-center my-4 dark:text-gray-50">
                                 Belum ada pesan
                             </h2>
                             <hr className="border-slate-700" />
-                        </>
+                        </div>
                     )}
                 </>
             ) : (

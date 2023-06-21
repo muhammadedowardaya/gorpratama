@@ -11,6 +11,7 @@ import { PortalWithState } from "react-portal";
 import Loading from "@/Components/Loading";
 import { FaWindowClose } from "react-icons/fa";
 import "../../../css/formStyle.css";
+import Toast from "@/Components/Toast";
 
 export default function Register() {
     const [displayLoading, setDisplayLoading] = useState(false);
@@ -232,7 +233,14 @@ export default function Register() {
                                             className="my-3 w-32 h-32 object-cover object-center rounded-full mx-auto border-4  overflow-hidden mt-14 border-slate-400"
                                             src={data.url_foto}
                                             alt="avatar"
-                                            onClick={openPortal}
+                                            onClick={
+                                                data.preview == ""
+                                                    ? () =>
+                                                          Toast.fire(
+                                                              "tidak ada gambar"
+                                                          )
+                                                    : openPortal
+                                            }
                                         />
                                         {portal(
                                             <div className="top-0 bottom-0 left-0 right-0 fixed grid justify-center justify-items-center content-center max-w-screen max-h-screen z-50 bg-slate-400 backdrop-blur bg-opacity-10">

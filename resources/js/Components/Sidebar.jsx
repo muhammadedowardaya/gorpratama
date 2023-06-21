@@ -36,7 +36,7 @@ export default function Sidebar({ className, items }) {
         <div
             className={`navigation ${
                 className ?? ""
-            } z-10 md:block border-l-[10px] border-sky-500 dark:border-gray-700 bg-sky-500 dark:bg-gray-700 w-[40px] md:w-[80px] max-h-[85vh]`}
+            } z-20 hidden md:block border-l-[10px] border-sky-500 dark:border-gray-700 bg-sky-500 dark:bg-gray-700 w-[40px] md:w-[80px] max-h-[85vh]`}
         >
             <ul className=" overflow-y-auto scrollbar-hide">
                 {items.map((item, index) => (

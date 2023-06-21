@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('jadwal', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lapangan_id');
-            $table->tinyInteger('status_transaksi')->nullable();
+            $table->tinyInteger('status_transaksi');
             $table->string('external_id')->nullable();
             $table->date('tanggal');
             $table->string('jam_mulai');
