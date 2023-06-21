@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
 //     });
 // });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'google.auth'])->group(function () {
     Route::get('/pengaturan', function () {
         return Inertia::render('Dashboard/Pengaturan');
     });
@@ -94,10 +94,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
         $user = Socialite::driver('google')->user();
+
         if (auth()->user()->type == 'admin') {
             return Inertia::render('Dashboard/Admin/Home');
-        } else if (auth()->user()->type == 'user') {
+        } else if (auth()->user()->type == 'user' && $user->provider == 'google') {
             return Inertia::render('Dashboard/User/Home');
+        } else {
+            return redirect('/'); // Ganti dengan URL tujuan jika pengguna tidak memenuhi kriteria
         }
     })->name('dashboard');
 
