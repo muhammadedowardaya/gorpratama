@@ -185,7 +185,7 @@ export default function UcapanHome({ style }) {
                             <div className="flex flex-col items-center justify-end sm:min-h-[80px]   ">
                                 <button
                                     onClick={() => {
-                                        router.visit("/login/google");
+                                        window.open("/login/google");
                                     }}
                                     className="border border-gray-50 flex items-center justify-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                 >
