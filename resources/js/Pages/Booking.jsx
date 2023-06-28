@@ -405,7 +405,7 @@ export default function Booking(props) {
     return (
         <>
             <Loading display={show} />
-            <div className="w-full p-1 sm:p-10">
+            <div className="w-full pt-20 px-3 md:pt-8 md:px-6">
                 <form
                     onSubmit={submit}
                     className="bg-white dark:backdrop-filter dark:backdrop-blur dark:bg-opacity-10  p-4 rounded"
