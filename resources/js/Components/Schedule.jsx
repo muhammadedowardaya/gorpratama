@@ -77,7 +77,7 @@ const Schedule = ({ className, children }) => {
 
     return (
         <div className={className}>
-            <h1 className="font-bold">Jadwal Hari Ini</h1>
+            <h1 className="font-bold">Jadwal</h1>
             <div id="table-container">
                 <table
                     id="tabel-jadwal"

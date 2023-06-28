@@ -187,7 +187,7 @@ export default function EditTempatLapangan(props) {
 
             <Loading display={displayLoading} />
 
-            <div className="md:max-w-4xl">
+            <div className="md:max-w-4xl pt-16">
                 <h1 className="text-2xl font-bold mb-5 md:mt-10">
                     Edit Profil Gor
                 </h1>

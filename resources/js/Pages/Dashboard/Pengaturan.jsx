@@ -15,9 +15,11 @@ export default function Pengaturan(props) {
     }, [localStorage.getItem("mode")]);
 
     return (
-        <>
-            <h1 className="text-2xl font-bold mb-2 text-white">Pengaturan</h1>
-            <hr className="border-2 border-slate-700" />
+        <div className="pt-20 px-6 md:pt-6 md:px-3">
+            <h1 className="text-2xl font-bold mb-2 text-white md:text-center">
+                Pengaturan
+            </h1>
+            <hr className="border-2 border-slate-50 mb-4" />
             <div className="flex flex-wrap text-slate-100">
                 <div
                     onClick={() => {
@@ -79,13 +81,13 @@ export default function Pengaturan(props) {
                         e.preventDefault();
 
                         Swal.fire({
-                            title: "Affah iyyah?",
+                            title: "Kamu yakin?",
                             text: "Mau logout aja?",
                             icon: "warning",
                             showCancelButton: true,
                             confirmButtonColor: "#3085d6",
                             cancelButtonColor: "#d33",
-                            confirmButtonText: "Ea, logout!",
+                            confirmButtonText: "Iya",
                             cancelButtonText: "Gak jadi",
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -122,7 +124,7 @@ export default function Pengaturan(props) {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

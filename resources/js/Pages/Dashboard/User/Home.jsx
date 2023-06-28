@@ -60,9 +60,9 @@ export default function Home(props) {
     }, []);
 
     return (
-        <div className="w-full mx-auto">
-            <h1 className="font-bold mb-4 text-2xl mt-4 text-slate-50">
-                Dashboard User
+        <div className="w-full mx-auto pt-24 px-2 md:pt-8 md:pl-4">
+            <h1 className="font-bold mb-4 ml-4 md:ml-0 text-2xl  text-slate-50">
+                Dashboard
             </h1>
             {showLoaderSpin ? (
                 <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
@@ -99,6 +99,7 @@ export default function Home(props) {
                                 </div>
                             </div>
                         </div>
+
                         <div
                             onClick={() => {
                                 router.get("/dashboard/pesanan");
@@ -127,6 +128,7 @@ export default function Home(props) {
                                 </div>
                             </div>
                         </div>
+
                         <div
                             onClick={() => {
                                 router.get("/dashboard/jadwal");

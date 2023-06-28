@@ -17,7 +17,7 @@ export default function List(props) {
 
     return (
         <>
-            <div className="flex justify-between items-center md:mt-8 mt-2">
+            <div className="flex justify-between items-center md:mt-8 mt-20 pl-2">
                 <h1 className="md:text-2xl font-bold text-center">
                     Kelola Jadwal
                 </h1>
@@ -26,7 +26,7 @@ export default function List(props) {
                         history.back();
                     }}
                 >
-                    <IoReturnDownBackOutline className="text-2xl font-bold" />
+                    <IoReturnDownBackOutline className="text-2xl font-bold mr-4" />
                 </div>
             </div>
 

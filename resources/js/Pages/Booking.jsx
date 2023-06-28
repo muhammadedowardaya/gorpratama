@@ -17,6 +17,8 @@ import axios from "axios";
 // react-date
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Schedule from "@/Components/Schedule.jsx";
+import { IoClose } from "react-icons/io5";
 
 export default function Booking(props) {
     // react-date (untuk timeinput)
@@ -32,7 +34,10 @@ export default function Booking(props) {
 
     const { data, setData } = useForm({
         lapangan_id: props.lapangan.id,
-        telp: props.auth.user.telp,
+        telp:
+            props.auth.user.telp == null || props.auth.user.telp == ""
+                ? ""
+                : props.auth.user.telp,
         harga_persewa: props.tempat_lapangan.harga_persewa,
         tanggal_main: "",
         jam_buka: props.tempat_lapangan.jam_buka,
@@ -190,6 +195,9 @@ export default function Booking(props) {
         const year = today.getFullYear();
         const formattedDate = day + "-" + month + "-" + year;
 
+        const tanggal_sekarang = moment(formattedDate, "DD-MM-YYYY");
+        const tanggal_main = moment(data.tanggal_main, "DD-MM-YYYY");
+
         // ------------------------------------untuk validasi jam booking-----------------------
         const jamMulai = new Date();
         const jamSelesai = new Date();
@@ -202,17 +210,6 @@ export default function Booking(props) {
         // Mengatur jam selesai
         jamSelesai.setHours(parseInt(data.jam_selesai.split(":")[0]));
         jamSelesai.setMinutes(parseInt(data.jam_selesai.split(":")[1]));
-
-        console.info(
-            (jamMulai.getHours() < currentTime.getHours() ||
-                (jamMulai.getHours() == currentTime.getHours() &&
-                    jamMulai.getMinutes() <= currentTime.getMinutes())) &&
-                (jamSelesai.getHours() < currentTime.getHours() ||
-                    (jamSelesai.getHours() == currentTime.getHours() &&
-                        jamSelesai.getMinutes() <= currentTime.getMinutes()))
-        );
-        console.info(`${jamMulai.getHours()} < ${currentTime.getHours()}`);
-        console.info(`${jamMulai.getMinutes()} < ${currentTime.getMinutes()}`);
 
         // ------------------------------------------------------------------------
 
@@ -242,9 +239,10 @@ export default function Booking(props) {
                 setShow(false);
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
             } else if (
-                jamMulai.getHours() < currentTime.getHours() ||
-                (jamMulai.getHours() == currentTime.getHours() &&
-                    jamMulai.getMinutes() <= currentTime.getMinutes())
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamMulai.getHours() < currentTime.getHours() ||
+                    (jamMulai.getHours() == currentTime.getHours() &&
+                        jamMulai.getMinutes() <= currentTime.getMinutes()))
             ) {
                 setShow(false);
                 Swal.fire(
@@ -253,9 +251,10 @@ export default function Booking(props) {
                     "warning"
                 );
             } else if (
-                jamSelesai.getHours() < currentTime.getHours() ||
-                (jamSelesai.getHours() == currentTime.getHours() &&
-                    jamSelesai.getMinutes() <= currentTime.getMinutes())
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamSelesai.getHours() < currentTime.getHours() ||
+                    (jamSelesai.getHours() == currentTime.getHours() &&
+                        jamSelesai.getMinutes() <= currentTime.getMinutes()))
             ) {
                 setShow(false);
                 Swal.fire(
@@ -292,19 +291,47 @@ export default function Booking(props) {
                         });
                     } else if (result.isDenied) {
                         // Tambahkan kode di sini yang akan dijalankan ketika tombol "deny" diklik
-                        setShow(true);
-                        axios
-                            .post("/booking-bayar-ditempat", data)
-                            .then((response) => {
-                                setShow(false);
-                                router.visit("/konfirmasi-whatsapp", {
-                                    data: response.data,
-                                    method: "post",
-                                });
-                            })
-                            .catch((error) => {
-                                setShow(false);
+                        if (data.telp == "") {
+                            Swal.fire({
+                                title: "Telepon belum di atur",
+                                text: `Anda perlu mengatur no telp terlebih dahulu untuk melakukan booking dengan bayar di tempat`,
+                                icon: "info",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                denyButtonColor: "#1B9C85",
+                                confirmButtonText: "Atur Sekarang",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setShow(true);
+                                    router.get("/pengaturan/profile", data, {
+                                        forceFormData: true,
+                                        onError: (errors) => {
+                                            setShow(false);
+                                            console.info(errors);
+                                        },
+                                        onSuccess: (response) => {
+                                            setShow(false);
+                                            console.info(response);
+                                        },
+                                    });
+                                }
                             });
+                        } else {
+                            setShow(true);
+                            axios
+                                .post("/booking-bayar-ditempat", data)
+                                .then((response) => {
+                                    setShow(false);
+                                    router.visit("/konfirmasi-whatsapp", {
+                                        data: response.data,
+                                        method: "post",
+                                    });
+                                })
+                                .catch((error) => {
+                                    setShow(false);
+                                });
+                        }
                     }
                 });
             }
@@ -665,81 +692,21 @@ export default function Booking(props) {
                 </form>
             </div>
             <div
-                className={`fixed top-0 bottom-0 right-0 left-0 ${
+                className={`fixed md:top-0 top-16 bottom-0 right-0 left-0 ${
                     showJadwal ? "grid" : "hidden"
-                } justify-center backdrop-filter backdrop-blur-sm bg-stone-900 bg-opacity-70 h-screen w-screen z-50 pt-20 md:pt-4`}
+                } justify-center bg-gray-700 backdrop-filter backdrop-blur bg-opacity-30 h-screen w-screen pt-5 md:pt-4 z-50`}
             >
-                <div className="px-4 pr-8 w-[95vw]">
-                    <h1 className="text-2xl font-bold md:mt-2 text-slate-50">
-                        Jadwal Bermain
-                    </h1>
-                    <div className="overflow-auto mt-7">
-                        <div id="table-container">
-                            <table
-                                id="my-table"
-                                className="table table-compact w-full select-none bg-slate-100"
-                                // className="table-compact w-full select-none"
-                            >
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Pelanggan</th>
-                                        <th>Jadwal Bermain</th>
-                                        <th>Jam Mulai</th>
-                                        <th>Jam Selesai</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="overflow-hidden">
-                                    {Array.isArray(jadwal) &&
-                                    jadwal.length > 0 ? (
-                                        jadwal.map((item, index) => {
-                                            // const tanggal_booking = moment(
-                                            //     item.created_at
-                                            // ).format("DD MMMM YYYY");
-
-                                            const tanggal_bermain = moment(
-                                                item.tanggal
-                                            ).format("DD MMMM YYYY");
-                                            return (
-                                                <tr key={index}>
-                                                    <th>{index + 1}</th>
-                                                    <td>{item.user.nama}</td>
-                                                    <td>{tanggal_bermain}</td>
-                                                    <td>{item.jam_mulai}</td>
-                                                    <td>{item.jam_selesai}</td>
-                                                </tr>
-                                            );
-                                        })
-                                    ) : (
-                                        <tr>
-                                            <td
-                                                colSpan={6}
-                                                className="text-center"
-                                            >
-                                                Belum ada jadwal bermain
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div
-                        className="px-2 z-10 top-20 md:top-4 right-8 fixed justify-self-center animate-pulse"
-                        onClick={() => {
-                            setShowJadwal(false);
-                        }}
-                    >
-                        <AiFillCloseCircle
-                            size="3em"
-                            className="cursor-pointer fill-red-500 object-cover bg-white rounded-full"
+                <div className="px-4 md:pr-8 md:w-[80vw] w-[99vw]">
+                    <Schedule className="relative">
+                        <IoClose
+                            onClick={() => {
+                                setShowJadwal(false);
+                            }}
+                            className="absolute top-0 right-0 cursor-pointer"
+                            size="2em"
                         />
-                    </div>
+                    </Schedule>
                 </div>
-                {/* <Pagination
-                    links={links}
-                    className={`${showJadwal ? "block" : "hidden"}`}
-                /> */}
             </div>
         </>
     );

@@ -2,7 +2,7 @@ import Layout from "@/Layouts/Layout";
 import { useForm } from "@inertiajs/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { IoAddCircleSharp } from "react-icons/io5";
+import { IoAddCircleSharp, IoClose } from "react-icons/io5";
 
 import "../../../../../css/formStyle.css";
 import Label from "@/Components/Label";
@@ -15,6 +15,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 // react-date
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Schedule from "@/Components/Schedule";
 
 export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
     // jadwal pending
@@ -536,7 +537,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
         <div className="p-4">
             <Loading display={showLoading} />
 
-            <h1 className="text-2xl font-bold md:my-2 text-center mb-6 text-slate-50">
+            <h1 className="text-2xl font-bold md:my-2 text-center mb-6 text-slate-50 mt-20 md:mt-4">
                 Jadwal Bermain
             </h1>
             <div className="flex justify-between">
@@ -1213,86 +1214,18 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
             <div
                 className={`fixed md:top-0 top-16 bottom-0 right-0 left-0 ${
                     showJadwal ? "grid" : "hidden"
-                } justify-center backdrop-filter backdrop-blur-sm bg-stone-900 bg-opacity-70 h-screen w-screen z-50 pt-5 md:pt-4`}
+                } justify-center bg-gray-700 backdrop-filter backdrop-blur bg-opacity-30 h-screen w-screen pt-5 md:pt-4 z-50`}
             >
-                <div className="px-4 md:pr-2 md:w-[95vw] w-[99vw]">
-                    <h1 className="text-2xl font-bold md:mt-2 text-slate-50">
-                        Jadwal Bermain
-                    </h1>
-                    <div
-                        className="overflow-auto mt-7"
-                        style={{ maxHeight: "70vh" }}
-                    >
-                        <div id="table-container">
-                            <table
-                                id="tabel-jadwal"
-                                className="table table-compact w-full select-none "
-                                // className="table-compact w-full select-none"
-                            >
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Pelanggan</th>
-                                        <th>Status Transaksi</th>
-                                        <th>Jadwal Bermain</th>
-                                        <th>Lapangan</th>
-                                        <th>Jam Mulai</th>
-                                        <th>Jam Selesai</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="overflow-hidden">
-                                    {Array.isArray(semuaJadwal) &&
-                                    semuaJadwal.length > 0 &&
-                                    semuaJadwal != "" ? (
-                                        semuaJadwal.map((item, index) => {
-                                            // const tanggal_booking = moment(
-                                            //     item.created_at
-                                            // ).format("DD MMMM YYYY");
-
-                                            const tanggal_bermain = moment(
-                                                item.tanggal
-                                            ).format("DD MMMM YYYY");
-                                            return (
-                                                <tr key={index}>
-                                                    <th>{index + 1}</th>
-                                                    <td>{item.user.nama}</td>
-                                                    <td>
-                                                        {item.status_transaksi}
-                                                    </td>
-                                                    <td>{tanggal_bermain}</td>
-                                                    <td>
-                                                        {item.lapangan.nama}
-                                                    </td>
-                                                    <td>{item.jam_mulai}</td>
-                                                    <td>{item.jam_selesai}</td>
-                                                </tr>
-                                            );
-                                        })
-                                    ) : (
-                                        <tr>
-                                            <td
-                                                colSpan={6}
-                                                className="text-center"
-                                            >
-                                                Belum ada jadwal bermain
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div
-                        className="px-2 z-10 top-4 md:top-4 right-8 fixed justify-self-center animate-pulse"
-                        onClick={() => {
-                            setShowJadwal(false);
-                        }}
-                    >
-                        <AiFillCloseCircle
-                            size="3em"
-                            className="cursor-pointer fill-red-500 object-cover bg-white rounded-full"
+                <div className="px-4 md:pr-8 md:w-[80vw] w-[99vw]">
+                    <Schedule className="relative">
+                        <IoClose
+                            onClick={() => {
+                                setShowJadwal(false);
+                            }}
+                            className="absolute top-0 right-0 cursor-pointer"
+                            size="2em"
                         />
-                    </div>
+                    </Schedule>
                 </div>
             </div>
         </div>

@@ -13,6 +13,7 @@ use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Wisata;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -70,7 +71,7 @@ Route::get('/info-dashboard-admin', function () {
     $total = User::where('type', 'user')->get();
     $new_users = User::where('created_at', '>=', now()->subWeek())->where('type', 'user')->get();
     // // Ambil semua data transaksi dari database
-    $transaksis = Transaksi::all();
+    $transaksis = Transaksi::whereIn('status_transaksi', [0, 5])->get();
     // // Hitung total pendapatan
     $total_pendapatan = $transaksis->sum('amount');
     $total_pendapatan_seminggu = Transaksi::whereIn('status_transaksi', [0, 5])
@@ -100,19 +101,11 @@ Route::get('/info-dashboard-admin', function () {
 
 
 Route::get('/get-user', function () {
-    if (auth()->check() && auth()->user()->provider_name == 'google') {
-        // Pengguna login menggunakan akun Google
-        $user = Socialite::driver('google')->user();
-        return response()->json([
-            'user' => $user
-        ]);
-    } else {
-        // Pengguna login menggunakan sistem otentikasi lain
-        return response()->json([
-            'user' => auth()->user()
-        ]);
-    }
+    return response()->json([
+        'user' => auth()->user(),
+    ]);
 });
+
 
 Route::get('/get-list-lapangan', function () {
     $lapangan = Lapangan::all();
@@ -157,6 +150,24 @@ Route::get('lapangan/image/{nama_file}', [LapanganImageController::class, 'show'
 
 
 Route::get('/user/image/{image}', [UserImageController::class, 'showImage'])->name('user.image.show');
+
+Route::get('/pesanan-user', function () {
+    $tempat_lapangan = TempatLapangan::first();
+    $nomorTelepon = $tempat_lapangan->telp;
+    $kodeNegara = '+62';
+    $nomorWhatsApp = $kodeNegara . substr($nomorTelepon, 1);
+
+
+    $transaksi = Transaksi::with(['lapangan', 'user'])->where('user_id', auth()->user()->id)
+        ->whereDate('tanggal_main', '>=', now()->toDateString())
+        ->orderBy('tanggal_main', 'desc')->get();
+
+
+    return response()->json([
+        'transaksi' => $transaksi,
+        'nomor_admin' => $nomorWhatsApp
+    ]);
+});
 
 Route::get('/jadwal', function () {
     // jadwal pending dan COD (belum konfirmasi)

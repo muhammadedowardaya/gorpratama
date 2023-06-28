@@ -28,7 +28,7 @@ export default function UpdateProfileInformation({
             nama: user.nama,
             slug: user.slug,
             email: user.email,
-            telp: user.telp,
+            telp: user.telp == "" || user.telp == null ? "" : user.telp,
             foto: user.foto,
             url_foto: user.url_foto,
             alamat: user.alamat,
@@ -75,6 +75,7 @@ export default function UpdateProfileInformation({
             })
             .catch((errors) => {
                 setDisplayLoading(false);
+
                 if (errors.response.status == 400) {
                     const error_keys = Object.keys(
                         errors.response.data.message
@@ -87,18 +88,11 @@ export default function UpdateProfileInformation({
                     for (let i = 0; i < error_keys.length; i++) {
                         error_messages.push(error[error_values[i]]);
                     }
-
                     Swal.fire(
                         "Gagal!",
-                        `<ul>${error_messages
-                            .map((item) => {
-                                if (item.includes("CSRF token mismatch.")) {
-                                    router.reload();
-                                } else {
-                                    `<li>${item}</li>`;
-                                }
-                            })
-                            .join(" ")}</ul>`,
+                        `<ul>
+                        ${error_messages.map((item) => `<li>${item}</li>`)}
+                        </ul>`,
                         "error"
                     );
                 } else {

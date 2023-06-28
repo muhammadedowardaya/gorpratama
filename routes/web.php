@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\MessageEvent;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KonfirmasiWhatsAppController;
 use App\Http\Controllers\LapanganController;
@@ -12,6 +13,7 @@ use App\Models\Jadwal;
 use App\Models\Lapangan;
 use App\Models\TempatLapangan;
 use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -19,6 +21,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 
 /*
@@ -43,6 +48,43 @@ Route::get('/', function () {
 
 Route::get('/login/google', function () {
     return Socialite::driver('google')->redirect();
+});
+
+Route::get('/google/callback', function () {
+    $data = Socialite::driver('google')->user();
+
+    $data_user = User::where('email', $data->email)->first();
+
+    if ($data_user == null) {
+        $user = new User();
+        $user->nama = $data->name;
+        $user->slug = Str::slug($data->name);
+        $user->email = $data->email;
+        $user->url_foto = $data->avatar;
+        $user->save();
+
+        event(new Registered($user));
+
+        Auth::login($user);
+        return redirect('/');
+    } else {
+        Auth::login($data_user);
+        return redirect('/');
+    }
+
+    // $data = [
+    //     'id' => $user->id,
+    //     'nama' => $user->name,
+    //     'slug' => Str::slug($user->name),
+    //     // 'telp' => '',
+    //     'email' => $user->email,
+    //     'alamat' => '',
+    //     'password' => '',
+    //     // 'foto' => '',
+    //     'url_foto' => '',
+    // ];
+
+    // dd($data_user);
 });
 
 Route::get('/info-dashboard-user', function () {
@@ -80,7 +122,7 @@ Route::middleware('auth')->group(function () {
 //     });
 // });
 
-Route::middleware(['auth', 'verified', 'google.auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pengaturan', function () {
         return Inertia::render('Dashboard/Pengaturan');
     });
@@ -93,14 +135,12 @@ Route::middleware(['auth', 'verified', 'google.auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', function () {
-        $user = Socialite::driver('google')->user();
-
         if (auth()->user()->type == 'admin') {
             return Inertia::render('Dashboard/Admin/Home');
-        } else if (auth()->user()->type == 'user' && $user->provider == 'google') {
+        } else if (auth()->user()->type == 'user') {
             return Inertia::render('Dashboard/User/Home');
         } else {
-            return redirect('/'); // Ganti dengan URL tujuan jika pengguna tidak memenuhi kriteria
+            return Inertia::render('Dashboard/User/Home');
         }
     })->name('dashboard');
 
@@ -113,19 +153,7 @@ Route::middleware(['auth', 'verified', 'google.auth'])->group(function () {
         if (auth()->user()->type == 'admin') {
             return Inertia::render('Dashboard/Admin/Pesanan');
         } else if (auth()->user()->type == 'user') {
-            $tempat_lapangan = TempatLapangan::first();
-            $nomorTelepon = $tempat_lapangan->telp;
-            $kodeNegara = '+62';
-            $nomorWhatsApp = $kodeNegara . substr($nomorTelepon, 1);
-
-
-            $transaksi = Transaksi::with(['lapangan', 'user'])->where('user_id', auth()->user()->id)->paginate(8);
-
-
-            return Inertia::render('Dashboard/User/Pesanan', [
-                'transaksi' => $transaksi,
-                'nomor_admin' => $nomorWhatsApp
-            ]);
+            return Inertia::render('Dashboard/User/Pesanan');
         }
     });
 
@@ -133,7 +161,7 @@ Route::middleware(['auth', 'verified', 'google.auth'])->group(function () {
     // Dashboard Jadwal
     Route::get('/dashboard/jadwal', function () {
         if (auth()->user()->type == 'admin') {
-            $jadwals = Jadwal::with(['user', 'lapangan'])->get();
+            $jadwals = Jadwal::with(['user', 'lapangan'])->whereIn('status_transaksi', [0, 5])->get();
             $data = $jadwals->groupBy('lapangan_id');
             return Inertia::render('Dashboard/Admin/Jadwal/List', [
                 'jadwal' => $data
@@ -141,7 +169,7 @@ Route::middleware(['auth', 'verified', 'google.auth'])->group(function () {
         } else if (auth()->user()->type == 'user') {
             $jadwal = Jadwal::with('lapangan')
                 ->where('user_id', auth()->user()->id)
-                ->where('status_transaksi', 0)
+                ->whereIn('status_transaksi', [0, 5])
                 ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
                 ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
                 ->paginate(8);
@@ -289,7 +317,6 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     });
 
 
-
     // jadwal pending atau cod
     Route::get('/dashboard/pending-jadwal', function () {
         $tempat_lapangan = TempatLapangan::all()->first();
@@ -320,6 +347,8 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::post('/jadwal', [JadwalController::class, 'store']);
     // update jadwal
     Route::patch('/jadwal/{id}', [JadwalController::class, 'updateJadwal']);
+
+    Route::get('/export', [ExportController::class, 'export']);
 });
 
 /*------------------------------------------

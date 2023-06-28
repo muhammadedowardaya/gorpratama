@@ -11,20 +11,23 @@ import Pagination from "@/Components/Pagination.jsx";
 
 export default function Pesanan(props) {
     // Similar to componentDidMount and componentDidUpdate:
+    const [transaksi, setTransaksi] = useState([]);
+    const [noWhatsappAdmin, setNoWhatsappAdmin] = useState("");
 
-    // axios
-    //     .get("https://api.xendit.co/v2/invoices")
-    //     .then((response) => {
-    //         console.info(response.data);
-    //     })
-    //     .catch((error) => {
-    //         console.error(error);
-    //     });
+    const fetchTransaksi = () => {
+        axios
+            .get("/api/pesanan-user")
+            .then((response) => {
+                setTransaksi(response.data.transaksi);
+                setNoWhatsappAdmin(response.data.nomor_admin);
+            })
+            .catch((error) => {
+                // console.error("Error fetching schedules:", error);
+            });
+    };
 
     useEffect(() => {
-        if (props.flash.success) {
-            Swal.fire("Berhasil!", `${props.flash.success}`, "success");
-        }
+        fetchTransaksi();
 
         const table = document.querySelector("table");
         let isDragging = false;
@@ -66,11 +69,17 @@ export default function Pesanan(props) {
             }
             lastX = event.touches[0].clientX;
         });
+
+        const interval = setInterval(() => {
+            fetchTransaksi();
+        }, 30000);
+
+        return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="p-2">
-            <h1 className="text-2xl font-bold mb-2 text-slate-100 my-4">
+        <div className="md:px-6 p-2 pt-16 md:pt-4">
+            <h1 className="text-2xl font-bold text-slate-100 my-6 text-center md:text-left">
                 Pesanan Saya
             </h1>
             <div id="table-container">
@@ -82,7 +91,7 @@ export default function Pesanan(props) {
                     <thead>
                         <tr>
                             <th>No</th>
-                            {/* <th>Nama Lapangan</th> */}
+                            <th>Nama Lapangan</th>
                             <th>Tanggal Booking</th>
                             <th>Jadwal Bermain</th>
                             <th>Harga</th>
@@ -91,9 +100,8 @@ export default function Pesanan(props) {
                         </tr>
                     </thead>
                     <tbody className="overflow-auto scrollbar-hide">
-                        {Array.isArray(props.transaksi.data) &&
-                        props.transaksi.data.length > 0 ? (
-                            props.transaksi.data.map((item, index) => {
+                        {Array.isArray(transaksi) && transaksi.length > 0 ? (
+                            transaksi.map((item, index) => {
                                 const tanggal_booking = moment(
                                     item.created_at
                                 ).format("DD MMMM YYYY");
@@ -103,7 +111,7 @@ export default function Pesanan(props) {
                                 return (
                                     <tr key={index}>
                                         <th>{index + 1}</th>
-                                        {/* <td>{item.lapangan.nama}</td> */}
+                                        <td>{item.lapangan.nama}</td>
                                         <td>{tanggal_booking}</td>
                                         <td>{tanggal_bermain}</td>
                                         <td>Rp.{FormatRupiah(item.amount)}</td>
@@ -124,12 +132,10 @@ export default function Pesanan(props) {
                                             ) : item.status_transaksi ==
                                               "COD (belum konfirmasi)" ? (
                                                 <a
-                                                    href={`https://wa.me/${
-                                                        props.nomor_admin
-                                                    }?text=${encodeURIComponent(
+                                                    href={`https://wa.me/${noWhatsappAdmin}?text=${encodeURIComponent(
                                                         `Saya ${item.user.nama} ingin konfirmasi bayar di tempat untuk\ntanggal bermain :${tanggal_bermain}\nkode unik : ${item.external_id}`
                                                     )}`}
-                                                    className="border-b border-spacing-1 border-slate-700 relative bg-sky-500 leading-5 uppercase dark:bg-green-100 dark:text-gray-700 text-white p-2 pr-3 font-bold rounded "
+                                                    className="border-b border-spacing-1 border-slate-700 relative bg-sky-500 leading-5 uppercase dark:bg-green-600 dark:text-gray-100 text-white p-2 pr-3 font-bold rounded "
                                                 >
                                                     <MdMessage
                                                         className="inline-block mr-1 relative top-0"
@@ -176,7 +182,7 @@ export default function Pesanan(props) {
                             })
                         ) : (
                             <tr>
-                                <td colSpan={6} className="text-center">
+                                <td colSpan={7} className="text-center">
                                     Belum ada pesanan
                                 </td>
                             </tr>
@@ -184,9 +190,6 @@ export default function Pesanan(props) {
                     </tbody>
                 </table>
             </div>
-            {props.transaksi.data && (
-                <Pagination links={props.transaksi.links} />
-            )}
         </div>
     );
 }

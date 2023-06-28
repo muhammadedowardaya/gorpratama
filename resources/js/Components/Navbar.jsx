@@ -44,7 +44,6 @@ export default function Navbar({ className, items, jumlahPesan }) {
             email: response.data.user.email ?? "",
             url_foto: response.data.user.url_foto ?? "",
         }));
-        console.info(response);
     }
 
     useEffect(() => {
@@ -314,9 +313,15 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                                       key={
                                                                           index
                                                                       }
-                                                                      onClick={
-                                                                          item.onClick
-                                                                      }
+                                                                      onClick={(
+                                                                          e
+                                                                      ) => {
+                                                                          e.preventDefault();
+                                                                          item.onClick();
+                                                                          setIsOpen(
+                                                                              false
+                                                                          );
+                                                                      }}
                                                                       className={`-m-3 p-3 flex items-center space-x-4 text-slate-100 hover:bg-slate-50 hover:text-sky-500 ${requestIs(
                                                                           item.path
                                                                       )}`}
@@ -352,7 +357,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                             />
                                                         </div>
                                                         <div className="ml-3 whitespace-normal max-w-xs">
-                                                            <div className="text-base font-medium leading-none text-white truncate break-all">
+                                                            <div className="text-base font-medium leading-none text-white  break-all">
                                                                 {user.nama}
                                                             </div>
                                                             <div className="text-sm font-medium leading-none text-gray-400 break-all">
@@ -383,7 +388,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                                 e.preventDefault();
 
                                                                 Swal.fire({
-                                                                    title: "Affah iyyah?",
+                                                                    title: "Kamu yakin?",
                                                                     text: "Mau logout aja?",
                                                                     icon: "warning",
                                                                     showCancelButton: true,
@@ -392,7 +397,7 @@ export default function Navbar({ className, items, jumlahPesan }) {
                                                                     cancelButtonColor:
                                                                         "#d33",
                                                                     confirmButtonText:
-                                                                        "Ea, logout!",
+                                                                        "Iya",
                                                                     cancelButtonText:
                                                                         "Gak jadi",
                                                                 }).then(

@@ -75,7 +75,7 @@ function Pesan() {
     }, [recipientId, chatChannel]);
 
     return (
-        <div className="flex flex-col items-center text-gray-800 w-full">
+        <div className="flex flex-col items-center text-gray-800 w-full pt-16 md:pt-8">
             <div className="flex items-center justify-between mt-6 mb-2">
                 <h1 className="text-2xl font-bold text-white">Pesan</h1>
             </div>

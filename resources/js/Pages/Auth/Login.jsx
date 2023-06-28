@@ -6,6 +6,7 @@ import { Head, Link, router, useForm } from "@inertiajs/react";
 import axios from "axios";
 import Toast from "@/Components/Toast";
 import Loading from "@/Components/Loading";
+import { FaGoogle } from "react-icons/fa";
 
 export default function Login(props, { status, canResetPassword }) {
     const { data, setData, reset } = useForm({
@@ -91,7 +92,7 @@ export default function Login(props, { status, canResetPassword }) {
                 </h1>
                 <div className="login-box bg-[#fff]">
                     <form
-                        className="grid grid-cols-1 md:gap-4 w-[60vw] sm:w-56"
+                        className="grid grid-cols-1 md:gap-1 w-[60vw] sm:w-56"
                         onSubmit={submit}
                     >
                         <div>
@@ -157,19 +158,32 @@ export default function Login(props, { status, canResetPassword }) {
                         <div className="text-center mt-4">
                             <Link
                                 href="forgot-password"
-                                className="text-sm text-neon-hover text-slate-300"
+                                className="text-sm text-neon-hover text-slate-300 md:text-base"
                             >
-                                Forgot your password?
+                                Lupa password? Klik disini
                             </Link>
                         </div>
                         <div className="text-center">
                             <Link
                                 href="register"
-                                className="text-sm text-neon-hover text-slate-300"
+                                className="text-sm text-neon-hover text-slate-300 md:text-base"
                             >
-                                Belum punya akun?
+                                Belum punya akun? Klik disini
                             </Link>
                         </div>
+                        <span className="text-slate-700 text-center text-sm my-4 md:my-0">
+                            Or
+                        </span>
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.location.href = "/login/google"; // Mengganti URL "/login/google" dengan URL yang sesuai
+                            }}
+                            className="border border-gray-50 flex items-center justify-center px-4 text-sm py-1 md:py-2 bg-red-500 hover:bg-red-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        >
+                            <FaGoogle className="mr-2" />
+                            <span>Login with Google</span>
+                        </button>
                     </form>
                 </div>
             </div>

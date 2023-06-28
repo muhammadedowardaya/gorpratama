@@ -12,7 +12,7 @@ const Lapangan = (props) => {
     }, []);
 
     return (
-        <>
+        <div className="pt-12 md:pt-0">
             <h1
                 className={`text-3xl font-bold text-slate-100 text-center my-10 ${
                     props.lapangan != "" ? "" : "hidden"
@@ -80,7 +80,7 @@ const Lapangan = (props) => {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 };
 

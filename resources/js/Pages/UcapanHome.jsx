@@ -108,7 +108,7 @@ export default function UcapanHome({ style }) {
             <>
                 <section
                     style={style}
-                    className="h-[100vh] px-5 flex flex-col flex-wrap border-b-4 border-gray-50"
+                    className="h-[80vh] px-5 flex flex-col flex-wrap border-b-4 border-gray-50"
                 >
                     <h1 className="mt-36 md:mt-32 text-2xl md:text-5xl font-bold text-white tracking-wide text-center">
                         Selamat Datang
@@ -185,7 +185,7 @@ export default function UcapanHome({ style }) {
                             <div className="flex flex-col items-center justify-end sm:min-h-[80px]   ">
                                 <button
                                     onClick={() => {
-                                        window.open("/login/google");
+                                        window.location.href = "/login/google"; // Mengganti URL "/login/google" dengan URL yang sesuai
                                     }}
                                     className="border border-gray-50 flex items-center justify-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                 >

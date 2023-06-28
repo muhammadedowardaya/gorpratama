@@ -41,9 +41,9 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
 
             {/* <ValidationErrors errors={props.errors} /> */}
             {/* <Loading display={displayLoading} /> */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-16 md:pt-2">
                 <div className="max-w-sm rounded overflow-hidden shadow-lg">
-                    <h1 className="font-bold text-xl text-center mt-4 md:mt-10">
+                    <h1 className="font-bold md:text-xl text-center mt-4 md:mt-10">
                         Tempat Lapangan / Profil Gor
                     </h1>
                     <div className="px-4 py-4">

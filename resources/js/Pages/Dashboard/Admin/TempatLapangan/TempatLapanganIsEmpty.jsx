@@ -3,7 +3,7 @@ import { Head, router } from "@inertiajs/react";
 
 const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
     return (
-        <div className="mx-auto">
+        <div className="mx-auto p-4">
             <Head title="Register" />
 
             {/* <ValidationErrors errors={props.errors} /> */}
@@ -30,14 +30,14 @@ const TempatLapanganIsEmpty = ({ tempat_lapangan, auth }) => {
                         </span>
                     </div>
                 </div>
-                <div className="card w-96 bg-slate-50 shadow-lg mt-5 text-center">
+                <div className="card w-full sm:w-96 bg-slate-50 shadow-lg mt-5 text-center">
                     <div className="card-body">
                         <h2 className="card-title tracking-widest mb-4 text-slate-700">
                             Anda ingin mengaturnya sekarang?
                         </h2>
-                        <div className="card-actions justify-center">
+                        <div className="md:card-actions  justify-center">
                             <button
-                                className="btn btn-primary rounded-full px-8 border-cyan-300"
+                                className="btn btn-primary rounded-full md:px-8 text-sm md:text-base border-cyan-300"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     router.get(

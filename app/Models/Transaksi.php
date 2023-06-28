@@ -32,11 +32,6 @@ class Transaksi extends Model
     }
 
 
-    function jadwal()
-    {
-        return $this->belongsTo(Jadwal::class, 'kode_jadwal');
-    }
-
     protected function statusTransaksi(): Attribute
     {
         return new Attribute(

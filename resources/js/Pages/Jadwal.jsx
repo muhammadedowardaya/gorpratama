@@ -68,7 +68,7 @@ export default function Jadwal(props) {
     }, [recipientId]);
 
     return (
-        <div className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center w-full pt-20 md:pt-8 px-3">
             <div className="text-sm md:text-lg breadcrumbs self-start text-slate-50">
                 <ul>
                     <li>

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('foto')->nullable();
             $table->string('url_foto')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->tinyInteger('type')->default(0);
             /* Users: 0=>User, 1=>Admin, 2=>Manager */
             $table->rememberToken();

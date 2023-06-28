@@ -423,7 +423,7 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
     ]);
 
     return (
-        <div className="p-4">
+        <div className="pt-20 px-4 md:pt-6">
             <Loading display={showLoading} />
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold md:mt-2">Jadwal Bermain</h1>

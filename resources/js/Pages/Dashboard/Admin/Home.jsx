@@ -26,7 +26,14 @@ import FormatRupiah from "@/Components/FormatRupiah";
 import LoaderSpin from "@/Components/LoaderSpin";
 import axios from "axios";
 
-export default function Home() {
+// react-date
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import Toast from "@/Components/Toast";
+import Swal from "sweetalert2";
+
+export default function Home(props) {
     const [newUsers, setNewUsers] = useState("");
     const [transaksis, setTransaksis] = useState("");
     const [totalUsers, setTotalUsers] = useState("");
@@ -34,6 +41,28 @@ export default function Home() {
     const [totalJadwalPending, setTotalJadwalPending] = useState("");
     const [totalPendapatanSeminggu, setTotalPendapatanSeminggu] = useState("");
     const [totalPendapatanHariIni, setTotalPendapatanHariIni] = useState("");
+
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    // const [startDate, setStartDate] = useState(moment().format("DD-MM-YYYY"));
+    // const [endDate, setEndDate] = useState(
+    //     moment().add(7, "days").format("DD-MM-YYYY")
+    // );
+
+    function handleExportClick(e) {
+        e.preventDefault();
+        if (startDate == "" && endDate == "") {
+            Toast.fire(
+                "Perhatian",
+                "Lengkapi tanggal awal dan akhir untuk melakukan export data transaksi",
+                "warning"
+            );
+        } else {
+            const start_date = moment(startDate).format("YYYY-MM-DD");
+            const end_date = moment(endDate).format("YYYY-MM-DD");
+            window.location.href = `/export?start_date=${start_date}&end_date=${end_date}`;
+        }
+    }
 
     // loading
     const [showLoaderSpin, setShowLoaderSpin] = useState(true);
@@ -85,13 +114,23 @@ export default function Home() {
 
     useEffect(() => {
         fetchData();
+        if (props.flash.message != "" && props.flash.message != null) {
+            Swal.fire({
+                title: "Tidak dapat export data",
+                text: "Tidak ada data transaksi pada tanggal tersebut",
+                icon: "warning",
+            });
+            console.info(props.flash.message);
+        }
         return () => {
             // second
         };
     }, []);
     return (
-        <div className="container w-full mx-auto">
-            <h1 className="font-bold text-2xl mt-4">Dashboard Admin</h1>
+        <div className="container w-full mx-auto pt-24 px-2 md:pt-6 md:pl-4">
+            <h1 className="font-bold mb-4 ml-4 md:ml-0 text-2xl  text-slate-50">
+                Dashboard
+            </h1>
             {showLoaderSpin ? (
                 <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
                     <LoaderSpin />
@@ -319,6 +358,70 @@ export default function Home() {
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="p-4 md:mt-8">
+                            <h2 className="text-lg font-semibold mb-2 text-gray-50">
+                                Export Data Transaksi
+                            </h2>
+                            <div className="flex flex-col items-center place-items-center md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+                                <div>
+                                    <label
+                                        htmlFor="start-date"
+                                        className="mr-2 text-gray-50 w-full"
+                                    >
+                                        Start Date:
+                                    </label>
+                                    <DatePicker
+                                        dateFormat="dd-MM-yyyy"
+                                        className="border border-gray-300 rounded-md py-2 px-3 text-gray-700 w-full md:w-56"
+                                        calendarClassName="rounded-md border border-gray-300 "
+                                        onChange={(e) => {
+                                            setStartDate(e);
+                                            // console.info(moment(e, "DD-MM-YYYY"));
+                                        }}
+                                        selected={
+                                            startDate == ""
+                                                ? ""
+                                                : moment(
+                                                      startDate,
+                                                      "DD-MM-YYYY"
+                                                  ).toDate()
+                                        }
+                                        // minDate={new Date()}
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="end-date"
+                                        className="mr-2 text-gray-50 w-full"
+                                    >
+                                        End Date:
+                                    </label>
+                                    <DatePicker
+                                        dateFormat="dd-MM-yyyy"
+                                        className="border border-gray-300 rounded-md py-2 px-3 text-gray-700 w-full md:w-56"
+                                        calendarClassName="rounded-md border border-gray-300 "
+                                        selected={
+                                            endDate == ""
+                                                ? ""
+                                                : moment(
+                                                      endDate,
+                                                      "DD-MM-YYYY"
+                                                  ).toDate()
+                                        }
+                                        // minDate={new Date()}
+                                        onChange={(e) => setEndDate(e)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mt-6">
+                                <button
+                                    className="bg-blue-500 text-white rounded px-3 py-2 md:w-56 w-full"
+                                    onClick={handleExportClick}
+                                >
+                                    Export
+                                </button>
                             </div>
                         </div>
                     </div>

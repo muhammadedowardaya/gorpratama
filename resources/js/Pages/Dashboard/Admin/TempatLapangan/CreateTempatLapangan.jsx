@@ -156,13 +156,13 @@ export default function CreateTempatLapangan(props) {
     };
 
     const TimeInput = ({ label, date, onDateChange }) => {
-        const minTime = new Date();
-        minTime.setHours(parseInt(data.jam_buka.slice(0, 2)));
-        minTime.setMinutes(parseInt(data.jam_buka.slice(3, 5)));
+        // const minTime = new Date();
+        // minTime.setHours(parseInt(data.jam_buka.slice(0, 2)));
+        // minTime.setMinutes(parseInt(data.jam_buka.slice(3, 5)));
 
-        const maxTime = new Date();
-        maxTime.setHours(parseInt(data.jam_tutup.slice(0, 2)));
-        maxTime.setMinutes(parseInt(data.jam_tutup.slice(3, 5)));
+        // const maxTime = new Date();
+        // maxTime.setHours(parseInt(data.jam_tutup.slice(0, 2)));
+        // maxTime.setMinutes(parseInt(data.jam_tutup.slice(3, 5)));
 
         return (
             <div className="flex flex-col">
@@ -178,8 +178,8 @@ export default function CreateTempatLapangan(props) {
                     timeCaption="Time"
                     dateFormat="HH:mm"
                     timeFormat="HH:mm"
-                    minTime={minTime}
-                    maxTime={maxTime}
+                    // minTime={minTime}
+                    // maxTime={maxTime}
                     className={`border w-full  border-gray-300 rounded-md py-2 px-3 text-gray-700`}
                 />
             </div>
@@ -194,11 +194,11 @@ export default function CreateTempatLapangan(props) {
         <div>
             <Head title="Kelola Tempat Lapangan" />
 
-            <div className="w-full px-4 md:px-0 md:mt-2 text-white leading-normal grid justify-center justify-items-center">
+            <div className="w-full px-4 mt-16 md:px-0 md:mt-2 text-white leading-normal grid justify-center justify-items-center">
                 <h1 className="text-center mb-8 text-xl font-bold mt-4">
                     Tambahkan informasi tempat Lapangan
                 </h1>
-                <div className="md:max-w-4xl ">
+                <div className="md:max-w-4xl px-4">
                     <div className="login-box ">
                         <form
                             className="grid grid-cols-1 md:grid-cols-2 md:gap-4"

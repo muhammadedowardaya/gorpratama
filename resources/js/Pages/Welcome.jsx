@@ -29,7 +29,6 @@ export default function Welcome(props) {
 
     useEffect(() => {
         getSemuaJadwal();
-        console.info(semuaJadwal);
 
         const tabelJadwal = document.querySelector("#tabel-jadwal");
         let tabelJadwalisDragging = false;

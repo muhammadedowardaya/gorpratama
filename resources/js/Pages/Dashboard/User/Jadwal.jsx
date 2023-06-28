@@ -53,8 +53,8 @@ export default function Jadwal(props) {
     }, []);
 
     return (
-        <div className="relative p-4">
-            <h1 className="text-2xl font-bold text-slate-100 my-4">
+        <div className="relative pt-16 px-2 md:pt-6 md:px-4">
+            <h1 className="text-xl text-center md:text-left md:text-2xl font-bold text-slate-100 my-4">
                 Jadwal Bermain Saya
             </h1>
             <div id="table-container">

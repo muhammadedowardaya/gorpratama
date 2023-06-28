@@ -223,7 +223,18 @@ export default function Layout({ children, header, title }) {
     }
 
     useEffect(() => {
-        izinAktifkanNotifikasi();
+        // untuk durasi pemanggilan function izinAktifkanNotifikasi()
+        // Atur delay menjadi 60 menit
+        const DELAY = 60 * 60 * 1000;
+        const lastRun = localStorage.getItem("lastRun");
+        const now = Date.now();
+
+        if (!lastRun || now - lastRun > DELAY) {
+            // Jalankan fungsi di sini
+            izinAktifkanNotifikasi();
+            localStorage.setItem("lastRun", now);
+        }
+
         fetchData();
         getDataGor();
         if (localStorage.getItem("mode") === "dark") {
@@ -620,7 +631,7 @@ export default function Layout({ children, header, title }) {
                         </button>
                     </div>
                     {showModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700 bg-opacity-50 p-4">
                             <div className="bg-gray-50 rounded-lg p-8 relative">
                                 <h2 className="text-lg text-gray-800 font-semibold mb-4">
                                     Pilih Bantuan
