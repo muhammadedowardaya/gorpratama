@@ -1,5 +1,5 @@
 import Layout from "@/Layouts/Layout";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { IoAddCircleSharp, IoClose } from "react-icons/io5";
@@ -54,7 +54,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
 
     const { data, setData, reset, errors } = useForm({
         user_id: "",
-        lapangan_id: "",
+        lapangan_id: 0,
         nama_lapangan: "",
         status_transaksi: "",
         tanggal_main: "",
@@ -141,6 +141,29 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
             console.error(error);
         }
     }
+
+    const compareDates = (date1, date2) => {
+        // Ubah format tanggal dari DD-MM-YYYY menjadi YYYY-MM-DD
+        let date1Formatted = date1.split("-").reverse().join("-");
+        let date2Formatted = date2.split("-").reverse().join("-");
+
+        // Buat objek Date untuk kedua tanggal
+        let date1Obj = new Date(date1Formatted);
+        let date2Obj = new Date(date2Formatted);
+
+        // Atur waktu kedua objek Date ke tengah malam
+        date1Obj.setHours(0, 0, 0, 0);
+        date2Obj.setHours(0, 0, 0, 0);
+
+        // Bandingkan kedua objek Date
+        if (date1Obj < date2Obj) {
+            return -1;
+        } else if (date1Obj > date2Obj) {
+            return false;
+        } else {
+            return 0;
+        }
+    };
 
     async function getListLapangan() {
         try {
@@ -233,8 +256,8 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
     const submit = (e) => {
         e.preventDefault();
         setShowLoading(true);
-        let ada_jadwal = false;
 
+        let ada_jadwal = false;
         if (Array.isArray(jadwal) && jadwal.length > 0) {
             for (let i = 0; i < jadwal.length; i++) {
                 const jadwalTanggal = moment(jadwal[i].tanggal).format(
@@ -266,19 +289,42 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
         const year = today.getFullYear();
         const formattedDate = day + "-" + month + "-" + year;
 
+        const tanggal_sekarang = moment(formattedDate, "DD-MM-YYYY");
+        const tanggal_main = moment(data.tanggal_main, "DD-MM-YYYY");
+
+        // ------------------------------------untuk validasi jam booking-----------------------
+        const jamMulai = new Date();
+        const jamSelesai = new Date();
+        const currentTime = new Date();
+
+        // Mengatur jam mulai
+        jamMulai.setHours(parseInt(data.jam_mulai.split(":")[0]));
+        jamMulai.setMinutes(parseInt(data.jam_mulai.split(":")[1]));
+
+        // Mengatur jam selesai
+        jamSelesai.setHours(parseInt(data.jam_selesai.split(":")[0]));
+        jamSelesai.setMinutes(parseInt(data.jam_selesai.split(":")[1]));
+
+        // ------------------------------------------------------------------------
+
         if (ada_jadwal == false) {
-            if (data.nama == "" || data.nama == "default") {
+            const cekTanggal = compareDates(
+                data.tanggal_main.toString(),
+                formattedDate.toString()
+            );
+
+            if (user == "" || user == []) {
                 setShowLoading(false);
                 Swal.fire(
-                    "Maaf cuy",
-                    "Nama pelanggan gak boleh kosong euy",
+                    "Perhatian!",
+                    "Anda belum memilih nama pelanggan",
                     "warning"
                 );
-            } else if (data.lapangan_id == "") {
+            } else if (data.lapangan_id == 0) {
                 setShowLoading(false);
                 Swal.fire(
-                    "Maaf",
-                    "Mohon pilih lapangan terlebih dahulu",
+                    "Perhatian!",
+                    "Anda belum memilih lapangan",
                     "warning"
                 );
             } else if (
@@ -286,8 +332,15 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                 data.status_transaksi == "default"
             ) {
                 setShowLoading(false);
-                Swal.fire("Maaf", "Status transaksi harus dipilih", "warning");
-            } else if (data.tanggal_main < formattedDate) {
+                Swal.fire(
+                    "Perhatian!",
+                    "Anda belum memilih lapangan",
+                    "warning"
+                );
+            } else if (data.tanggal_main == "") {
+                setShowLoading(false);
+                Swal.fire("Hmm..", "Anda belum mengisi tanggal", "warning");
+            } else if (cekTanggal) {
                 setShowLoading(false);
                 Swal.fire(
                     "Hmm..",
@@ -298,104 +351,49 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                 setShowLoading(false);
                 Swal.fire("Hmm..", "Lengkapi jam terlebih dahulu", "warning");
             } else if (
-                parseInt(data.jam_selesai) - parseInt(data.jam_mulai) <
+                parseInt(moment(data.jam_selesai).format("HH:mm")) -
+                    parseInt(moment(data.jam_mulai).format("HH:mm")) <
                 1
             ) {
                 setShowLoading(false);
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
-            } else {
-                setShowLoading(false);
-                //    tambah jadwal
-                axios.post("/jadwal", data).then((response) => {
-                    setData("status_transaksi", "");
-                    setShowTambahJadwal(false);
-                    Swal.fire(
-                        "Berhasil!",
-                        "Data berhasil ditambahkan",
-                        "success"
-                    );
-                });
-            }
-        } else {
-            setShowLoading(false);
-            Swal.fire("Ada Jadwal!", "Silahkan lihat jadwal", "warning");
-        }
-    };
-
-    const update = (e) => {
-        e.preventDefault();
-        setShowLoading(true);
-        let ada_jadwal = false;
-        if (Array.isArray(jadwal) && jadwal.length > 0) {
-            for (let i = 0; i < jadwal.length; i++) {
-                const jadwalTanggal = moment(jadwal[i].tanggal).format(
-                    "DD-MM-YYYY"
-                );
-                const jadwalJamMulai = moment(jadwal[i].jam_mulai, "HH:mm");
-                const jadwalJamSelesai = moment(jadwal[i].jam_selesai, "HH:mm");
-
-                const dataTanggal = data.tanggal_main;
-                const dataJamMulai = moment(data.jam_mulai, "HH:mm");
-                const dataJamSelesai = moment(data.jam_selesai, "HH:mm");
-
-                if (
-                    jadwalTanggal == dataTanggal &&
-                    ((dataJamMulai >= jadwalJamMulai &&
-                        dataJamMulai < jadwalJamSelesai) ||
-                        (dataJamSelesai > jadwalJamMulai &&
-                            dataJamSelesai <= jadwalJamSelesai))
-                ) {
-                    ada_jadwal = true;
-                    break;
-                }
-            }
-        }
-
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, "0");
-        const month = String(today.getMonth() + 1).padStart(2, "0");
-        const year = today.getFullYear();
-        const formattedDate = year + "-" + month + "-" + day;
-
-        if (ada_jadwal == false) {
-            if (data.nama == "" || data.nama == "default") {
-                setShowLoading(false);
-                Swal.fire(
-                    "Maaf cuy",
-                    "Nama pelanggan gak boleh kosong euy",
-                    "warning"
-                );
-            } else if (data.tanggal_main < formattedDate) {
+            } else if (
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamMulai.getHours() < currentTime.getHours() ||
+                    (jamMulai.getHours() == currentTime.getHours() &&
+                        jamMulai.getMinutes() <= currentTime.getMinutes()))
+            ) {
                 setShowLoading(false);
                 Swal.fire(
                     "Hmm..",
-                    "Anda belum mengisi tanggal dengan benar",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
                     "warning"
                 );
-            } else if (data.jam_mulai == "" || data.jam_selesai == "") {
-                setShowLoading(false);
-                Swal.fire("Hmm..", "Lengkapi jam terlebih dahulu", "warning");
             } else if (
-                parseInt(data.jam_selesai) - parseInt(data.jam_mulai) <
-                1
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamSelesai.getHours() < currentTime.getHours() ||
+                    (jamSelesai.getHours() == currentTime.getHours() &&
+                        jamSelesai.getMinutes() <= currentTime.getMinutes()))
             ) {
                 setShowLoading(false);
-                Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
+                Swal.fire(
+                    "Hmm..",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
+                    "warning"
+                );
             } else {
-                //    tambah jadwal
                 setShowLoading(false);
-                axios
-                    .patch(`/jadwal/${data.jadwal_id}`, data)
-                    .then((response) => {
-                        setData("status_transaksi", "");
-                        reset();
-                        setShowEditJadwal(false);
-                        Swal.fire(
-                            "Berhasil!",
-                            "Data berhasil diupdate",
-                            "success"
-                        );
-                    });
+                //    tambah jadwal
+                console.info(data);
+                // axios.post("/jadwal", data).then((response) => {
+                //     setData("status_transaksi", "");
+                //     setShowTambahJadwal(false);
+                //     Swal.fire(
+                //         "Berhasil!",
+                //         "Data berhasil ditambahkan",
+                //         "success"
+                //     );
+                // });
             }
         } else {
             setShowLoading(false);
@@ -625,55 +623,9 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                                             <td>
                                                 <button
                                                     onClick={() => {
-                                                        setShowLoading(true);
-                                                        axios
-                                                            .get(
-                                                                `/dashboard/jadwal/${item.lapangan.id}/${item.id}`
-                                                            )
-                                                            .then(
-                                                                (response) => {
-                                                                    const editJadwal =
-                                                                        response
-                                                                            .data
-                                                                            .jadwal[0];
-
-                                                                    setData(
-                                                                        (
-                                                                            prevData
-                                                                        ) => ({
-                                                                            ...prevData,
-                                                                            nama: editJadwal
-                                                                                .user
-                                                                                .nama,
-                                                                            lapangan_id:
-                                                                                editJadwal.lapangan_id,
-                                                                            nama_lapangan:
-                                                                                editJadwal
-                                                                                    .lapangan
-                                                                                    .nama,
-                                                                            jadwal_id:
-                                                                                editJadwal.id,
-                                                                            user_id:
-                                                                                editJadwal.user_id,
-                                                                            status_transaksi:
-                                                                                editJadwal.status_transaksi,
-                                                                            tanggal_main:
-                                                                                editJadwal.tanggal,
-                                                                            jam_mulai:
-                                                                                editJadwal.jam_mulai,
-                                                                            jam_selesai:
-                                                                                editJadwal.jam_selesai,
-                                                                        })
-                                                                    );
-
-                                                                    setShowEditJadwal(
-                                                                        true
-                                                                    );
-                                                                    setShowLoading(
-                                                                        false
-                                                                    );
-                                                                }
-                                                            );
+                                                        router.get(
+                                                            `/dashboard/jadwal/${item.lapangan.id}/${item.id}`
+                                                        );
                                                     }}
                                                     className="bg-green-500 px-4 text-white"
                                                 >
@@ -947,270 +899,6 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
                     </div>
                 </div>
             )}
-
-            {showEditJadwal && (
-                <div className="fixed top-0 right-0 left-0 bottom-0 flex justify-center p-4 z-20 mt-14 md:mt-0 backdrop-filter backdrop-blur-sm">
-                    <div className="relative overflow-y-auto">
-                        <div className="login-box w-full md:w-[70vw]">
-                            <h1 className="text-gray-700 text-center mb-4">
-                                Edit Jadwal
-                            </h1>
-
-                            <form onSubmit={update}>
-                                <div>
-                                    <div className="w-full">
-                                        <label className="block text-gray-600 font-bold mb-2">
-                                            Nama Pelanggan
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            value={data.nama}
-                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
-                                            disabled
-                                        />
-                                    </div>
-
-                                    <div className="w-full mt-4">
-                                        <label className="block text-gray-600 font-bold mb-2">
-                                            Lapangan
-                                        </label>
-
-                                        {editLapangan ? (
-                                            <select
-                                                className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700"
-                                                defaultValue="default"
-                                                onChange={(e) => {
-                                                    const lapangan =
-                                                        e.target.value;
-                                                    setLapangan(
-                                                        JSON.parse(lapangan)
-                                                    );
-                                                }}
-                                            >
-                                                <option value="default">
-                                                    Pilih Lapangan
-                                                </option>
-                                                {listLapangan.map((item) => (
-                                                    <option
-                                                        key={item.id}
-                                                        value={JSON.stringify(
-                                                            item
-                                                        )}
-                                                    >
-                                                        {item.nama}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        ) : (
-                                            <select
-                                                className="w-full bg-gray-700 rounded-md border border-gray-300 p-2 text-gray-100"
-                                                defaultValue="default"
-                                                disabled
-                                            >
-                                                <option value="default">
-                                                    {data.nama_lapangan}
-                                                </option>
-                                            </select>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        {editLapangan ? (
-                                            <div
-                                                className="my-2"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setEditLapangan(false);
-                                                }}
-                                                onTouchStart={(e) => {
-                                                    e.preventDefault();
-                                                    setEditLapangan(false);
-                                                }}
-                                            >
-                                                <button className="text-slate-100 rounded bg-gray-600 px-4 ">
-                                                    Batal edit
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <div
-                                                className="my-2 col-span-2"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setEditLapangan(true);
-                                                }}
-                                                onTouchStart={(e) => {
-                                                    e.preventDefault();
-                                                    setEditLapangan(true);
-                                                }}
-                                            >
-                                                <button className="text-slate-100 rounded bg-orange-400 px-4 ">
-                                                    Edit Lapangan
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="w-full mt-4">
-                                        <label className="block text-gray-600 font-bold mb-2">
-                                            Status Transaksi
-                                        </label>
-
-                                        <select
-                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700 cursor-pointer"
-                                            value={
-                                                data.status_transaksi !==
-                                                    undefined &&
-                                                data.status_transaksi !== ""
-                                                    ? statusTransaksiOptions.findIndex(
-                                                          Number.isInteger(
-                                                              data.status_transaksi
-                                                          )
-                                                              ? (option) =>
-                                                                    option.value ==
-                                                                    data.status_transaksi
-                                                              : (option) =>
-                                                                    option.label ==
-                                                                    data.status_transaksi
-                                                      )
-                                                    : "default"
-                                            }
-                                            onChange={(e) => {
-                                                const selectedIndex = parseInt(
-                                                    e.target.value
-                                                );
-                                                const selectedValue =
-                                                    selectedIndex >= 0
-                                                        ? statusTransaksiOptions[
-                                                              selectedIndex
-                                                          ].value
-                                                        : "";
-                                                setData(
-                                                    "status_transaksi",
-                                                    selectedValue
-                                                );
-                                            }}
-                                        >
-                                            <option value="default">
-                                                Pilih Status
-                                            </option>
-                                            {statusTransaksiOptions.map(
-                                                (option, index) => (
-                                                    <option
-                                                        key={option.value}
-                                                        value={index.toString()}
-                                                    >
-                                                        {option.label}
-                                                    </option>
-                                                )
-                                            )}
-                                        </select>
-                                    </div>
-
-                                    <div className="mt-4">
-                                        <Label
-                                            className="text-slate-700"
-                                            forInput="date"
-                                            value="Tanggal"
-                                        />
-
-                                        <DatePicker
-                                            dateFormat="dd-MM-yyyy"
-                                            className="mt-2 border border-gray-300 rounded-md py-2 px-3 text-gray-700"
-                                            calendarClassName="rounded-md border border-gray-300"
-                                            onChange={(date) => {
-                                                setData(
-                                                    "tanggal_main",
-                                                    moment(date).format(
-                                                        "DD-MM-YYYY"
-                                                    )
-                                                );
-                                            }}
-                                            selected={
-                                                data.tanggal_main == ""
-                                                    ? ""
-                                                    : moment(
-                                                          data.tanggal_main,
-                                                          "YYYY-MM-DD"
-                                                      ).toDate()
-                                            }
-                                            minDate={new Date()}
-                                        />
-                                    </div>
-
-                                    <div className="mt-4">
-                                        <div className="flex gap-2">
-                                            <TimeInput
-                                                label="Jam Mulai"
-                                                date={
-                                                    data.jam_mulai == ""
-                                                        ? ""
-                                                        : moment(
-                                                              data.jam_mulai,
-                                                              "HH:mm"
-                                                          ).toDate()
-                                                }
-                                                onDateChange={(date) => {
-                                                    const formattedDate =
-                                                        moment(date).format(
-                                                            "HH:mm"
-                                                        );
-                                                    setData(
-                                                        "jam_mulai",
-                                                        formattedDate
-                                                    );
-                                                }}
-                                            />
-                                            <TimeInput
-                                                label="Jam Selesai"
-                                                date={
-                                                    data.jam_selesai == ""
-                                                        ? ""
-                                                        : moment(
-                                                              data.jam_selesai,
-                                                              "HH:mm"
-                                                          ).toDate()
-                                                }
-                                                onDateChange={(date) => {
-                                                    const formattedDate =
-                                                        moment(date).format(
-                                                            "HH:mm"
-                                                        );
-                                                    setData(
-                                                        "jam_selesai",
-                                                        formattedDate
-                                                    );
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <center>
-                                    <button
-                                        type="submit"
-                                        className="w-full submit"
-                                        disabled={searchLoading ? true : false}
-                                    >
-                                        Update
-                                        <span></span>
-                                    </button>
-                                </center>
-                            </form>
-                        </div>
-                        <div
-                            className="absolute top-1 right-1 cursor-pointer"
-                            onClick={() => {
-                                reset();
-                                setShowEditJadwal(false);
-                            }}
-                        >
-                            <AiFillCloseCircle className="fill-red-500 text-4xl" />
-                        </div>
-                    </div>
-                </div>
-            )}
-
             <div
                 className={`fixed md:top-0 top-16 bottom-0 right-0 left-0 ${
                     showJadwal ? "grid" : "hidden"

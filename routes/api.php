@@ -241,7 +241,16 @@ Route::get('/pending-jadwal', function () {
     $jadwal = Jadwal::with(['user', 'lapangan'])
         ->whereIn('status_transaksi', [1, 4])
         ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->where(function ($query) {
+            $query->where('tanggal', '>', now()->toDateString())
+                ->orWhere(function ($query) {
+                    $query->where('tanggal', '=', now()->toDateString())
+                        ->where('jam_mulai', '>=', now()->format('H:i'));
+                });
+        })
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->orderBy('jam_mulai', 'asc') // tambahkan pengurutan berdasarkan jam_mulai dengan urutan menaik
+        // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
         ->paginate(8);
 
     return response()->json([

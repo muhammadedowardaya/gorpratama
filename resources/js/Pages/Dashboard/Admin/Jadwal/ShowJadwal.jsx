@@ -14,7 +14,8 @@ import Swal from "sweetalert2";
 import FormatRupiah from "@/Components/FormatRupiah";
 import axios from "axios";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { IoReturnDownBackOutline } from "react-icons/io5";
+import { IoClose, IoReturnDownBackOutline } from "react-icons/io5";
+import Schedule from "@/Components/Schedule";
 
 export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
     const [jadwal, setJadwal] = useState([]);
@@ -24,10 +25,13 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
     const [showLoading, setShowLoading] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
 
+    const [showJadwal, setShowJadwal] = useState(false);
+
     const [showTambahJadwal, setShowTambahJadwal] = useState(false);
     const [showEditJadwal, setShowEditJadwal] = useState(false);
     const [editTanggalMain, setEditTanggalMain] = useState(false);
     const [editJamBertanding, setEditJamBertanding] = useState(false);
+
     const [statusTransaksiOptions, setStatusTransaksiOptions] = useState([
         { value: 1, label: "PENDING" },
         { value: 2, label: "FAILED" },
@@ -63,18 +67,15 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
     async function getJadwal() {
         try {
             setSearchLoading(true);
-            const response = await axios.get(
-                `/api/admin-jadwal/${lapangan_id}`
-            );
-            if (
-                Array.isArray(response.data.jadwal) &&
-                response.data.jadwal.length > 0
-            ) {
-                setSearchLoading(false);
-                setJadwal(response.data.jadwal);
-            } else {
-                setSearchLoading(false);
-            }
+            axios
+                .get("/api/semua-jadwal")
+                .then((response) => {
+                    setSearchLoading(false);
+                    setJadwal(response.data.semua_jadwal);
+                })
+                .catch((error) => {
+                    // console.error("Error fetching schedules:", error);
+                });
         } catch (error) {
             // console.error(error);
         }
@@ -180,8 +181,9 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                 );
                 const jadwalJamMulai = moment(jadwal[i].jam_mulai, "HH:mm");
                 const jadwalJamSelesai = moment(jadwal[i].jam_selesai, "HH:mm");
-
-                const dataTanggal = data.tanggal_main;
+                const dataTanggal = moment(data.tanggal_main).format(
+                    "DD-MM-YYYY"
+                );
                 const dataJamMulai = moment(data.jam_mulai, "HH:mm");
                 const dataJamSelesai = moment(data.jam_selesai, "HH:mm");
 
@@ -204,30 +206,73 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
         const year = today.getFullYear();
         const formattedDate = day + "-" + month + "-" + year;
 
+        const tanggal_sekarang = moment(formattedDate, "DD-MM-YYYY");
+        const tanggal_main = moment(data.tanggal_main, "DD-MM-YYYY");
+
+        // ------------------------------------untuk validasi jam booking-----------------------
+        const jamMulai = new Date();
+        const jamSelesai = new Date();
+        const currentTime = new Date();
+
+        // Mengatur jam mulai
+        jamMulai.setHours(parseInt(data.jam_mulai.split(":")[0]));
+        jamMulai.setMinutes(parseInt(data.jam_mulai.split(":")[1]));
+
+        // Mengatur jam selesai
+        jamSelesai.setHours(parseInt(data.jam_selesai.split(":")[0]));
+        jamSelesai.setMinutes(parseInt(data.jam_selesai.split(":")[1]));
+
+        // ------------------------------------------------------------------------
+
         if (ada_jadwal == false) {
-            if (user == "" || user == "default") {
-                setShowLoading(false);
-                Swal.fire(
-                    "Maaf cuy",
-                    "Nama pelanggan gak boleh kosong euy",
-                    "warning"
-                );
-            } else if (data.tanggal_main < formattedDate) {
-                setShowLoading(false);
+            const cekTanggal = compareDates(
+                data.tanggal_main.toString(),
+                formattedDate.toString()
+            );
+            if (data.tanggal_main == "") {
+                setShow(false);
+                Swal.fire("Hmm..", "Anda belum mengisi tanggal", "warning");
+            } else if (cekTanggal) {
+                setShow(false);
                 Swal.fire(
                     "Hmm..",
                     "Anda belum mengisi tanggal dengan benar",
                     "warning"
                 );
             } else if (data.jam_mulai == "" || data.jam_selesai == "") {
-                setShowLoading(false);
+                setShow(false);
                 Swal.fire("Hmm..", "Lengkapi jam terlebih dahulu", "warning");
             } else if (
-                parseInt(data.jam_selesai) - parseInt(data.jam_mulai) <
+                parseInt(moment(data.jam_selesai).format("HH:mm")) -
+                    parseInt(moment(data.jam_mulai).format("HH:mm")) <
                 1
             ) {
-                setShowLoading(false);
+                setShow(false);
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
+            } else if (
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamMulai.getHours() < currentTime.getHours() ||
+                    (jamMulai.getHours() == currentTime.getHours() &&
+                        jamMulai.getMinutes() <= currentTime.getMinutes()))
+            ) {
+                setShow(false);
+                Swal.fire(
+                    "Hmm..",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
+                    "warning"
+                );
+            } else if (
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamSelesai.getHours() < currentTime.getHours() ||
+                    (jamSelesai.getHours() == currentTime.getHours() &&
+                        jamSelesai.getMinutes() <= currentTime.getMinutes()))
+            ) {
+                setShow(false);
+                Swal.fire(
+                    "Hmm..",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
+                    "warning"
+                );
             } else {
                 //    tambah jadwal
                 axios.post("/jadwal", data).then((response) => {
@@ -277,10 +322,12 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                 const jadwalJamMulai = moment(jadwal[i].jam_mulai, "HH:mm");
                 const jadwalJamSelesai = moment(jadwal[i].jam_selesai, "HH:mm");
 
-                const dataTanggal = data.tanggal_main;
+                const dataTanggal = moment(data.tanggal_main).format(
+                    "DD-MM-YYYY"
+                );
                 const dataJamMulai = moment(data.jam_mulai, "HH:mm");
                 const dataJamSelesai = moment(data.jam_selesai, "HH:mm");
-
+                console.info(`${jadwalTanggal} == ${dataTanggal}`);
                 if (
                     jadwalTanggal == dataTanggal &&
                     ((dataJamMulai >= jadwalJamMulai &&
@@ -298,48 +345,93 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
         const day = String(today.getDate()).padStart(2, "0");
         const month = String(today.getMonth() + 1).padStart(2, "0");
         const year = today.getFullYear();
-        const formattedDate = year + "-" + month + "-" + day;
+        const formattedDate = day + "-" + month + "-" + year;
+
+        const tanggal_sekarang = moment(formattedDate, "DD-MM-YYYY");
+        const tanggal_main = moment(data.tanggal_main, "DD-MM-YYYY");
+
+        // ------------------------------------untuk validasi jam booking-----------------------
+        const jamMulai = new Date();
+        const jamSelesai = new Date();
+        const currentTime = new Date();
+
+        // Mengatur jam mulai
+        jamMulai.setHours(parseInt(data.jam_mulai.split(":")[0]));
+        jamMulai.setMinutes(parseInt(data.jam_mulai.split(":")[1]));
+
+        // Mengatur jam selesai
+        jamSelesai.setHours(parseInt(data.jam_selesai.split(":")[0]));
+        jamSelesai.setMinutes(parseInt(data.jam_selesai.split(":")[1]));
+
+        // ------------------------------------------------------------------------
 
         if (ada_jadwal == false) {
-            if (data.nama == "" || data.nama == "default") {
-                setShowLoading(false);
-                Swal.fire(
-                    "Maaf cuy",
-                    "Nama pelanggan gak boleh kosong euy",
-                    "warning"
-                );
-            } else if (data.tanggal_main < formattedDate) {
-                setShowLoading(false);
+            const cekTanggal = compareDates(
+                data.tanggal_main.toString(),
+                formattedDate.toString()
+            );
+            if (data.tanggal_main == "") {
+                setShow(false);
+                Swal.fire("Hmm..", "Anda belum mengisi tanggal", "warning");
+            } else if (cekTanggal) {
+                setShow(false);
                 Swal.fire(
                     "Hmm..",
                     "Anda belum mengisi tanggal dengan benar",
                     "warning"
                 );
             } else if (data.jam_mulai == "" || data.jam_selesai == "") {
-                setShowLoading(false);
+                setShow(false);
                 Swal.fire("Hmm..", "Lengkapi jam terlebih dahulu", "warning");
             } else if (
-                parseInt(data.jam_selesai) - parseInt(data.jam_mulai) <
+                parseInt(moment(data.jam_selesai).format("HH:mm")) -
+                    parseInt(moment(data.jam_mulai).format("HH:mm")) <
                 1
             ) {
-                setShowLoading(false);
+                setShow(false);
                 Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
+            } else if (
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamMulai.getHours() < currentTime.getHours() ||
+                    (jamMulai.getHours() == currentTime.getHours() &&
+                        jamMulai.getMinutes() <= currentTime.getMinutes()))
+            ) {
+                setShow(false);
+                Swal.fire(
+                    "Hmm..",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
+                    "warning"
+                );
+            } else if (
+                tanggal_main.isSameOrBefore(tanggal_sekarang) &&
+                (jamSelesai.getHours() < currentTime.getHours() ||
+                    (jamSelesai.getHours() == currentTime.getHours() &&
+                        jamSelesai.getMinutes() <= currentTime.getMinutes()))
+            ) {
+                setShow(false);
+                Swal.fire(
+                    "Hmm..",
+                    "Jam sudah terlewat, tidak dapat melakukan booking",
+                    "warning"
+                );
             } else {
-                //    tambah jadwal
+                //    update jadwal
                 setShowLoading(false);
-                axios
-                    .patch(`/jadwal/${data.jadwal_id}`, data)
-                    .then((response) => {
-                        setData("status_transaksi", "");
-                        reset();
-                        setShowEditJadwal(false);
-                        Swal.fire(
-                            "Berhasil!",
-                            "Data berhasil diupdate",
-                            "success"
-                        );
-                        console.info(response);
-                    });
+                console.info(data);
+                // axios
+                //     .patch(`/jadwal/${data.jadwal_id}`, data)
+                //     .then((response) => {
+                //         setShowLoading(false);
+                //         setData("status_transaksi", "");
+                //         reset();
+                //         setShowEditJadwal(false);
+                //         Swal.fire(
+                //             "Berhasil!",
+                //             "Data berhasil diupdate",
+                //             "success"
+                //         );
+                //         console.info(response);
+                //     });
                 // console.info(data);
             }
         } else {
@@ -350,6 +442,9 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
 
     useEffect(() => {
         getJadwal();
+
+        // console.info(Array.isArray(jadwal) && jadwal.length > 0);
+
         getUsers();
         updateData();
 
@@ -436,6 +531,7 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                     <IoAddCircleSharp className="inline-block" size="1.5em" />{" "}
                     Tambah Jadwal
                 </button> */}
+
                 <div
                     onClick={() => {
                         router.get("/dashboard/jadwal");
@@ -443,6 +539,16 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                 >
                     <IoReturnDownBackOutline className="text-2xl font-bold" />
                 </div>
+            </div>
+            <div className="flex mt-4 justify-end mr-4">
+                <button
+                    className="shadow px-2 shadow-white text-sm md:text-base text-slate-50"
+                    onClick={() => {
+                        setShowJadwal(true);
+                    }}
+                >
+                    Lihat Jadwal
+                </button>
             </div>
             <div className="overflow-auto mt-7">
                 <div id="table-container">
@@ -493,6 +599,15 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                                                                             .data
                                                                             .jadwal[0];
 
+                                                                    const status_transaksi =
+                                                                        statusTransaksiOptions.findIndex(
+                                                                            (
+                                                                                option
+                                                                            ) =>
+                                                                                option.label ==
+                                                                                editJadwal.status_transaksi
+                                                                        );
+
                                                                     setData(
                                                                         (
                                                                             prevData
@@ -505,7 +620,7 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                                                                             user_id:
                                                                                 editJadwal.user_id,
                                                                             status_transaksi:
-                                                                                editJadwal.status_transaksi,
+                                                                                status_transaksi,
                                                                             tanggal_main:
                                                                                 editJadwal.tanggal,
                                                                             jam_mulai:
@@ -740,24 +855,25 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                                         </label>
 
                                         <select
-                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700 cursor-pointer"
                                             value={
                                                 data.status_transaksi !==
                                                     undefined &&
                                                 data.status_transaksi !== ""
-                                                    ? statusTransaksiOptions.findIndex(
-                                                          Number.isInteger(
-                                                              data.status_transaksi
-                                                          )
-                                                              ? (option) =>
-                                                                    option.value ==
-                                                                    data.status_transaksi
-                                                              : (option) =>
-                                                                    option.label ==
-                                                                    data.status_transaksi
-                                                      )
+                                                    ? // statusTransaksiOptions.findIndex(
+                                                      //       Number.isInteger(
+                                                      //           data.status_transaksi
+                                                      //       )
+                                                      //           ? (option) =>
+                                                      //                 option.value ==
+                                                      //                 data.status_transaksi
+                                                      //           : (option) =>
+                                                      //                 option.label ==
+                                                      //                 data.status_transaksi
+                                                      //   )
+                                                      data.status_transaksi
                                                     : "default"
                                             }
+                                            className="w-full bg-white rounded-md border border-gray-300 p-2 text-gray-700 cursor-pointer"
                                             onChange={(e) => {
                                                 const selectedIndex = parseInt(
                                                     e.target.value
@@ -892,6 +1008,24 @@ export default function ShowJadwal({ lapangan_id, tempat_lapangan }) {
                     </div>
                 </div>
             )}
+
+            <div
+                className={`fixed md:top-0 top-16 bottom-0 right-0 left-0 ${
+                    showJadwal ? "grid" : "hidden"
+                } justify-center bg-gray-700 backdrop-filter backdrop-blur bg-opacity-30 h-screen w-screen pt-5 md:pt-4 z-50`}
+            >
+                <div className="px-4 md:pr-8 md:w-[80vw] w-[99vw]">
+                    <Schedule className="relative">
+                        <IoClose
+                            onClick={() => {
+                                setShowJadwal(false);
+                            }}
+                            className="absolute top-0 right-0 cursor-pointer"
+                            size="2em"
+                        />
+                    </Schedule>
+                </div>
+            </div>
         </div>
     );
 }

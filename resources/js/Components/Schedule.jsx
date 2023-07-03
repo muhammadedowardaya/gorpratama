@@ -71,6 +71,7 @@ const Schedule = ({ className, children }) => {
 
         const interval = setInterval(() => {
             setCurrentTime(getCurrentTimeWithoutSeconds());
+            // console.info(`${currentTime} == 13:00`);
         }, 1000);
         return () => clearInterval(interval);
     }, []);

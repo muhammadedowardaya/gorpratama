@@ -210,16 +210,22 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     });
 
     Route::post('/booking', [TransaksiController::class, 'store']);
+    Route::get('/booking', function () {
+        return redirect()->to('/');
+    });
     Route::post('/booking-bayar-ditempat', [TransaksiController::class, 'bayarDitempat']);
+
+    Route::get('/konfirmasi-whatsapp', function () {
+        return redirect()->to('/');
+    });
+
     Route::post('/konfirmasi-whatsapp', function (Request $request) {
-        if ($request->isMethod('get')) {
-            return redirect()->route('/');
-        }
         $data = $request->all();
         return Inertia::render('Dashboard/KonfirmasiWhatsapp', [
             'data' => $data
         ]);
     });
+
     Route::post('/kirim-konfirmasi-whatsapp', [KonfirmasiWhatsAppController::class, 'store']);
 
     Route::get('/jadwal', [JadwalController::class, 'index']);
@@ -337,9 +343,15 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     });
 
     Route::get('/dashboard/jadwal/{lapangan_id}/{id}', function ($lapangan_id, $id) {
-        $jadwal = Jadwal::where('lapangan_id', $lapangan_id)->where('id', $id)->with(['user', 'lapangan'])->get();
-        return response()->json([
-            'jadwal' => $jadwal
+        $users = User::where('type', 'user')->get();
+        $tempat_lapangan = TempatLapangan::all()->first();
+        $lapangan = Lapangan::all();
+        $jadwal = Jadwal::where('lapangan_id', $lapangan_id)->where('id', $id)->with(['user', 'lapangan'])->first();
+        return Inertia::render('Dashboard/Admin/Jadwal/EditJadwal', [
+            'list_lapangan' => $lapangan,
+            'jadwal_user' => $jadwal,
+            'tempat_lapangan' =>  $tempat_lapangan,
+            'users' => $users
         ]);
     });
 

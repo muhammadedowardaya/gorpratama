@@ -89,13 +89,14 @@ export default function Booking(props) {
 
     async function getJadwal() {
         try {
-            const response = await axios.get(`/api/jadwal/${data.lapangan_id}`);
-            if (
-                Array.isArray(response.data.jadwal) &&
-                response.data.jadwal > 0
-            ) {
-                setJadwal(response.data.jadwal);
-            }
+            axios
+                .get("/api/semua-jadwal")
+                .then((response) => {
+                    setJadwal(response.data.semua_jadwal);
+                })
+                .catch((error) => {
+                    console.error("Error fetching schedules:", error);
+                });
         } catch (error) {
             console.error(error);
         }
@@ -263,61 +264,63 @@ export default function Booking(props) {
                     "warning"
                 );
             } else {
-                setShow(false);
-                Swal.fire({
-                    title: "Konfirmasi Pesanan Mu",
-                    text: `Anda memesan lapangan untuk tanggal ${data.tanggal_main} selama ${data.lama_bermain} jam seharga ${data.total_harga}`,
-                    icon: "info",
-                    showCancelButton: true,
-                    showDenyButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    denyButtonColor: "#1B9C85",
-                    confirmButtonText: "Bayar Transfer",
-                    denyButtonText: "Bayar di tempat",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        setShow(true);
-                        router.post("/booking", data, {
-                            forceFormData: true,
-                            onError: (errors) => {
-                                setShow(false);
-                                console.info(errors);
-                            },
-                            onSuccess: (response) => {
-                                setShow(false);
-                                console.info(response);
-                            },
-                        });
-                    } else if (result.isDenied) {
-                        // Tambahkan kode di sini yang akan dijalankan ketika tombol "deny" diklik
-                        if (data.telp == "") {
-                            Swal.fire({
-                                title: "Telepon belum di atur",
-                                text: `Anda perlu mengatur no telp terlebih dahulu untuk melakukan booking dengan bayar di tempat`,
-                                icon: "info",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3085d6",
-                                cancelButtonColor: "#d33",
-                                denyButtonColor: "#1B9C85",
-                                confirmButtonText: "Atur Sekarang",
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    setShow(true);
-                                    router.get("/pengaturan/profile", data, {
-                                        forceFormData: true,
-                                        onError: (errors) => {
-                                            setShow(false);
-                                            console.info(errors);
-                                        },
-                                        onSuccess: (response) => {
-                                            setShow(false);
-                                            console.info(response);
-                                        },
-                                    });
-                                }
+                if (data.telp == "") {
+                    Swal.fire({
+                        title: "Nomor Telepon belum di atur",
+                        text: `Anda perlu mengaturnya terlebih dahulu untuk melakukan booking`,
+                        icon: "info",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        denyButtonColor: "#1B9C85",
+                        confirmButtonText: "Atur Sekarang",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            setShow(true);
+                            router.get("/pengaturan/profile", data, {
+                                forceFormData: true,
+                                onError: (errors) => {
+                                    setShow(false);
+                                    console.info(errors);
+                                },
+                                onSuccess: (response) => {
+                                    setShow(false);
+                                    console.info(response);
+                                },
                             });
                         } else {
+                            setShow(false);
+                        }
+                    });
+                } else {
+                    setShow(false);
+                    Swal.fire({
+                        title: "Konfirmasi Pesanan Mu",
+                        text: `Anda memesan lapangan untuk tanggal ${data.tanggal_main} selama ${data.lama_bermain} jam seharga ${data.total_harga}`,
+                        icon: "info",
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        denyButtonColor: "#1B9C85",
+                        confirmButtonText: "Bayar Transfer",
+                        denyButtonText: "Bayar di tempat",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            setShow(true);
+                            router.post("/booking", data, {
+                                forceFormData: true,
+                                onError: (errors) => {
+                                    setShow(false);
+                                    console.info(errors);
+                                },
+                                onSuccess: (response) => {
+                                    setShow(false);
+                                    console.info(response);
+                                },
+                            });
+                        } else if (result.isDenied) {
+                            // Tambahkan kode di sini yang akan dijalankan ketika tombol "deny" diklik
                             setShow(true);
                             axios
                                 .post("/booking-bayar-ditempat", data)
@@ -332,8 +335,8 @@ export default function Booking(props) {
                                     setShow(false);
                                 });
                         }
-                    }
-                });
+                    });
+                }
             }
         } else {
             setShow(false);

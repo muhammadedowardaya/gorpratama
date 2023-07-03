@@ -26,9 +26,9 @@ export default function KonfirmasiWhatsapp(props) {
     });
 
     return (
-        <>
+        <div className="pt-20 px-4">
             <div className="bg-green-500 py-12">
-                <h1 className="text-4xl font-bold mb-4 text-center text-white">
+                <h1 className="text-xl md:text-4xl font-bold mb-4 text-center text-white">
                     Konfirmasi Bayar Di Tempat
                 </h1>
             </div>
@@ -43,12 +43,12 @@ export default function KonfirmasiWhatsapp(props) {
                         onClick={handleClick}
                         className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center justify-center transition duration-200"
                     >
-                        <FaWhatsapp className="mr-2" />
+                        <FaWhatsapp className="mr-2 text-4xl" />
                         Konfirmasi melalui Whatsapp
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
