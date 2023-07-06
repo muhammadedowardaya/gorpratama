@@ -12,20 +12,11 @@ import Layout from "@/Layouts/Layout";
 import FormatRupiah from "@/Components/FormatRupiah";
 import Toast from "@/Components/Toast";
 
-export default function EditJadwal({
+export default function TambahJadwal({
 	list_lapangan,
 	tempat_lapangan,
 	users,
-	jadwal_user,
-	transaksi,
 }) {
-	const [showLoading, setShowLoading] = useState(false);
-	const [lapangan, setLapangan] = useState("");
-	const [editLapangan, setEditLapangan] = useState(false);
-
-	const [user, setUser] = useState("");
-	const [jadwal, setJadwal] = useState([]);
-
 	const [statusTransaksiOptions, setStatusTransaksiOptions] = useState([
 		{ value: 1, label: "PENDING" },
 		{ value: 2, label: "FAILED" },
@@ -35,38 +26,26 @@ export default function EditJadwal({
 		{ value: 0, label: "PAID" },
 	]);
 
-	let status_transaksi;
-	if (jadwal_user.status_transaksi != "") {
-		status_transaksi = statusTransaksiOptions.find(
-			(option) => option.label == jadwal_user.status_transaksi
-		);
-	}
-
 	const { data, setData, reset, errors } = useForm({
-		user_id: jadwal_user.user.id,
-		user: jadwal_user.user ?? "",
-		lapangan: jadwal_user.lapangan ?? "",
-		lapangan_id: jadwal_user.lapangan.id ?? "",
+		user_id: "",
+		user: "",
+		lapangan: "",
+		lapangan_id: "",
 		nama_lapangan: "",
-		status_transaksi: jadwal_user.status_transaksi
-			? status_transaksi.value
-			: "default",
-		tanggal_main: moment(jadwal_user.tanggal).format("DD-MM-YYYY"),
-		jam_mulai: jadwal_user.jam_mulai ?? "",
-		jam_selesai: jadwal_user.jam_selesai ?? "",
+		status_transaksi: "default",
+		tanggal_main: "",
+		jam_mulai: "",
+		jam_selesai: "",
 
-		nama: jadwal_user.user.nama ?? "",
+		nama: "",
 		jadwal: "",
-		jadwal_id: jadwal_user.id,
-
-		jam_mulai_value: "",
-		jam_selesai_value: "",
+		jadwal_id: "",
 
 		jam_buka: tempat_lapangan.jam_buka,
 		jam_tutup: tempat_lapangan.jam_tutup,
 		harga_persewa: tempat_lapangan.harga_persewa,
 		total_harga: "",
-		amount: transaksi.amount ?? "",
+		amount: "",
 		lama_bermain: "",
 	});
 
@@ -111,23 +90,6 @@ export default function EditJadwal({
 		);
 	};
 
-	async function getJadwal() {
-		try {
-			// setSearchLoading(true);
-			axios
-				.get("/api/semua-jadwal")
-				.then((response) => {
-					// setSearchLoading(false);
-					setJadwal(response.data.semua_jadwal);
-				})
-				.catch((error) => {
-					// console.error("Error fetching schedules:", error);
-				});
-		} catch (error) {
-			// console.error(error);
-		}
-	}
-
 	function updateData() {
 		const total =
 			(parseInt(data.jam_selesai) - parseInt(data.jam_mulai)) *
@@ -143,9 +105,8 @@ export default function EditJadwal({
 		}));
 	}
 
-	const update = (e) => {
+	const store = (e) => {
 		e.preventDefault();
-		setShowLoading(true);
 
 		const today = new Date();
 		const day = String(today.getDate()).padStart(2, "0");
@@ -171,24 +132,19 @@ export default function EditJadwal({
 
 		// ------------------------------------------------------------------------
 
-		if (data.nama == "" || data.nama == "default") {
-			setShowLoading(false);
+		if (data.user_id == "" || data.user_id == "default") {
 			Swal.fire("Maaf cuy", "Nama pelanggan gak boleh kosong euy", "warning");
 		} else if (data.lapangan_id == "" || data.lapangan_id == "default") {
-			setShowLoading(false);
 			Swal.fire(
 				"Lapangan belum dipilih",
 				"Silahkan pilih lapangan terlebih dahulu",
 				"warning"
 			);
 		} else if (data.tanggal_main < formattedDate) {
-			setShowLoading(false);
 			Swal.fire("Hmm..", "Anda belum mengisi tanggal dengan benar", "warning");
 		} else if (data.jam_mulai == "" || data.jam_selesai == "") {
-			setShowLoading(false);
 			Swal.fire("Hmm..", "Lengkapi jam terlebih dahulu", "warning");
 		} else if (parseInt(data.jam_selesai) - parseInt(data.jam_mulai) < 1) {
-			setShowLoading(false);
 			Swal.fire("Hmm..", "Pengisian jam tidak tepat", "warning");
 		} else if (
 			tanggal_main.isSameOrBefore(tanggal_sekarang) &&
@@ -196,7 +152,6 @@ export default function EditJadwal({
 				(jamMulai.getHours() == currentTime.getHours() &&
 					jamMulai.getMinutes() <= currentTime.getMinutes()))
 		) {
-			setShowLoading(false);
 			Swal.fire(
 				"Hmm..",
 				"Jam sudah terlewat, tidak dapat melakukan booking",
@@ -208,7 +163,6 @@ export default function EditJadwal({
 				(jamSelesai.getHours() == currentTime.getHours() &&
 					jamSelesai.getMinutes() <= currentTime.getMinutes()))
 		) {
-			setShowLoading(false);
 			Swal.fire(
 				"Hmm..",
 				"Jam sudah terlewat, tidak dapat melakukan booking",
@@ -216,9 +170,8 @@ export default function EditJadwal({
 			);
 		} else {
 			//    tambah jadwal
-			setShowLoading(false);
 
-			router.patch(`/jadwal/${data.jadwal_id}`, data, {
+			router.post(`/jadwal`, data, {
 				onError: (errors) => {
 					Swal.fire({
 						icon: "error",
@@ -230,7 +183,7 @@ export default function EditJadwal({
 				},
 				onSuccess: (response) => {
 					// console.info(response);
-					Toast.fire("Berhasil", "Data berhasil diupdate!", "success");
+					Toast.fire("Berhasil", "Data berhasil ditambahkan!", "success");
 				},
 			});
 		}
@@ -246,10 +199,10 @@ export default function EditJadwal({
 			<div className="relative overflow-y-auto">
 				<div className="login-box w-full md:w-[70vw]">
 					<h1 className="text-gray-700 text-xl dark:text-gray-500 text-center my-4">
-						Edit Jadwal
+						Tambah Jadwal
 					</h1>
 
-					<form onSubmit={update}>
+					<form onSubmit={store}>
 						<div>
 							<div className="w-full">
 								<label className="block text-gray-600 dark:text-gray-500 font-bold mb-2">
@@ -266,11 +219,9 @@ export default function EditJadwal({
 										if (e.target.value != "default") {
 											const user = e.target.value;
 											const user_json = JSON.parse(user);
-											setUser(user_json);
-											setData("nama", user_json.nama);
 											setData("user_id", user_json.id);
 										} else {
-											setData("nama", e.target.value);
+											setData("user_id", "");
 										}
 									}}
 								>
@@ -300,10 +251,8 @@ export default function EditJadwal({
 										const lapangan = e.target.value;
 										if (lapangan == "default") {
 											setData("lapangan_id", lapangan);
-											setLapangan("");
 										} else {
 											const lapanganJson = JSON.parse(lapangan);
-											setLapangan(lapanganJson);
 											setData("lapangan_id", lapanganJson.id);
 										}
 									}}
@@ -410,7 +359,7 @@ export default function EditJadwal({
 								className="w-full submit"
 								// disabled={searchLoading ? true : false}
 							>
-								Update
+								Tambah
 								<span></span>
 							</button>
 						</center>
@@ -430,6 +379,6 @@ export default function EditJadwal({
 	);
 }
 
-EditJadwal.layout = (page) => (
+TambahJadwal.layout = (page) => (
 	<Layout children={page} title="Dashboard | Jadwal" />
 );

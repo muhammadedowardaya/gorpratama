@@ -9,8 +9,38 @@ const Schedule = ({ className, children }) => {
 	function getCurrentTimeWithoutSeconds() {
 		const date = new Date();
 		const hours = date.getHours().toString().padStart(2, "0");
-		const minutes = date.getMinutes().toString().padStart(2, "0");
-		return `${hours}:${minutes}`;
+		// const minutes = date.getMinutes().toString().padStart(2, "0");
+		return `${hours}`;
+	}
+
+	function cekJadwal(schedule) {
+		const today = new Date();
+		const currentTime = today.getHours();
+
+		const tanggal_sekarang = moment(today);
+
+		const tanggal_main = moment(schedule.tanggal);
+
+		const jam_mulai = schedule.jam_mulai;
+		const [hours, minutes] = jam_mulai.split(":");
+
+		const date = new Date();
+		date.setHours(parseInt(hours, 10));
+		date.setMinutes(parseInt(minutes, 10));
+
+		if (
+			tanggal_main.isSame(tanggal_sekarang, "day") &&
+			date.getHours() < currentTime
+		) {
+			return "Berakhir";
+		} else if (
+			tanggal_main.isSame(tanggal_sekarang, "day") &&
+			date.getHours() == currentTime
+		) {
+			return "Playing Now";
+		} else {
+			return "Upcoming";
+		}
 	}
 
 	const fetchSchedules = () => {
@@ -26,7 +56,6 @@ const Schedule = ({ className, children }) => {
 
 	useEffect(() => {
 		fetchSchedules();
-
 		//   first
 		const table = document.querySelector("#tabel-jadwal");
 		let isDragging = false;
@@ -89,7 +118,7 @@ const Schedule = ({ className, children }) => {
 			<div id="table-container">
 				<table id="tabel-jadwal" className="table-auto mt-4 w-full border">
 					<thead className="border">
-						<tr>
+						<tr className="bg-gray-100 text-gray-700">
 							<th className="px-4 py-2 border">Nama</th>
 							<th className="px-4 py-2 border">lapangan</th>
 							<th className="px-4 py-2 border">Tanggal</th>
@@ -104,30 +133,29 @@ const Schedule = ({ className, children }) => {
 								<tr
 									key={schedule.id}
 									className={
-										schedule.jam_mulai == currentTime
-											? "bg-yellow-200 text-gray-700"
+										parseInt(schedule.jam_mulai.split(":")[0]) ==
+										parseInt(currentTime)
+											? "dark:bg-yellow-300 font-bold bg-yellow-300 text-gray-700"
 											: ""
 									}
 								>
-									<td className="px-4 py-2 border text-center">
+									<td className="px-4 py-2 border text-center bg-gray-100 text-gray-700">
 										{schedule.user.nama}
 									</td>
-									<td className="px-4 py-2 border text-center">
+									<td className="px-4 py-2 border text-center bg-gray-100 text-gray-700">
 										{schedule.lapangan.nama}
 									</td>
-									<td className="px-4 py-2 border text-center">
+									<td className="px-4 py-2 border text-center bg-gray-100 text-gray-700">
 										{moment(schedule.tanggal).format("DD MMMM YYYY")}
 									</td>
-									<td className="px-4 py-2 border text-center">
+									<td className="px-4 py-2 border text-center bg-gray-100 text-gray-700">
 										{schedule.jam_mulai}
 									</td>
-									<td className="px-4 py-2 border text-center">
+									<td className="px-4 py-2 border text-center bg-gray-100 text-gray-700">
 										{schedule.jam_selesai}
 									</td>
-									<td className="px-4 py-2 border text-center">
-										{schedule.jam_mulai == currentTime
-											? "Playing Now"
-											: "Upcoming"}
+									<td className="px-4 py-2 border text-center bg-gray-100 text-gray-700">
+										{cekJadwal(schedule)}
 									</td>
 								</tr>
 							))

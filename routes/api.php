@@ -195,8 +195,8 @@ Route::get('/semua-jadwal', function () {
         ->where(function ($query) {
             $query->where('tanggal', '>', now()->toDateString())
                 ->orWhere(function ($query) {
-                    $query->where('tanggal', '=', now()->toDateString())
-                        ->where('jam_mulai', '>=', now()->format('H:i'));
+                    $query->where('tanggal', '=', now()->toDateString());
+                    // ->where('jam_mulai', '>=', now()->format('H:i'));
                 });
         })
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik

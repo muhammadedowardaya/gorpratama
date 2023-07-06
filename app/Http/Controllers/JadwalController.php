@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jadwal;
+use App\Models\Lapangan;
+use App\Models\TempatLapangan;
 use App\Models\Transaksi;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class JadwalController extends Controller
@@ -19,13 +23,48 @@ class JadwalController extends Controller
 
     public function create()
     {
-        return view('jadwal.create');
+        $users = User::where('type', 'user')->get();
+        $tempat_lapangan = TempatLapangan::all()->first();
+        $lapangan = Lapangan::all();
+
+        return Inertia::render('Dashboard/Admin/Jadwal/TambahJadwal', [
+            'list_lapangan' => $lapangan,
+            'tempat_lapangan' =>  $tempat_lapangan,
+            'users' => $users
+        ]);
     }
 
     public function store(Request $request)
     {
-        // // jadikan tanggal dengan format d m Y dapat diterima database
+        $validatedData = $request->validate([
+            'lapangan_id' => 'required',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+            'status_transaksi' => [
+                'required',
+                Rule::in([0, 1, 2, 3, 4, 5]),
+            ],
+            'tanggal' => [
+                'date_format:d-m-Y',
+                function ($attribute, $value, $fail) use ($request) {
+                    $tanggal_main = Carbon::createFromFormat('d-m-Y', $value)->toDateString();
+
+                    $existingJadwal = Jadwal::where('tanggal', $tanggal_main)
+                        ->where('jam_mulai', $request->jam_mulai)
+                        ->where('jam_selesai', $request->jam_selesai)
+                        ->exists();
+
+                    if ($existingJadwal) {
+                        $fail('Jadwal ada.');
+                    }
+                },
+            ],
+        ]);
+
+
+        // jadikan tanggal dengan format d m Y dapat diterima database
         $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
+
         $external_id = Str::random(10);
         // // buat jadwal baru
         $jadwal = new Jadwal;
@@ -47,7 +86,7 @@ class JadwalController extends Controller
         $transaksi->tanggal_main = $tanggal_main;
         $transaksi->save();
 
-        return response()->json(['message' => 'Data berhasil ditambahkan'], 200);
+        // return response()->json(['message' => 'Data berhasil ditambahkan'], 200);
     }
 
     public function destroy($id)
@@ -88,14 +127,21 @@ class JadwalController extends Controller
                 'required',
                 Rule::in([0, 1, 2, 3, 4, 5]),
             ],
-            Rule::unique('jadwal')->where(function ($query) use ($request, $jadwal) {
-                // jadikan tanggal dengan format d m Y dapat diterima database
-                $tanggal_main = Carbon::createFromFormat('d-m-Y', $request->tanggal_main)->toDateString();
-                return $query->where('tanggal', $tanggal_main)
-                    ->where('jam_mulai', '<', $request->jam_selesai)
-                    ->where('jam_selesai', '>', $request->jam_mulai)
-                    ->where('id', '!=', $jadwal->id);
-            }),
+            'tanggal' => [
+                'date_format:d-m-Y',
+                function ($attribute, $value, $fail) use ($request) {
+                    $tanggal_main = Carbon::createFromFormat('d-m-Y', $value)->toDateString();
+
+                    $existingJadwal = Jadwal::where('tanggal', $tanggal_main)
+                        ->where('jam_mulai', $request->jam_mulai)
+                        ->where('jam_selesai', $request->jam_selesai)
+                        ->exists();
+
+                    if ($existingJadwal) {
+                        $fail('Jadwal ada.');
+                    }
+                },
+            ],
         ]);
 
         // jadikan tanggal dengan format d m Y dapat diterima database
@@ -119,9 +165,9 @@ class JadwalController extends Controller
         $transaksi->status_transaksi = $request->status_transaksi;
         $transaksi->save();
 
-        return response()->json([
-            'message' => 'Data berhasil diupdate',
-            'lapangan_id' => $request->lapangan_id
-        ], 200);
+        // return response()->json([
+        //     'message' => 'Data berhasil diupdate',
+        //     'lapangan_id' => $request->lapangan_id
+        // ], 200);
     }
 }

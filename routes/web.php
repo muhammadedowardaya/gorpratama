@@ -360,6 +360,8 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     });
 
     // tambah jadwal
+    Route::get('/tambah-jadwal', [JadwalController::class, 'create']);
+    // simpan jadwal
     Route::post('/jadwal', [JadwalController::class, 'store']);
     // update jadwal
     Route::patch('/jadwal/{id}', [JadwalController::class, 'updateJadwal']);
