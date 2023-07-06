@@ -335,8 +335,10 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/dashboard/jadwal/{lapangan_id}', function ($lapangan_id) {
         $tempat_lapangan = TempatLapangan::all()->first();
         $lapangan = Lapangan::all();
+        $nama_lapangan = Lapangan::where('id', $lapangan_id)->first();
         return Inertia::render('Dashboard/Admin/Jadwal/ShowJadwal', [
             'lapangan_id' => $lapangan_id,
+            'nama_lapangan' => $nama_lapangan->nama,
             'list_lapangan' => $lapangan,
             'tempat_lapangan' => $tempat_lapangan,
         ]);
@@ -347,11 +349,13 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         $tempat_lapangan = TempatLapangan::all()->first();
         $lapangan = Lapangan::all();
         $jadwal = Jadwal::where('lapangan_id', $lapangan_id)->where('id', $id)->with(['user', 'lapangan'])->first();
+        $transaksi = Transaksi::where('external_id', $jadwal->external_id)->first();
         return Inertia::render('Dashboard/Admin/Jadwal/EditJadwal', [
             'list_lapangan' => $lapangan,
             'jadwal_user' => $jadwal,
             'tempat_lapangan' =>  $tempat_lapangan,
-            'users' => $users
+            'users' => $users,
+            'transaksi' => $transaksi
         ]);
     });
 

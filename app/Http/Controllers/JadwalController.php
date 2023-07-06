@@ -42,6 +42,7 @@ class JadwalController extends Controller
         $transaksi->user_id = $request->user_id;
         $transaksi->lapangan_id = $request->lapangan_id;
         $transaksi->external_id = $external_id;
+        $transaksi->status_transaksi = $request->status_transaksi;
         $transaksi->amount = $request->amount;
         $transaksi->tanggal_main = $tanggal_main;
         $transaksi->save();
@@ -77,10 +78,10 @@ class JadwalController extends Controller
     {
 
         $jadwal = Jadwal::find($id);
+        // dd($request->all());
 
         $validatedData = $request->validate([
             'lapangan_id' => 'required',
-            'tanggal' => 'required',
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'status_transaksi' => [
@@ -105,7 +106,7 @@ class JadwalController extends Controller
         $transaksi = $transaksis->first();
         // buat jadwal baru
         $jadwal->lapangan_id = $request->lapangan_id;
-        $jadwal->tanggal = $request->tanggal_main;
+        $jadwal->tanggal = $tanggal_main;
         $jadwal->status_transaksi = $request->status_transaksi;
         $jadwal->jam_mulai = $request->jam_mulai;
         $jadwal->jam_selesai = $request->jam_selesai;
@@ -114,7 +115,7 @@ class JadwalController extends Controller
         $transaksi->user_id = $request->user_id;
         $transaksi->lapangan_id = request('lapangan_id');
         $transaksi->amount = request('amount');
-        $transaksi->tanggal_main = $request->tanggal_main;
+        $transaksi->tanggal_main = $tanggal_main;
         $transaksi->status_transaksi = $request->status_transaksi;
         $transaksi->save();
 

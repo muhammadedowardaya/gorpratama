@@ -229,7 +229,15 @@ Route::get('/jadwal/{lapangan_id}', function ($lapangan_id) {
     $jadwal = Jadwal::with('user')
         ->where('lapangan_id', $lapangan_id)
         ->whereDate('tanggal', '>=', now()->toDateString()) // hanya menampilkan jadwal pada hari ini atau setelahnya
+        ->where(function ($query) {
+            $query->where('tanggal', '>', now()->toDateString())
+                ->orWhere(function ($query) {
+                    $query->where('tanggal', '=', now()->toDateString())
+                        ->where('jam_mulai', '>=', now()->format('H:i'));
+                });
+        })
         ->orderBy('tanggal', 'asc') // mengurutkan jadwal berdasarkan tanggal dengan urutan menaik
+        ->orderBy('jam_mulai', 'asc') // tambahkan pengurutan berdasarkan jam_mulai dengan urutan menaik
         ->get();
 
     return response()->json([
