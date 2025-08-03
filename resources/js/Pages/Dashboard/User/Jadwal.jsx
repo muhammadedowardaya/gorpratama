@@ -87,7 +87,7 @@ export default function Jadwal(props) {
                                                 1 +
                                                 (props.jadwal.current_page -
                                                     1) *
-                                                    props.jadwal.per_page}
+                                                props.jadwal.per_page}
                                         </th>
                                         <td>{item.lapangan.nama}</td>
                                         <td>{tanggal_bermain}</td>

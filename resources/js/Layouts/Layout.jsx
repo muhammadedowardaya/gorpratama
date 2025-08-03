@@ -291,7 +291,7 @@ export default function Layout({ children, header, title }) {
 	}, []);
 
 	return (
-		<div className="relative min-h-screen bg-fixed bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
+		<div className="relative min-h-screen bg-fixed bg-gradient-to-b text-slate-700 dark:from-gray-900 dark:to-gray-800 from-green-400 to-blue-500">
 			{header && (
 				<section className="px-5 pt-5 pb-4 fixed top-14 z-10 w-full flex justify-evenly">
 					{header}
@@ -369,9 +369,8 @@ export default function Layout({ children, header, title }) {
 										<span>Pesan</span>
 
 										<div
-											className={`${
-												jumlahPesan == 0 ? "hidden" : "block"
-											} absolute -top-2 -right-8  bg-yellow-500 rounded-full w-6 h-6 text-white p-1 text-[0.8em] font-bold text-center`}
+											className={`${jumlahPesan == 0 ? "hidden" : "block"
+												} absolute -top-2 -right-8  bg-yellow-500 rounded-full w-6 h-6 text-white p-1 text-[0.8em] font-bold text-center`}
 										>
 											{jumlahPesan}
 										</div>
@@ -472,9 +471,8 @@ export default function Layout({ children, header, title }) {
 											/>
 											<span className="ml-1 whitespace-nowrap">Pesan</span>
 											<div
-												className={`${
-													jumlahPesan == 0 ? "hidden" : "block"
-												} absolute top-2 left-9 bg-yellow-400 rounded-full w-5 h-5 text-white p-[1px] text-[0.7em] font-bold text-center`}
+												className={`${jumlahPesan == 0 ? "hidden" : "block"
+													} absolute top-2 left-9 bg-yellow-400 rounded-full w-5 h-5 text-white p-[1px] text-[0.7em] font-bold text-center`}
 											>
 												{jumlahPesan}
 											</div>
@@ -508,17 +506,15 @@ export default function Layout({ children, header, title }) {
 
 				<section
 					id="content"
-					className={`z-10 overflow-y-scroll scrollbar-hide ml-0 pt-0 col-span-2 ${
-						user != null ? "md:col-span-1" : "md:col-span-2"
-					}`}
+					className={`z-10 overflow-y-scroll scrollbar-hide ml-0 pt-0 col-span-2 ${user != null ? "md:col-span-1" : "md:col-span-2"
+						}`}
 				>
 					<main className={`p-0 ${user != null ? "md:pl-6" : ""}`}>
 						{children}
 					</main>
 					<div
-						className={`${
-							showAlertMessage ? "fixed" : "hidden"
-						} sm:top-2 top-20 right-2`}
+						className={`${showAlertMessage ? "fixed" : "hidden"
+							} sm:top-2 top-20 right-2`}
 					>
 						<p className="bg-gray-800 text-white px-2 rounded-t">Pesan baru</p>
 						<div className="relative">
