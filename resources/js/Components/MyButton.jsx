@@ -46,14 +46,12 @@ export default function MyButton({
         <button
             id="MyButton"
             style={{
-                color: "#fff",
                 backdropFilter: 'blur("20px")',
                 padding: padding,
             }}
             onClick={onClick}
-            className={`cursor-pointer ${className} ${pickColor(button)} ${
-                underline ? "active" : ""
-            }`}
+            className={`cursor-pointer text-white ${className} ${pickColor(button)} ${underline ? "active" : ""
+                }`}
             type={type}
         >
             {value}

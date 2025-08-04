@@ -19,7 +19,7 @@ export default function List(props) {
 	return (
 		<>
 			<div className="flex justify-between items-center md:mt-8 mt-20 p-4">
-				<h1 className="md:text-2xl font-bold text-center">{`Kelola Jadwal (Status PAID)`}</h1>
+				<h1 className="md:text-2xl font-bold text-center">{`Lihat Jadwal (Status PAID)`}</h1>
 				<div
 					onClick={() => {
 						history.back();

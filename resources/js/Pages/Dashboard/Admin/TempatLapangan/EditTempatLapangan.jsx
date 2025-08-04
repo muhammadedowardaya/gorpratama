@@ -182,7 +182,7 @@ export default function EditTempatLapangan(props) {
     }, []);
 
     return (
-        <div>
+        <div className="md:pl-6">
             <Head title="Kelola Tempat Lapangan" />
 
             <Loading display={displayLoading} />
@@ -208,9 +208,8 @@ export default function EditTempatLapangan(props) {
                                         setData("nama", e.target.value);
                                     }}
                                     autoComplete="off"
-                                    className={`${
-                                        data.nama != "" ? "aktif" : ""
-                                    }`}
+                                    className={`${data.nama != "" ? "aktif" : ""
+                                        }`}
                                 />
                                 <label>Nama</label>
                             </div>
@@ -224,9 +223,8 @@ export default function EditTempatLapangan(props) {
                                         setData("telp", e.target.value);
                                     }}
                                     autoComplete="off"
-                                    className={`${
-                                        data.telp != "" ? "aktif" : ""
-                                    }`}
+                                    className={`${data.telp != "" ? "aktif" : ""
+                                        }`}
                                 />
                                 <label>Telp</label>
                             </div>
@@ -240,9 +238,8 @@ export default function EditTempatLapangan(props) {
                                         setData("email", e.target.value);
                                     }}
                                     autoComplete="off"
-                                    className={`${
-                                        data.email != "" ? "aktif" : ""
-                                    }`}
+                                    className={`${data.email != "" ? "aktif" : ""
+                                        }`}
                                 />
                                 <label>Email</label>
                             </div>
@@ -255,9 +252,8 @@ export default function EditTempatLapangan(props) {
                                         e.preventDefault();
                                         setData("alamat", e.target.value);
                                     }}
-                                    className={`${
-                                        data.alamat != "" ? "aktif" : ""
-                                    }`}
+                                    className={`${data.alamat != "" ? "aktif" : ""
+                                        }`}
                                     autoComplete="off"
                                 />
 
@@ -265,9 +261,8 @@ export default function EditTempatLapangan(props) {
                             </div>
                             <div className="user-box">
                                 <textarea
-                                    className={`${
-                                        data.deskripsi != "" ? "aktif" : ""
-                                    } text-slate-800 mb-4 `}
+                                    className={`${data.deskripsi != "" ? "aktif" : ""
+                                        } text-slate-800 mb-4 `}
                                     onChange={(e) => {
                                         e.preventDefault();
                                         setData("deskripsi", e.target.value);
@@ -293,9 +288,8 @@ export default function EditTempatLapangan(props) {
                                             e.target.value
                                         );
                                     }}
-                                    className={`${
-                                        data.harga_persewa != "" ? "aktif" : ""
-                                    } `}
+                                    className={`${data.harga_persewa != "" ? "aktif" : ""
+                                        } `}
                                 />
                                 <label>Harga sewa per-jam</label>
                             </div>
@@ -307,9 +301,9 @@ export default function EditTempatLapangan(props) {
                                         data.jam_buka == ""
                                             ? ""
                                             : moment(
-                                                  data.jam_buka,
-                                                  "HH:mm"
-                                              ).toDate()
+                                                data.jam_buka,
+                                                "HH:mm"
+                                            ).toDate()
                                     }
                                     onDateChange={(date) => {
                                         const formattedDate =
@@ -323,9 +317,9 @@ export default function EditTempatLapangan(props) {
                                         data.jam_tutup == ""
                                             ? ""
                                             : moment(
-                                                  data.jam_tutup,
-                                                  "HH:mm"
-                                              ).toDate()
+                                                data.jam_tutup,
+                                                "HH:mm"
+                                            ).toDate()
                                     }
                                     onDateChange={(date) => {
                                         const formattedDate =
@@ -354,9 +348,9 @@ export default function EditTempatLapangan(props) {
                                                 onClick={
                                                     data.preview == ""
                                                         ? () =>
-                                                              Toast.fire(
-                                                                  "tidak ada gambar"
-                                                              )
+                                                            Toast.fire(
+                                                                "tidak ada gambar"
+                                                            )
                                                         : openPortal
                                                 }
                                             />
@@ -427,14 +421,14 @@ export default function EditTempatLapangan(props) {
                                             "/dashboard/tempat-lapangan"
                                         );
                                     }}
-                                    className="bg-gray-700 py-2 px-6"
+                                    className="bg-gray-700 text-white py-2 px-6"
                                 >
                                     Kembali
                                 </button>
 
                                 <button
                                     type="submit"
-                                    className="bg-yellow-500 py-2 px-6"
+                                    className="bg-yellow-500 text-white py-2 px-6"
                                 >
                                     Update
                                 </button>

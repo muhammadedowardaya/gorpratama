@@ -197,9 +197,8 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
 					</label>
 					<div className="flex items-center relative">
 						<div
-							className={`justify-center items-center absolute right-5 ${
-								searchLoading ? "flex" : "hidden"
-							}`}
+							className={`justify-center items-center absolute right-5 ${searchLoading ? "flex" : "hidden"
+								}`}
 						>
 							<div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-900"></div>
 						</div>
@@ -220,7 +219,7 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
 					<table
 						id="my-table"
 						className="table table-compact w-full select-none"
-						// className="table-compact w-full select-none"
+					// className="table-compact w-full select-none"
 					>
 						<thead>
 							<tr>
@@ -285,9 +284,8 @@ export default function JadwalPending({ tempat_lapangan, list_lapangan }) {
 			</div>
 
 			<div
-				className={`fixed md:top-0 top-16 bottom-0 right-0 left-0 ${
-					showJadwal ? "grid" : "hidden"
-				} justify-center bg-gray-700 backdrop-filter backdrop-blur bg-opacity-30 h-screen w-screen pt-5 md:pt-4 z-50`}
+				className={`fixed md:top-0 top-16 bottom-0 right-0 left-0 ${showJadwal ? "flex" : "hidden"
+					} justify-center bg-gray-700 backdrop-filter backdrop-blur bg-opacity-30 h-screen w-screen pt-5 md:pt-4 z-50`}
 			>
 				<div className="px-4 md:pr-8 md:w-[80vw] w-[99vw]">
 					<Schedule className="relative">

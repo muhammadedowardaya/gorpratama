@@ -1,10 +1,9 @@
 import "../../../../../css/tempatLapangan.css";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { PortalWithState } from "react-portal";
 import Swal from "sweetalert2";
-import MyButton from "@/Components/MyButton";
-import { Head, router, usePage } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { FaWindowClose } from "react-icons/fa";
 import Layout from "@/Layouts/Layout";
 
@@ -43,7 +42,7 @@ const TempatLapangan = ({ tempat_lapangan, auth, flash }) => {
             {/* <Loading display={displayLoading} /> */}
             <div className="flex justify-center pt-16 md:pt-2">
                 <div className="max-w-sm rounded overflow-hidden shadow-lg">
-                    <h1 className="font-bold md:text-xl text-center mt-4 md:mt-10">
+                    <h1 className="font-bold md:text-xl text-white text-center mt-4 md:mt-10">
                         Tempat Lapangan / Profil Gor
                     </h1>
                     <div className="px-4 py-4">
